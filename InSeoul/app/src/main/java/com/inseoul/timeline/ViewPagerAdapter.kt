@@ -1,19 +1,16 @@
 package com.inseoul.timeline
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.inseoul.R
-import kotlinx.android.synthetic.main.timeline_page.view.*
 
-class ViewPagerAdapter: RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
+class ViewPagerAdapter(val c: Context, val itemlist:ArrayList<TimeLineItem>)
+    : RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
 
     val list = listOf("Tab1", "Tab2", "Tab3")
 
@@ -32,19 +29,28 @@ class ViewPagerAdapter: RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        holder.test.text = "Page" + list.get(position)
 
-        if (position % 2 == 0)
-            holder.test.setBackgroundResource(R.color.blue)
-        else
-            holder.test.setBackgroundResource(R.color.orange)
+        var layoutManager: RecyclerView.LayoutManager? = null
+        var adapter: TimeLineAdapter? = null
+        layoutManager = LinearLayoutManager(c, RecyclerView.VERTICAL, false)
+        holder.recyclerView.layoutManager = layoutManager
+        val listener = object: TimeLineAdapter.RecyclerViewAdapterEventListener{
+            override fun onClick(view: View) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
 
+        adapter = TimeLineAdapter(c, listener, itemlist)
+        holder.recyclerView.adapter = adapter
+        holder.recyclerView.addItemDecoration(DividerItemDecoration(c, 1))
     }
 
+
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        var test: TextView
+        var recyclerView: RecyclerView
         init{
-            test = itemView.findViewById(R.id.test)
+            recyclerView = itemView.findViewById(R.id.recyclerView)
         }
     }
 }
