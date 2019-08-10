@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".manage_schedules.my_schedule" android:orientation="vertical">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="7">
+        <Button
+                android:text="일정 추가하기"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/add_schedule"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/recyclerview_main_list"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="3">
+        <TextView
+                android:text="지난 여행"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/past_trip"/>
+        <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:orientation="vertical"/>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>
