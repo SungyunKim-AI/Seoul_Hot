@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.home.HomeAdapter
 import com.inseoul.home.HomeItem
 import com.inseoul.make_plan.MakePlanActivity
+import com.inseoul.manage_schedules.my_schedule
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
 import com.naver.maps.geometry.LatLng
@@ -128,7 +129,8 @@ class MainActivity :
         }
 
         HistoryBtn.setOnClickListener {
-
+            val intent = Intent(this, my_schedule::class.java)
+            startActivity(intent)
         }
 
         TimeLineBtn.setOnClickListener {
