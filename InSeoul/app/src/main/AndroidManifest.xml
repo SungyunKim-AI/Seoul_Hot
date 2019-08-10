@@ -9,9 +9,18 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".timeline.TimeLineActivity">
+        </activity>
+        <activity android:name=".make_plan.AddPlaceActivity">
+        </activity>
+        <activity android:name=".search.SearchActivity">
+        </activity>
+        <activity android:name=".make_plan.MakePlanActivity">
+        </activity>
+
         <meta-data
                 android:name="com.naver.maps.map.CLIENT_ID"
-                android:value="jqxe84nuvy" />
+                android:value="jqxe84nuvy"/>
 
         <activity android:name=".manage_member.SignUpActivity">
         </activity>

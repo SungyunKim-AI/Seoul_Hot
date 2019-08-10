@@ -1,5 +1,6 @@
 package com.inseoul
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -11,8 +12,18 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
+import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.inseoul.home.HomeAdapter
+import com.inseoul.home.HomeItem
+import com.inseoul.make_plan.MakePlanActivity
+import com.inseoul.search.SearchActivity
+import com.inseoul.timeline.TimeLineActivity
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity :
     AppCompatActivity(),
@@ -43,7 +54,10 @@ class MainActivity :
         navView.setNavigationItemSelectedListener(this)
 
         /////////////////////////////////////////////////////
+        initBtn()
         initMap()
+        initTest()
+        initRecyclerView()
     }
 
     override fun onBackPressed() {
@@ -100,6 +114,30 @@ class MainActivity :
 
 
 
+    ////////////////// Button //////////////////
+    fun initBtn(){
+        searchBtn.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+        }
+
+        MkPlanBtn.setOnClickListener {
+            val intent = Intent(this, MakePlanActivity::class.java)
+            startActivity(intent)
+
+        }
+
+        HistoryBtn.setOnClickListener {
+
+        }
+
+        TimeLineBtn.setOnClickListener {
+            val intent = Intent(this, TimeLineActivity::class.java)
+            startActivity(intent)
+
+        }
+    }
+
     ////////////////// Map //////////////////
     fun initMap(){
         val options = NaverMapOptions()
@@ -125,6 +163,35 @@ class MainActivity :
 
 
         /////////////////////////////////////////////////////
+    }
+
+    ////////////////// Recycler View //////////////////
+    private val test = ArrayList<HomeItem>()
+    var layoutManager: RecyclerView.LayoutManager? = null
+    var adapter: HomeAdapter? = null
+
+    fun initTest(){
+
+        for(i in 0..10){
+            test.add(HomeItem("This is Title" + i.toString(), "This is Content" + i.toString()))
+        }
+    }
+
+
+
+
+    fun initRecyclerView(){
+        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+        val listener = object: HomeAdapter.RecyclerViewAdapterEventListener{
+            override fun onClick(view: View) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+
+        adapter = HomeAdapter(this, listener, test)
+        recyclerView.adapter = adapter
+        recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
     }
 
 }
