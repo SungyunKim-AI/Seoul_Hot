@@ -12,6 +12,14 @@
         <activity android:name=".regist_review.review">
         </activity>
         <activity android:name=".manage_schedules.my_schedule">
+
+        <activity android:name=".timeline.TimeLineActivity">
+        </activity>
+        <activity android:name=".make_plan.AddPlaceActivity">
+        </activity>
+        <activity android:name=".search.SearchActivity">
+        </activity>
+        <activity android:name=".make_plan.MakePlanActivity">
         </activity>
 
         <meta-data
