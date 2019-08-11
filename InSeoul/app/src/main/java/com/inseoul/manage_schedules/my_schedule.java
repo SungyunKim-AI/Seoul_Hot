@@ -27,11 +27,28 @@ public class my_schedule extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private int count = -1;
 
+    private ArrayList<recyclerview_schedule_past> mArrayList_past;
+    private adapter_schedule_past mAdapter_past;
+    private RecyclerView mRecyclerView_past;
+    private LinearLayoutManager mLinearLayoutManager_past;
+    private int count_past = -1;
+
+    // TEST
+    private ArrayList<recyclerview_schedule_past> test = new ArrayList<recyclerview_schedule_past>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_schedule);
 
+
+        //////////////////// Test Code ////////////////////
+
+        for(int i=0;i<3;i++){
+            test.add(new recyclerview_schedule_past("test1", "test2"));
+        }
+
+
+        //수정 중인 일정
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -62,6 +79,25 @@ public class my_schedule extends AppCompatActivity {
                 mAdapter.notifyDataSetChanged(); //변경된 데이터를 화면에 반영
             }
         });
+
+
+
+        //지나간 일정
+        mRecyclerView_past = (RecyclerView) findViewById(R.id.recyclerview_past_list);
+        mLinearLayoutManager_past = new LinearLayoutManager(this);
+        mRecyclerView_past.setLayoutManager(mLinearLayoutManager_past);
+
+        // MainActivity에서 RecyclerView의 데이터에 접근
+        mArrayList_past = new ArrayList<>();
+
+        mAdapter_past = new adapter_schedule_past( test);
+        mRecyclerView_past.setAdapter(mAdapter_past);
+
+
+        // RecyclerView의 줄(row) 사이에 수평선을 넣기위해 사용됩니다.
+        DividerItemDecoration dividerItemDecoration_past = new DividerItemDecoration(mRecyclerView_past.getContext(),
+                mLinearLayoutManager_past.getOrientation());
+        mRecyclerView_past.addItemDecoration(dividerItemDecoration);
 
     }
 }
