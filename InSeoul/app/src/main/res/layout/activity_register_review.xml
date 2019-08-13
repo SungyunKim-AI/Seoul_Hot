@@ -7,13 +7,21 @@
         tools:context=".register_review.register_review" android:orientation="vertical">
 
 
+    <TextView
+            android:text="여행 제목"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/text_review_title"/>
+    <TextView
+            android:text="여행 날짜"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/text_review_date"/>
     <ImageButton
             android:layout_width="match_parent"
             android:layout_height="0dp" app:srcCompat="@drawable/ic_add_a_photo_black_24dp"
             android:id="@+id/imageButton" android:layout_weight="3"/>
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="3"/>
+            android:layout_height="0dp" android:layout_weight="3" android:id="@+id/recyclerview_rating"/>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

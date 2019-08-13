@@ -1,13 +1,11 @@
 package com.inseoul.manage_schedules;
 
-import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
@@ -23,8 +21,8 @@ public class adapter_schedule_past extends RecyclerView.Adapter<adapter_schedule
 
         public CustomViewHolder(View view) {
             super(view);
-            this.title = (TextView) view.findViewById(R.id.textview_recyclerview_title_past);
-            this.date = (TextView) view.findViewById(R.id.textview_recyclerview_date_past);
+            this.title = (TextView) view.findViewById(R.id.textview_title_past);
+            this.date = (TextView) view.findViewById(R.id.textview_date_past);
         }
     }
 

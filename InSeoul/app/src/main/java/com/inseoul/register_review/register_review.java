@@ -1,15 +1,12 @@
 package com.inseoul.register_review;
 
-import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
-import com.inseoul.manage_schedules.adapter_schedule;
-import com.inseoul.manage_schedules.recyclerview_schedule;
 
 import java.util.ArrayList;
 
@@ -19,19 +16,44 @@ public class register_review extends AppCompatActivity {
     private register_review_adapter mAdapter;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-    private int count = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_review);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
+        //리뷰 작성시 인텐트로 데이터 전발 받을 함수 선언
+        String review_title;
+        String review_date;
+
+        Bundle extras = getIntent().getExtras();
+
+        review_title = extras.getString("textview_title_past");
+        review_date = extras.getString("textview_date_past");
+
+        TextView textView = (TextView)findViewById(R.id.text_review_title);
+        TextView textView1 = (TextView)findViewById(R.id.text_review_date);
+
+        String str_title = review_title;
+        String str_date = review_date;
+
+        textView.setText(str_title);
+        textView1.setText(str_date);
+
+
+
+        //리사이클러뷰 생성
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_rating);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
+
+        /////////Test Code///////////
+        for(int i=0; i<3;i++){
+            mArrayList.add(new register_review_recyclerview("장소명"+i, "장소유형"+i,"★★★★★"));
+        }
 
         mAdapter = new register_review_adapter(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
@@ -42,21 +64,6 @@ public class register_review extends AppCompatActivity {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-
-        Button buttonInsert = (Button)findViewById(R.id.add_schedule);
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                count++;
-                // Dictionary 생성자를 사용하여 ArrayList에 삽입할 데이터를 만듭니다.
-                register_review_recyclerview dict = new register_review_recyclerview(count+"장소이름","유형" + count,"★★★★★");
-
-                //mArrayList.add(0, dict); //RecyclerView의 첫 줄에 삽입
-                mArrayList.add(dict); // RecyclerView의 마지막 줄에 삽입
-
-                mAdapter.notifyDataSetChanged(); //변경된 데이터를 화면에 반영
-            }
-        });
 
     }
 }

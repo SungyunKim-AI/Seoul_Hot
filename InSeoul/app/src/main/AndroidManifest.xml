@@ -9,6 +9,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".search.SearchDetails">
+        </activity>
         <activity android:name=".register_review.register_review">
         </activity>
         <activity android:name=".regist_review.review">
