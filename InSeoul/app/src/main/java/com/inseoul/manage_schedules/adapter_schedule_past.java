@@ -1,11 +1,13 @@
 package com.inseoul.manage_schedules;
 
+import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
@@ -46,7 +48,7 @@ public class adapter_schedule_past extends RecyclerView.Adapter<adapter_schedule
 
     // Adapter의 특정 위치(position)에 있는 데이터를 보여줘야 할때 호출
     @Override
-    public void onBindViewHolder(@NonNull adapter_schedule_past.CustomViewHolder viewholder, int position) {
+    public void onBindViewHolder(@NonNull adapter_schedule_past.CustomViewHolder viewholder, final int position) {
 
         viewholder.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
         viewholder.date.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
@@ -62,4 +64,7 @@ public class adapter_schedule_past extends RecyclerView.Adapter<adapter_schedule
     public int getItemCount() {
         return (null != mList ? mList.size() : 0);
     }
+
+
+
 }

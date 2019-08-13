@@ -27,6 +27,8 @@ public class register_review_adapter extends RecyclerView.Adapter<register_revie
             this.category = (TextView) view.findViewById(R.id.place_category);
             this.score = (TextView) view.findViewById(R.id.place_score);
         }
+
+
     }
 
     public register_review_adapter(ArrayList<register_review_recyclerview> list) {
