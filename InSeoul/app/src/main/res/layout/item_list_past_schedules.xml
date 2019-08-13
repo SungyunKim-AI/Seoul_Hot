@@ -8,25 +8,25 @@
 
 
     <TextView
-            android:id="@+id/textview_recyclerview_title_past"
+            android:id="@+id/textview_title_past"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="여행 제목"
-            app:layout_constraintRight_toLeftOf="@+id/textview_recyclerview_date_past"
+            app:layout_constraintRight_toLeftOf="@+id/textview_date_past"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
 
     <TextView
-            android:id="@+id/textview_recyclerview_date_past"
+            android:id="@+id/textview_date_past"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="날짜"
             android:gravity="center"
             app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintLeft_toRightOf="@+id/textview_recyclerview_title_past"
+            app:layout_constraintLeft_toRightOf="@+id/textview_title_past"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/button_recyclerview_btn_past"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/button_recyclerview_btn_past"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/textview_recyclerview_date_past"
+            app:layout_constraintLeft_toRightOf="@+id/textview_date_past"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"/>
