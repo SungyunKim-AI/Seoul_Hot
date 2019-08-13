@@ -19,28 +19,33 @@
             android:hint="Title"
             android:id="@+id/PlanTitle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-    />
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
-    <Button
-            android:id="@+id/DatePickBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Date"
-    />
-
-    <DatePicker
-            android:id="@+id/DayPicker"
+    <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-    ></DatePicker>
+            android:layout_height="0dp" android:layout_weight="1">
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:ems="10"
+                android:id="@+id/date_text" android:layout_weight="1"/>
+        <Button
+                android:id="@+id/DatePickBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Date"
+        />
+    </LinearLayout>
 
     <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="horizontal"
-    >
+            android:layout_weight="1">
         <TextView
                 android:text="Theme"
                 android:layout_width="wrap_content"
@@ -51,10 +56,14 @@
                 android:layout_height="wrap_content"></Spinner>
 
     </LinearLayout>
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp" app:srcCompat="@drawable/seoulmap" android:id="@+id/imageView3"
+            android:layout_weight="7"/>
     <Button
             android:text="Continue"
             android:id="@+id/continueBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-    />
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 </LinearLayout>

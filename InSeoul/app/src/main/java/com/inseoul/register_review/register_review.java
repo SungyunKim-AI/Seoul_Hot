@@ -42,6 +42,7 @@ public class register_review extends AppCompatActivity {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
+
         Button buttonInsert = (Button)findViewById(R.id.add_schedule);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override

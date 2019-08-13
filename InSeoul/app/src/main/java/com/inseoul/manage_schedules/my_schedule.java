@@ -1,16 +1,20 @@
 package com.inseoul.manage_schedules;
 
 import android.content.Context;
+import android.content.Intent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
+import com.inseoul.make_plan.MakePlanActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,22 +69,14 @@ public class my_schedule extends AppCompatActivity {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        Button buttonInsert = (Button)findViewById(R.id.add_schedule);
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
+        Button add_schedule = (Button)findViewById(R.id.add_schedule);
+        add_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                count++;
-                // Dictionary 생성자를 사용하여 ArrayList에 삽입할 데이터를 만듭니다.
-                recyclerview_schedule dict = new recyclerview_schedule(count+"","apple" + count);
-
-                //mArrayList.add(0, dict); //RecyclerView의 첫 줄에 삽입
-                mArrayList.add(dict); // RecyclerView의 마지막 줄에 삽입
-
-                mAdapter.notifyDataSetChanged(); //변경된 데이터를 화면에 반영
+            public void onClick(View view) {
+                Intent intent = new Intent(my_schedule.this, MakePlanActivity.class);
+                startActivity(intent);
             }
         });
-
-
 
         //지나간 일정
         mRecyclerView_past = (RecyclerView) findViewById(R.id.recyclerview_past_list);
