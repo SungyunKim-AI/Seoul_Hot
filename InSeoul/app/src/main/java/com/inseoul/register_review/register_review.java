@@ -89,6 +89,18 @@ public class register_review extends AppCompatActivity {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
+        //toolbar 커스텀 코드
+        Toolbar mtoolbar = (Toolbar) findViewById(R.id.toolbar_register_review);
+        setSupportActionBar(mtoolbar);
+        // Get the ActionBar here to configure the way it behaves.
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        actionBar.setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp); //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+        mtoolbar.setTitle(str_title);
+        mtoolbar.setTitleTextColor(Color.WHITE);
     }
 
     private void init(){
@@ -115,19 +127,6 @@ public class register_review extends AppCompatActivity {
             ((ImageView)findViewById(R.id.img_view))
                     .setImageBitmap(imageBitmap);
         }
-  
-        //toolbar 커스텀 코드
-        Toolbar mtoolbar = (Toolbar) findViewById(R.id.toolbar_register_review);
-        setSupportActionBar(mtoolbar);
-        // Get the ActionBar here to configure the way it behaves.
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
-        actionBar.setDisplayShowTitleEnabled(false);
-
-        actionBar.setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp); //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-        mtoolbar.setTitle(str_title);
-        mtoolbar.setTitleTextColor(Color.WHITE);
 
     }
 
