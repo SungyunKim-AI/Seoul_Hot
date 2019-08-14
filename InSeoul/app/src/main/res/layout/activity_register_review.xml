@@ -17,8 +17,19 @@
             android:layout_height="wrap_content" android:id="@+id/text_review_date"/>
     <ImageButton
             android:layout_width="match_parent"
-            android:layout_height="0dp" app:srcCompat="@drawable/ic_add_a_photo_black_24dp"
-            android:id="@+id/imageButton" android:layout_weight="3"/>
+            android:layout_height="0dp"
+            app:srcCompat="@drawable/ic_add_a_photo_black_24dp"
+            android:id="@+id/imageButton"
+            android:layout_weight="3"
+    />
+    <ImageView
+            android:id="@+id/img_view"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+
+    />
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp" android:layout_weight="3" android:id="@+id/recyclerview_rating"/>
