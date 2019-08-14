@@ -1,5 +1,17 @@
 package com.inseoul.register_review;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.graphics.Color;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -12,6 +24,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
+import com.inseoul.make_plan.MakePlanActivity;
+import com.inseoul.manage_schedules.my_schedule;
 
 import java.util.ArrayList;
 
@@ -22,10 +36,18 @@ public class register_review extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
 
+    private ImageButton imgBtn;
+    private ImageView img_view;
+    final private int REQUEST_IMAGE_CAPTURE = 1111;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_review);
+
+        // Init Variable
+        imgBtn = findViewById(R.id.imageButton);
+        img_view = findViewById(R.id.img_view);
 
         //리뷰 작성시 인텐트로 데이터 전발 받을 함수 선언
         String review_title;
@@ -43,7 +65,7 @@ public class register_review extends AppCompatActivity {
 
         textView1.setText(str_date);
 
-
+        init();
 
         //리사이클러뷰 생성
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_rating);
@@ -67,7 +89,33 @@ public class register_review extends AppCompatActivity {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
+    }
 
+    private void init(){
+
+        imgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imgBtn.setVisibility(View.GONE);
+            img_view.setVisibility(View.VISIBLE);
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ((ImageView)findViewById(R.id.img_view))
+                    .setImageBitmap(imageBitmap);
+        }
+  
         //toolbar 커스텀 코드
         Toolbar mtoolbar = (Toolbar) findViewById(R.id.toolbar_register_review);
         setSupportActionBar(mtoolbar);
@@ -94,4 +142,8 @@ public class register_review extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 }
