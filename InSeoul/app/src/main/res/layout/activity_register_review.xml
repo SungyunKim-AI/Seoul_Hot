@@ -7,10 +7,12 @@
         tools:context=".register_review.register_review" android:orientation="vertical">
 
 
-    <TextView
-            android:text="여행 제목"
+    <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/text_review_title"/>
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:theme="?attr/actionBarTheme"
+            android:minHeight="?attr/actionBarSize" android:id="@+id/toolbar_register_review"/>
     <TextView
             android:text="여행 날짜"
             android:layout_width="match_parent"

@@ -6,10 +6,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".search.SearchDetails" android:orientation="vertical">
-    <TextView
-            android:text="장소이름"
+    <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/place_name"/>
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:theme="?attr/actionBarTheme"
+            android:minHeight="?attr/actionBarSize" android:id="@+id/toolbar_search_details"/>
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
