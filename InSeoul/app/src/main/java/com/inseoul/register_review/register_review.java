@@ -141,8 +141,4 @@ public class register_review extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 }
