@@ -16,7 +16,7 @@ class SearchAdapter(val context: Context,
 ): RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
-        fun onClick(view: View)
+        fun onClick(view: View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,7 +47,7 @@ class SearchAdapter(val context: Context,
 
         Log.v("In RecyclerView", "Bind Item")
         holder.itemView.setOnClickListener {
-            listener!!.onClick(it)
+            listener!!.onClick(it, position)
         }
     }
 
