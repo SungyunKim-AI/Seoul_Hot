@@ -11,7 +11,6 @@ import com.inseoul.R
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import kotlinx.android.synthetic.main.activity_add_place.*
-import kotlinx.android.synthetic.main.activity_search.*
 
 class AddPlaceActivity :
     AppCompatActivity(),
@@ -22,7 +21,6 @@ class AddPlaceActivity :
         setContentView(R.layout.activity_add_place)
         initMap()
         initBtn()
-
 
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_add_place) as Toolbar

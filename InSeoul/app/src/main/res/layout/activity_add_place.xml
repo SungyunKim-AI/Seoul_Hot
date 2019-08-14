@@ -30,12 +30,12 @@
                     android:text="Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-            />
+                    android:id="@+id/textview_plantitle"/>
             <TextView
                     android:text="Date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-            />
+                    android:id="@+id/textview_plandate"/>
             <TextView
                     android:text="Theme"
                     android:layout_width="match_parent"
