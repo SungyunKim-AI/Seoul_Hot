@@ -11,19 +11,21 @@ import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_make_plan.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MakePlanActivity : AppCompatActivity() {
 
-    var button_date: Button? = null
-    var textview_date: TextView? = null
+    //datepicker 선언
+    var button_date_start: Button? = null
+    var textview_date_start: TextView? = null
+    var button_date_end: Button? = null
+    var textview_date_end: TextView? = null
     var cal = Calendar.getInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +33,16 @@ class MakePlanActivity : AppCompatActivity() {
         initBtn()
 
         //날짜 입력 레퍼런스 파일
-        textview_date = this.date_text
-        button_date = this.DatePickBtn
+        textview_date_start = this.date_text_start
+        button_date_start = this.DatePickBtn_start
+        textview_date_end = this.date_text_end
+        button_date_end = this.DatePickBtn_end
 
-        textview_date!!.text="--/--/----"
+        textview_date_start!!.text="--/--/----"
+        textview_date_end!!.text="--/--/----"
 
-        dateSetBtn()
+        dateSetBtn_start()
+        dateSetBtn_end()
 
 
         //toolbar 커스텀 코드
@@ -53,9 +59,10 @@ class MakePlanActivity : AppCompatActivity() {
         mtoolbar.setTitleTextColor(Color.WHITE)
     }
 
+    //다음 액티비티로 넘어가는 부분
+    val REQ_CODE: Int = 10000
 
-    val REQ_CODE:Int = 10000
-    fun initBtn(){
+    fun initBtn() {
         continueBtn.setOnClickListener {
             val intent = Intent(this, AddPlaceActivity::class.java)
             startActivityForResult(intent, REQ_CODE)
@@ -64,21 +71,22 @@ class MakePlanActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             finish()
         }
     }
 
-    fun dateSetBtn(){
+
+    fun dateSetBtn_start(){
         val dateSetListener = object : DatePickerDialog.OnDateSetListener {
             override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
                 cal.set(Calendar.YEAR, year)
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateDateInView()
+                updateDateInView_start()
             }
         }
-        button_date!!.setOnClickListener(object : View.OnClickListener{
+        button_date_start!!.setOnClickListener(object : View.OnClickListener{
             override fun onClick(view: View) {
                 DatePickerDialog(this@MakePlanActivity, dateSetListener,
                     cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
@@ -86,11 +94,38 @@ class MakePlanActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateDateInView() {
+    fun dateSetBtn_end(){
+        val dateSetListener = object : DatePickerDialog.OnDateSetListener {
+            override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+                cal.set(Calendar.YEAR, year)
+                cal.set(Calendar.MONTH, monthOfYear)
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                updateDateInView_end()
+            }
+        }
+        button_date_end!!.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(view: View) {
+                DatePickerDialog(this@MakePlanActivity, dateSetListener,
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+
+            }
+
+        })
+    }
+
+
+    private fun updateDateInView_start() {
         val myFormat = "MM/dd/yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.KOREA)
-        textview_date!!.text = sdf.format(cal.getTime())
+        textview_date_start!!.text = sdf.format(cal.getTime())
     }
+
+    private fun updateDateInView_end() {
+        val myFormat = "MM/dd/yyyy"
+        val sdf = SimpleDateFormat(myFormat, Locale.KOREA)
+        textview_date_end!!.text = sdf.format(cal.getTime())
+    }
+
 
     //toolbar에서 back 버튼
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -102,5 +137,4 @@ class MakePlanActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }

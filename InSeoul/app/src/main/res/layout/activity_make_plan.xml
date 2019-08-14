@@ -25,19 +25,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp" android:layout_weight="1">
+        <Button
+                android:id="@+id/DatePickBtn_start"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:focusableInTouchMode="true"
+                android:background="@drawable/datepickbtn_start_24dp" android:layout_weight="1"/>
         <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:inputType="date"
                 android:ems="10"
-                android:id="@+id/date_text" android:layout_weight="1"/>
+                android:id="@+id/date_text_start" android:layout_weight="2"/>
+        <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="1"/>
         <Button
-                android:id="@+id/DatePickBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Date"
-        />
+                android:id="@+id/DatePickBtn_end"
+                android:focusableInTouchMode="true"
+                android:background="@drawable/datepickbtn_end_24dp" android:layout_weight="1"/>
+        <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:ems="10"
+                android:id="@+id/date_text_end" android:layout_weight="2"/>
     </LinearLayout>
 
     <LinearLayout
