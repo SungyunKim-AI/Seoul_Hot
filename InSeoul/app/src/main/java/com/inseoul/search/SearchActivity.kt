@@ -21,8 +21,6 @@ class SearchActivity : AppCompatActivity() {
         initTest()
         initBtn()
 
-
-        //toolbar 코드
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search) as Toolbar
         setSupportActionBar(mtoolbar)
@@ -62,10 +60,11 @@ class SearchActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
         val listener = object: SearchAdapter.RecyclerViewAdapterEventListener{
-            override fun onClick(view: View) {
+            override fun onClick(view: View, position: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates
                 //intent로 장소 이름 전달
                 val detailsIntent = Intent(this@SearchActivity, SearchDetails::class.java)
+                detailsIntent.putExtra("search_title",test[position].title)
                 startActivity(detailsIntent)
             }
             //리사이클러 뷰를 클릭했을때 SearchDetails 액티비티로 넘어가는 클릭 리스너
@@ -76,7 +75,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
     }
 
-    
+
 
     //toolbar에서 back 버튼
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

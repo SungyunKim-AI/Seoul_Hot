@@ -8,13 +8,12 @@
         tools:context=".make_plan.MakePlanActivity"
         android:orientation="vertical"
 >
-    <TextView
-            android:text="New Plan"
-            android:textSize="36dp"
+    <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-    />
+            android:background="?attr/colorPrimary"
+            android:theme="?attr/actionBarTheme"
+            android:minHeight="?attr/actionBarSize" android:id="@+id/toolbar_make_plan"/>
     <EditText
             android:hint="Title"
             android:id="@+id/PlanTitle"
