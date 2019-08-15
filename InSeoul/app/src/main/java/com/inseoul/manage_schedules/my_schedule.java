@@ -203,4 +203,5 @@ public class my_schedule extends AppCompatActivity {
             mArrayList_past.add(new recyclerview_schedule_past("title" + i, "date" + i));
         }
     }
+
 }

@@ -3,12 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-
-    <TextView
-            android:text="장소를 추가할 여행을 선택해주세요"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content" android:id="@+id/dialog_title"/>
-    <RadioGroup
-            android:layout_width="300dp"
-            android:layout_height="match_parent" android:orientation="vertical" android:id="@+id/dialog_radio_group"/>
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:id="@+id/list_add_place"/>
 </LinearLayout>

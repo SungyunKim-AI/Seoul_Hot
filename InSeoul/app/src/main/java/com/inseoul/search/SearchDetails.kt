@@ -1,29 +1,25 @@
 package com.inseoul.search
 
+import android.content.DialogInterface
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
-import android.widget.RadioButton
-import kotlinx.android.synthetic.main.activity_search_details.*
-import kotlinx.android.synthetic.main.dialog_add_place.*
-import java.util.ArrayList
 
 
-class SearchDetails : AppCompatActivity() {
+class SearchDetails : AppCompatActivity(), View.OnClickListener {
 
-    var m_name:String? = null
+    var m_name: String? = null
 
     //라디오 버튼
-    var radioBtn_count:Int = 3
-    var add_name:String? = null
+    var textview_count: Int = 3
+    var add_name: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,61 +30,75 @@ class SearchDetails : AppCompatActivity() {
     }
 
     //초기 세팅
-    fun init(){
+    fun init() {
         val extras = intent.extras
         m_name = extras!!.getString("search_title", "NULL")
 
-
-        add_my_list.setOnClickListener {
-            initDialog()
-        }
+        val v = findViewById<Button>(R.id.add_my_list)
+        v.setOnClickListener(this)
     }
 
     //테스크 코드에서 여행 일정 불러와서 dialog 띄우기
-    fun initDialog(){
-        add_my_list.setOnClickListener{
-            val builder = AlertDialog.Builder(this)
-            val dialogView = layoutInflater.inflate(R.layout.dialog_add_place, null)
-            val dialogTitle = dialogView.findViewById<TextView>(R.id.dialog_title)
-            val dialogRadioGroup = dialogView.findViewById<RadioGroup>(R.id.dialog_radio_group)
+    override fun onClick(v: View) {
+        ///////////////TestCode/////////////
+        val btn_list = ArrayList<viewItem>()
+        for (i in 0 until textview_count) {
+            btn_list.add(viewItem("test_title$i", "test_date$i"))
+        }
+        ////////////////////////////////////
+        when (v.id) {
+            R.id.add_my_list -> {
 
-            ///////////////TestCode/////////////
-            val btn_list = ArrayList<radioItem>()
-            for (i in 0 until radioBtn_count) {
-                btn_list.add(radioItem("test_title$i", "test_date$i"))
-            }
+                val alertBuilder = AlertDialog.Builder(this)
+                //alertBuilder.setIcon(R.drawable.ic_launcher)
+                alertBuilder.setTitle("장소를 추가할 여행을 선택해주세요")
 
+                // List Adapter 생성
+                val adapter = ArrayAdapter<String>(this, R.id.list_add_place)
 
-            for (i in 0 until radioBtn_count) {
-                val radio_btn = RadioButton(this)
-                radio_btn.id = i
-                radio_btn.setText(btn_list[i].mtitle)
-                radio_btn.height = WRAP_CONTENT
-                radio_btn.width = WRAP_CONTENT
-                //radio_btn.setTextColor(Color.rgb(0, 0, 0))
-                //radio_btn.setLayoutParams(LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT))
-                //radio_btn.setButtonDrawable(R.drawable.draw_radio_btn)
-                //radio_btn.setTypeface(Bold_kor)
-                //radio_btn.setTextSize(12)
-
-                dialogRadioGroup.addView(radio_btn)
-            }
-
-            builder.setView(dialogView)
-                .setPositiveButton("확인") { dialogInterface, i ->
-                    //확인 버튼 클릭시 클릭한 라디오 버튼 중에서 선택
-                    Log.d("alert","확인버튼 클릭")
-
+                ///////////////TestCode/////////////
+                for (i in 0 until textview_count) {
+                    adapter.add(btn_list[i].mtitle)
                 }
-                .setNegativeButton("취소") { dialogInterface, i ->
-                }
-                .show()
+
+                // 버튼 생성
+                alertBuilder.setNegativeButton("취소",
+                    object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, which: Int) {
+                            dialog.dismiss()
+                        }
+                    })
+
+                // Adapter 셋팅
+                alertBuilder.setAdapter(adapter,
+                    object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface, id: Int) {
+
+                            // AlertDialog 안에 있는 AlertDialog
+                            val strName = adapter.getItem(id)
+                            val innBuilder = AlertDialog.Builder(this@SearchDetails)
+                            innBuilder.setMessage(strName)
+                            innBuilder.setTitle("당신이 선택한 것은")
+                            innBuilder
+                                .setPositiveButton("확인",
+                                    object : DialogInterface.OnClickListener {
+                                        override fun onClick(dialog: DialogInterface, which: Int) {
+                                            dialog.dismiss()
+                                        }
+                                    })
+                            innBuilder.show()
+                        }
+                    })
+                alertBuilder.show()
+            }
+            else -> {
+            }
         }
     }
 
 
     //툴바 세팅
-    fun initToolbar(){
+    fun initToolbar() {
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search_details) as Toolbar
         setSupportActionBar(mtoolbar)
@@ -115,5 +125,5 @@ class SearchDetails : AppCompatActivity() {
     }
 
     ///////////////TestCode/////////////
-    internal class radioItem(var mtitle: String, var mdate: String)
+    internal class viewItem(var mtitle: String, var mdate: String)
 }
