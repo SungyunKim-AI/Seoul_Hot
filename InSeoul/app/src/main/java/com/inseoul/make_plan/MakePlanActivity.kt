@@ -41,6 +41,10 @@ class MakePlanActivity : AppCompatActivity() {
         setContentView(R.layout.activity_make_plan)
         initBtn()
 
+        //날짜 입력 포커스 되면 키보드 비활성화
+        date_text_start!!.showSoftInputOnFocus = false
+        date_text_end!!.showSoftInputOnFocus = false
+
         //날짜 입력 레퍼런스 파일
         textview_date_start = this.date_text_start
         textview_time_start = this.time_text_start
