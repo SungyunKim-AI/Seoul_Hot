@@ -5,6 +5,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,11 +21,13 @@ public class adapter_schedule extends RecyclerView.Adapter<adapter_schedule.Cust
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView title;
         protected TextView date;
+        protected Button btn;
 
         public CustomViewHolder(View view) {
             super(view);
             this.title = (TextView) view.findViewById(R.id.textview_recyclerview_title);
             this.date = (TextView) view.findViewById(R.id.textview_recyclerview_date);
+            this.btn = (Button) view.findViewById(R.id.button_recyclerview_btn);
         }
     }
 

@@ -17,39 +17,39 @@
             android:layout_height="match_parent">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:orientation="vertical">
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="250dp" app:srcCompat="@drawable/ic_menu_gallery"
-                android:id="@+id/imageView2"/>
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" app:srcCompat="@drawable/ic_menu_gallery"
+                    android:id="@+id/imageView2"/>
             <TextView
                     android:text="해쉬태그"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/textView4"/>
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            <Button
-                    android:text="일정에 추가"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/add_my_list" android:layout_weight="1"/>
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
                 <Button
-                    android:text="사진 올리기"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/button3" android:layout_weight="1"/>
+                        android:text="일정에 추가"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/add_my_list" android:layout_weight="1"/>
+                <Button
+                        android:text="사진 올리기"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/button3" android:layout_weight="1"/>
                 <TextView
                         android:text="별점"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/textView5" android:layout_weight="1"/>
             </LinearLayout>
-        <TextView
-                android:text="주소"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/textView2"/>
-        <FrameLayout
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="230dp"/>
+            <TextView
+                    android:text="주소"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/textView2"/>
+            <FrameLayout
+                    android:id="@+id/map"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"/>
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
