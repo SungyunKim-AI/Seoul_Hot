@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import com.inseoul.SearchDetails.SearchDetail
 import kotlinx.android.synthetic.main.activity_search.*
 
 class SearchActivity : AppCompatActivity() {
@@ -63,7 +64,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onClick(view: View, position: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates
                 //intent로 장소 이름 전달
-                val detailsIntent = Intent(this@SearchActivity, SearchDetails::class.java)
+                val detailsIntent = Intent(this@SearchActivity, SearchDetail::class.java)
                 detailsIntent.putExtra("search_title",test[position].title)
                 startActivity(detailsIntent)
             }

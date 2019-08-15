@@ -47,7 +47,6 @@ public class my_schedule extends AppCompatActivity {
 
     //리사이클러뷰 세팅
     public void init() {
-        testCode();         //테스트용 데이터 추가
         /////////////수정 중인 일정
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
         mLinearLayoutManager = new LinearLayoutManager(this);
@@ -56,6 +55,11 @@ public class my_schedule extends AppCompatActivity {
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
 
+        //////////////////// Test Code ////////////////////
+        for (int i = 0; i < 3; i++) {
+            mArrayList.add(new recyclerview_schedule("title" + i, "date" + i));
+        }
+
         mAdapter = new adapter_schedule(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -63,6 +67,8 @@ public class my_schedule extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+
 
 
         ////////////지나간 일정
@@ -74,6 +80,12 @@ public class my_schedule extends AppCompatActivity {
         mArrayList_past = new ArrayList<>();
         mAdapter_past = new adapter_schedule_past(mArrayList_past);
         mRecyclerView_past.setAdapter(mAdapter_past);
+
+
+        //////////////////// Test Code ////////////////////
+        for (int i = 0; i < 3; i++) {
+            mArrayList_past.add(new recyclerview_schedule_past("title" + i, "date" + i));
+        }
 
 
         // RecyclerView의 줄(row) 사이에 수평선을 넣기위해 사용됩니다.
@@ -193,15 +205,5 @@ public class my_schedule extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //////////////////// Test Code ////////////////////
-    public void testCode() {
-
-        for (int i = 0; i < 3; i++) {
-            mArrayList.add(new recyclerview_schedule("title" + i, "date" + i));
-        }
-        for (int i = 0; i < 3; i++) {
-            mArrayList_past.add(new recyclerview_schedule_past("title" + i, "date" + i));
-        }
-    }
 
 }
