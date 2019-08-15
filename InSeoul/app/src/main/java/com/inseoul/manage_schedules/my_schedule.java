@@ -23,7 +23,6 @@ import com.inseoul.register_review.register_review;
 import java.util.ArrayList;
 
 public class my_schedule extends AppCompatActivity {
-
     private ArrayList<recyclerview_schedule> mArrayList;
     private adapter_schedule mAdapter;
     private RecyclerView mRecyclerView;
@@ -35,29 +34,21 @@ public class my_schedule extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager_past;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_schedule);
 
-        //toolbar 커스텀 코드
-        Toolbar mtoolbar = (Toolbar) findViewById(R.id.toolbar_my_schedule);
-        setSupportActionBar(mtoolbar);
-        // Get the ActionBar here to configure the way it behaves.
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
-        actionBar.setDisplayShowTitleEnabled(false);
-
-        actionBar.setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp); //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-        mtoolbar.setTitle("내 일정");
-        mtoolbar.setTitleTextColor(Color.WHITE);
+        initToolbar();
+        init();
+        initBtn();
+    }
 
 
-
-
-        //수정 중인 일정
+    //리사이클러뷰 세팅
+    public void init() {
+        testCode();         //테스트용 데이터 추가
+        /////////////수정 중인 일정
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -65,38 +56,23 @@ public class my_schedule extends AppCompatActivity {
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
 
-        mAdapter = new adapter_schedule( mArrayList);
+        mAdapter = new adapter_schedule(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
-
 
         // RecyclerView의 줄(row) 사이에 수평선을 넣기위해 사용됩니다.
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        Button add_schedule = (Button)findViewById(R.id.add_schedule);
-        add_schedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(my_schedule.this, MakePlanActivity.class);
-                startActivity(intent);
-            }
-        });
 
-        //지나간 일정
+        ////////////지나간 일정
         mRecyclerView_past = (RecyclerView) findViewById(R.id.recyclerview_past_list);
         mLinearLayoutManager_past = new LinearLayoutManager(this);
         mRecyclerView_past.setLayoutManager(mLinearLayoutManager_past);
 
         // 현재 액티비티에서 에서 RecyclerView의 데이터에 접근
         mArrayList_past = new ArrayList<>();
-
-        //////////////////// Test Code ////////////////////
-        for(int i=0;i<3;i++){
-            mArrayList_past.add(new recyclerview_schedule_past("title"+i, "date"+i));
-        }
-
-        mAdapter_past = new adapter_schedule_past( mArrayList_past);
+        mAdapter_past = new adapter_schedule_past(mArrayList_past);
         mRecyclerView_past.setAdapter(mAdapter_past);
 
 
@@ -105,9 +81,21 @@ public class my_schedule extends AppCompatActivity {
                 mLinearLayoutManager_past.getOrientation());
         mRecyclerView_past.addItemDecoration(dividerItemDecoration_past);
 
+    }
 
+    //버튼 세팅팅
+    public void initBtn() {
+        // 일정 추가하기 클릭 이벤트
+        Button add_schedule = (Button) findViewById(R.id.add_schedule);
+        add_schedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(my_schedule.this, MakePlanActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        //현재 액티비티에서 register_review액티비티에 데이터 전달
+        //지난 여정 리사이클러뷰 클릭시 현재 액티비티에서 register_review액티비티에 데이터 전달
         mRecyclerView_past.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mRecyclerView_past, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -115,10 +103,8 @@ public class my_schedule extends AppCompatActivity {
 
                 //intent 전달
                 Intent intent2 = new Intent(getBaseContext(), register_review.class);
-
-                intent2.putExtra("textview_title_past",pastSchedules.getSchedule_title_past());
-                intent2.putExtra("textview_date_past",pastSchedules.getSchedule_date_past());
-
+                intent2.putExtra("textview_title_past", pastSchedules.getSchedule_title_past());
+                intent2.putExtra("textview_date_past", pastSchedules.getSchedule_date_past());
                 startActivity(intent2);
             }
 
@@ -129,24 +115,14 @@ public class my_schedule extends AppCompatActivity {
 
     }
 
-    //toolbar에서 back 버튼
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{
-                finish();
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    //클릭리스너 인터페이스
     public interface ClickListener {
         void onClick(View view, int position);
 
         void onLongClick(View view, int position);
     }
 
+    //리사이클러뷰 터치 리스너
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
@@ -186,6 +162,45 @@ public class my_schedule extends AppCompatActivity {
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    }
+
+    //툴바 세팅
+    public void initToolbar() {
+        //toolbar 커스텀 코드
+        Toolbar mtoolbar = (Toolbar) findViewById(R.id.toolbar_my_schedule);
+        setSupportActionBar(mtoolbar);
+        // Get the ActionBar here to configure the way it behaves.
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true); //커스터마이징 하기 위해 필요
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        actionBar.setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp); //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+        mtoolbar.setTitle("내 일정");
+        mtoolbar.setTitleTextColor(Color.WHITE);
+    }
+
+    //toolbar에서 back 버튼
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //////////////////// Test Code ////////////////////
+    public void testCode() {
+
+        for (int i = 0; i < 3; i++) {
+            mArrayList.add(new recyclerview_schedule("title" + i, "date" + i));
+        }
+        for (int i = 0; i < 3; i++) {
+            mArrayList_past.add(new recyclerview_schedule_past("title" + i, "date" + i));
         }
     }
 }

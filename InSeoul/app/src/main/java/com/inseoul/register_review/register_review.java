@@ -24,8 +24,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
-import com.inseoul.make_plan.MakePlanActivity;
-import com.inseoul.manage_schedules.my_schedule;
 
 import java.util.ArrayList;
 
