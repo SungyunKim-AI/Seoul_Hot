@@ -6,21 +6,27 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import kotlinx.android.synthetic.main.activity_add_place.*
+import kotlinx.android.synthetic.main.activity_make_plan.*
 
 class AddPlaceActivity :
     AppCompatActivity(),
     OnMapReadyCallback {
+
+    var textview_title: TextView? = null
+    var textview_date: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place)
         initMap()
         initBtn()
+        initTitle()     //intent 받기
 
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_add_place) as Toolbar
@@ -75,6 +81,22 @@ class AddPlaceActivity :
 
 
         /////////////////////////////////////////////////////
+    }
+
+
+    //////////Intent 받는 함수///////////
+    fun initTitle(){
+        var title:String
+        var date:String
+        val extras = intent.extras
+        title = extras!!.getString("PlanTitle","NULL")
+        date = extras!!.getString("PlanDate","NULL")
+
+        textview_title = this.textview_plantitle
+        textview_date = this.textview_plandate
+
+        textview_title!!.setText(title)
+        textview_date!!.setText(date)
     }
 
 

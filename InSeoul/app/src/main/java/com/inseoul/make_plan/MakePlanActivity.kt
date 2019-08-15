@@ -18,20 +18,24 @@ import kotlinx.android.synthetic.main.activity_make_plan.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.view.MotionEvent
+import android.widget.EditText
 
 
 class MakePlanActivity : AppCompatActivity() {
 
     //datepicker 선언
     //var button_date_start: Button? = null
-    var textview_date_start: TextView? = null
+    var textview_date_start: EditText? = null
     //var button_date_end: Button? = null
-    var textview_date_end: TextView? = null
-    var textview_time_start: TextView? = null
-    var textview_time_end: TextView? = null
+    var textview_date_end: EditText? = null
+    var textview_time_start: EditText? = null
+    var textview_time_end: EditText? = null
     var cal = Calendar.getInstance()
 
-    var textview_plan_title: TextView? = null
+    var textview_plan_title: EditText? = null
+
+    var str_start:String? = null
+    var str_end:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,11 +51,14 @@ class MakePlanActivity : AppCompatActivity() {
         textview_time_end = this.time_text_end
         //button_date_end = this.DatePickBtn_end
 
+        textview_plan_title = this.PlanTitle
+
         dateSetBtn_start()
         dateSetBtn_end()
 
         timeSetBtn_start()
         timeSetBtn_end()
+
 
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_make_plan) as Toolbar
@@ -111,12 +118,14 @@ class MakePlanActivity : AppCompatActivity() {
         val myFormat = "MM/dd/yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.KOREA)
         if (flag == 1) {
-            textview_date_start!!.text = sdf.format(cal.getTime())
+            textview_date_start!!.setText(sdf.format(cal.time))
+            str_start = textview_date_start!!.text.toString()
             textview_time_start!!.requestFocus()
             focus_event()
 
         } else if (flag == 2) {
-            textview_date_end!!.text = sdf.format(cal.getTime())
+            textview_date_end!!.setText(sdf.format(cal.time))
+            str_end = textview_date_end!!.text.toString()
             textview_time_end!!.requestFocus()
             focus_event()
         }
@@ -159,9 +168,13 @@ class MakePlanActivity : AppCompatActivity() {
             cal.set(Calendar.HOUR_OF_DAY,hour)
             cal.set(Calendar.MINUTE,minute)
             if(flag==1){
-                textview_time_start!!.text = SimpleDateFormat("HH:mm").format(cal.time)
+                textview_time_start!!.setText(SimpleDateFormat("HH:mm").format(cal.time))
+                str_start += " :: "
+                str_start += textview_time_start!!.text
             }else if(flag==2){
-                textview_time_end!!.text = SimpleDateFormat("HH:mm").format(cal.time)
+                textview_time_end!!.setText(SimpleDateFormat("HH:mm").format(cal.time))
+                str_end += " :: "
+                str_end += textview_time_end!!.text
             }
 
         }
@@ -173,9 +186,13 @@ class MakePlanActivity : AppCompatActivity() {
     val REQ_CODE: Int = 10000
 
     fun initBtn() {
-
         continueBtn.setOnClickListener {
             val intent = Intent(this, AddPlaceActivity::class.java)
+            intent.putExtra("PlanTitle",textview_plan_title!!.text.toString())
+            intent.putExtra("PlanDate",str_start + " ~ " + str_end)
+            Log.d("alert",textview_plan_title!!.text.toString())
+            Log.d("alert",str_start + " ~ " + str_end)
+
             startActivityForResult(intent, REQ_CODE)
         }
     }
