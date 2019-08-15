@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -30,23 +31,48 @@ class SearchDetails : AppCompatActivity() {
 
         init()
         initToolbar()
-        initDialog()
     }
 
     //초기 세팅
     fun init(){
         val extras = intent.extras
         m_name = extras!!.getString("search_title", "NULL")
+
+
+        add_my_list.setOnClickListener {
+            initDialog()
+        }
     }
 
     //테스크 코드에서 여행 일정 불러와서 dialog 띄우기
     fun initDialog(){
-        initRadioBtn()
         add_my_list.setOnClickListener{
             val builder = AlertDialog.Builder(this)
-            val dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
+            val dialogView = layoutInflater.inflate(R.layout.dialog_add_place, null)
             val dialogTitle = dialogView.findViewById<TextView>(R.id.dialog_title)
             val dialogRadioGroup = dialogView.findViewById<RadioGroup>(R.id.dialog_radio_group)
+
+            ///////////////TestCode/////////////
+            val btn_list = ArrayList<radioItem>()
+            for (i in 0 until radioBtn_count) {
+                btn_list.add(radioItem("test_title$i", "test_date$i"))
+            }
+
+
+            for (i in 0 until radioBtn_count) {
+                val radio_btn = RadioButton(this)
+                radio_btn.id = i
+                radio_btn.setText(btn_list[i].mtitle)
+                radio_btn.height = WRAP_CONTENT
+                radio_btn.width = WRAP_CONTENT
+                //radio_btn.setTextColor(Color.rgb(0, 0, 0))
+                //radio_btn.setLayoutParams(LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT))
+                //radio_btn.setButtonDrawable(R.drawable.draw_radio_btn)
+                //radio_btn.setTypeface(Bold_kor)
+                //radio_btn.setTextSize(12)
+
+                dialogRadioGroup.addView(radio_btn)
+            }
 
             builder.setView(dialogView)
                 .setPositiveButton("확인") { dialogInterface, i ->
@@ -60,28 +86,6 @@ class SearchDetails : AppCompatActivity() {
         }
     }
 
-    fun initRadioBtn(){
-
-        ///////////////TestCode/////////////
-        val btn_list = ArrayList<radioItem>()
-        for (i in 0 until radioBtn_count) {
-            btn_list.add(radioItem("test_title$i", "test_date$i"))
-        }
-
-
-        for (i in 0 until radioBtn_count) {
-            val radio_btn = RadioButton(this)
-            radio_btn.id = i
-            radio_btn.setText(btn_list[i].mtitle)
-            //radio_btn.setTextColor(Color.rgb(0, 0, 0))
-            //radio_btn.setLayoutParams(LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT))
-            //radio_btn.setButtonDrawable(R.drawable.draw_radio_btn)
-            //radio_btn.setTypeface(Bold_kor)
-            //radio_btn.setTextSize(12)
-
-            dialog_radio_group.addView(radio_btn)
-        }
-    }
 
     //툴바 세팅
     fun initToolbar(){
