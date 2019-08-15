@@ -12,7 +12,6 @@ import com.inseoul.R
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import kotlinx.android.synthetic.main.activity_add_place.*
-import kotlinx.android.synthetic.main.activity_make_plan.*
 
 class AddPlaceActivity :
     AppCompatActivity(),
@@ -20,6 +19,7 @@ class AddPlaceActivity :
 
     var textview_title: TextView? = null
     var textview_date: TextView? = null
+    var textview_theme: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,15 +88,19 @@ class AddPlaceActivity :
     fun initTitle(){
         var title:String
         var date:String
+        var theme:String
         val extras = intent.extras
         title = extras!!.getString("PlanTitle","NULL")
         date = extras!!.getString("PlanDate","NULL")
+        theme = extras!!.getString("PlanTheme","NULL")
 
         textview_title = this.textview_plantitle
         textview_date = this.textview_plandate
+        textview_theme = this.textview_plantheme
 
         textview_title!!.setText(title)
         textview_date!!.setText(date)
+        textview_theme!!.setText(theme)
     }
 
 
