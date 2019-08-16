@@ -164,7 +164,7 @@ class MainActivity :
         /////////////////////////////////////////////////////
         initPermission()
         initBtn()
-        initMap()
+//        initMap()
         initTest()
         initRecyclerView()
     }

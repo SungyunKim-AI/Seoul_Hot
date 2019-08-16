@@ -9,6 +9,22 @@
         android:orientation="vertical"
         android:gravity="center"
 >
+    <TextView
+        android:textSize="16dp"
+        android:text="서울의 핫플, 여행, 리뷰를 한번에"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+    />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In Seoul"
+            android:gravity="center"
+            android:textSize="36dp"
+            android:layout_marginBottom="50dp"
+            android:textStyle="bold"
+    />
+
     <EditText
             android:id="@+id/input_id"
             android:layout_width="150dp"
@@ -21,26 +37,20 @@
             android:layout_height="wrap_content"
             android:hint="Password"
     />
-    <LinearLayout
-            android:layout_width="match_parent"
+
+    <Button
+            android:id="@+id/signInBtn"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-    >
+            android:text="시작하기"
+    />
 
-        <Button
-                android:id="@+id/signUpBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign Up"
-        />
-        <Button
-                android:id="@+id/signInBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign In"
-        />
-    </LinearLayout>
-
+    <TextView
+            android:id="@+id/signUpBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="간편 회원가입"
+            android:linksClickable="true"
+    />
 
 </LinearLayout>
