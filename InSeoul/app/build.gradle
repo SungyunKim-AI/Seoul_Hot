@@ -60,6 +60,10 @@ dependencies {
     // Tab Layout
     implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'androidx.core:core-ktx:1.2.0-alpha03'
+
+    // Card View
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 
 }
