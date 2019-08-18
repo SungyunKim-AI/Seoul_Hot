@@ -30,7 +30,7 @@ import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.activity_home.*
 
 class MainActivity :
     AppCompatActivity(),
@@ -168,7 +168,6 @@ class MainActivity :
         initTest()
         initRecyclerView()
     }
-
     override fun onBackPressed() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
