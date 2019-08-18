@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.inseoul.R;
 import com.inseoul.make_plan.AddPlaceActivity;
 import com.inseoul.make_plan.MakePlanActivity;
@@ -98,7 +99,7 @@ public class my_schedule extends AppCompatActivity {
     //버튼 세팅
     public void initBtn() {
         // 일정 추가하기 클릭 이벤트
-        Button add_schedule = (Button) findViewById(R.id.add_schedule);
+        FloatingActionButton add_schedule = (FloatingActionButton) findViewById(R.id.add_schedule);
         add_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
