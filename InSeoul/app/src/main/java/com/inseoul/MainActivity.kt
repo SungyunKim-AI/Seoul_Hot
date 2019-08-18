@@ -31,12 +31,14 @@ import com.inseoul.timeline.TimeLineActivity
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity :
     AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
     OnMapReadyCallback
 {
+    val key = "4d4956476768736f3131397547724879"
 
     /////////////// Permission Check ///////////////
 
@@ -158,7 +160,6 @@ class MainActivity :
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
         navView.setNavigationItemSelectedListener(this)
 
         /////////////////////////////////////////////////////
@@ -167,6 +168,8 @@ class MainActivity :
 //        initMap()
         initTest()
         initRecyclerView()
+
+
     }
     override fun onBackPressed() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -179,6 +182,7 @@ class MainActivity :
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
+        type_mini.setOpenAPIKey(key)
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
