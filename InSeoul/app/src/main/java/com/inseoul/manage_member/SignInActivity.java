@@ -1,18 +1,26 @@
 package com.inseoul.manage_member;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.inseoul.MainActivity;
 import com.inseoul.R;
+import org.json.JSONObject;
 
 public class SignInActivity extends AppCompatActivity {
 
     private Button signInBtn;
     private TextView signUpBtn;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +33,7 @@ public class SignInActivity extends AppCompatActivity {
     public void init() {
         final EditText idText= (EditText)findViewById(R.id.input_id);
         final EditText pwText= (EditText)findViewById(R.id.input_pw);
-        final signInBtn = (Button)findViewById(R.id.signInBtn);
+        final Button signInBtn = (Button)findViewById(R.id.signInBtn);
         signInBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -37,8 +45,10 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try{
-                            JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
+                            System.out.println("response: " + response);
+//                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = new JSONObject(response).getBoolean("success");
+                            System.out.println("success: " + success);
                             if(success)
                             {
                                 AlertDialog.Builder builder= new AlertDialog.Builder(SignInActivity.this);
@@ -47,7 +57,7 @@ public class SignInActivity extends AppCompatActivity {
                                         .create();
                                 dialog.show();
                                 Intent intent= new Intent(SignInActivity.this, MainActivity.class);
-                                LoginActivity.this.startActivity(intent);
+                                SignInActivity.this.startActivity(intent);
                                 finish();
                             }
                             else
@@ -67,7 +77,7 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 };
                 Login_Request loginRequest = new Login_Request(userID, userPW,responseListener);
-                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                RequestQueue queue = Volley.newRequestQueue(SignInActivity.this);
                 queue.add(loginRequest);
 
 
