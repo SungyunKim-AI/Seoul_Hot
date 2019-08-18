@@ -14,7 +14,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".culture.CultureActivity">
+        <activity android:name=".manage_member.SignUpActivity">
+        </activity>
+        <activity android:name=".manage_member.SignInActivity">
         </activity>
         <activity android:name=".SearchDetails.SearchDetail">
         </activity>
@@ -39,10 +41,6 @@
                 android:name="com.naver.maps.map.CLIENT_ID"
                 android:value="jqxe84nuvy"/>
 
-        <activity android:name=".manage_member.SignUpActivity">
-        </activity>
-        <activity android:name=".manage_member.SignInActivity">
-        </activity>
         <activity
                 android:name=".SplashActivity"
                 android:theme="@style/SplashTheme">

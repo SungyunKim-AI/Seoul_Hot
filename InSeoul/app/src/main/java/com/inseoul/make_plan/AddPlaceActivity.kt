@@ -92,6 +92,7 @@ class AddPlaceActivity :
         flag = extras!!.getInt("flag_key",-1)
         Log.d("alert",flag.toString())
         if(flag==2){
+            //flag가 2이라면 MakePlanActivity에서 넘어옴
             var title:String
             var date:String
             var theme:String
@@ -107,7 +108,10 @@ class AddPlaceActivity :
             textview_title!!.setText(title)
             textview_date!!.setText(date)
             textview_theme!!.setText(theme)
-        }else {
+
+        }else if(flag==1){
+            //flag가 1이라면 SearchDetail에서 넘어옴
+
             var title_add:String
             var date_add:String
             var theme_add:String
@@ -119,6 +123,19 @@ class AddPlaceActivity :
             textview_theme = this.textview_plantheme
 
             textview_title!!.setText(title_add)
+            textview_date!!.setText(null)
+            textview_theme!!.setText(null)
+        }else if(flag==3){
+            //flag가 3이라면 my_schedule에서 넘어옴
+            var title_edit:String
+
+            title_edit = extras!!.getString("textview_title","NULL")
+
+            textview_title = this.textview_plantitle
+            textview_date = this.textview_plandate
+            textview_theme = this.textview_plantheme
+
+            textview_title!!.setText(title_edit)
             textview_date!!.setText(null)
             textview_theme!!.setText(null)
         }
