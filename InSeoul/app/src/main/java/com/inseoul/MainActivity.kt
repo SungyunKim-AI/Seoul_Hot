@@ -38,7 +38,7 @@ class MainActivity :
     NavigationView.OnNavigationItemSelectedListener,
     OnMapReadyCallback
 {
-    val key = "4d4956476768736f3131397547724879"
+    val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
 
     /////////////// Permission Check ///////////////
 
@@ -183,6 +183,7 @@ class MainActivity :
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         type_mini.setOpenAPIKey(key)
+        cultural_type_mini.setOpenAPIKey(key);
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -200,24 +201,7 @@ class MainActivity :
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_home -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
 
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_tools -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
