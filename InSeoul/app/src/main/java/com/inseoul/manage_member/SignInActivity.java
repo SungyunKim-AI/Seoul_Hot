@@ -23,18 +23,57 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void init() {
-        signInBtn = (Button)findViewById(R.id.signInBtn);
+        final EditText idText= (EditText)findViewById(R.id.input_id);
+        final EditText pwText= (EditText)findViewById(R.id.input_pw);
+        final signInBtn = (Button)findViewById(R.id.signInBtn);
         signInBtn.setOnClickListener(new Button.OnClickListener(){
-
             @Override
             public void onClick(View view) {
                 ////////// Log in Permission Check //////////
+                String userID = idText.getText().toString();
+                String userPW= pwText.getText().toString();
+
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try{
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if(success)
+                            {
+                                AlertDialog.Builder builder= new AlertDialog.Builder(SignInActivity.this);
+                                dialog=builder.setMessage("로그인에 성공하였습니다.")
+                                        .setPositiveButton("확인",null)
+                                        .create();
+                                dialog.show();
+                                Intent intent= new Intent(SignInActivity.this, MainActivity.class);
+                                LoginActivity.this.startActivity(intent);
+                                finish();
+                            }
+                            else
+                            {
+                                AlertDialog.Builder builder= new AlertDialog.Builder(SignInActivity.this);
+                                dialog=builder.setMessage("로그인에 실패하였습니다.")
+                                        .setNegativeButton("다시시도",null)
+                                        .create();
+                                dialog.show();
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                Login_Request loginRequest = new Login_Request(userID, userPW,responseListener);
+                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                queue.add(loginRequest);
 
 
-                /////////////////////////////////////////////
-                Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+
+                ////////////////////////////////////////////
+
             }
         });
 
@@ -48,4 +87,16 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected  void onStop() {
+        super.onStop();
+
+        if (dialog!=null){
+            dialog.dismiss();
+            dialog=null;
+        }
+    }
 }
+
+
