@@ -240,7 +240,7 @@ class MakePlanActivity : AppCompatActivity() {
                 intent.putExtra("PlanTitle", textview_plan_title!!.text.toString())
                 intent.putExtra("PlanDate", str_start + " ~ " + str_end)
                 intent.putExtra("PlanTheme", theme.toString())
-                Log.d("alert", theme.toString())
+                intent.putExtra("flag_key",2)
 
                 startActivityForResult(intent, REQ_CODE)
             }

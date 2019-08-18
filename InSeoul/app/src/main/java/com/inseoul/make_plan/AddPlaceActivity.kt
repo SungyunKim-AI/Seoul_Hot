@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -86,21 +87,42 @@ class AddPlaceActivity :
 
     //////////Intent 받는 함수///////////
     fun initTitle(){
-        var title:String
-        var date:String
-        var theme:String
         val extras = intent.extras
-        title = extras!!.getString("PlanTitle","NULL")
-        date = extras!!.getString("PlanDate","NULL")
-        theme = extras!!.getString("PlanTheme","NULL")
+        var flag:Int
+        flag = extras!!.getInt("flag_key",-1)
+        Log.d("alert",flag.toString())
+        if(flag==2){
+            var title:String
+            var date:String
+            var theme:String
 
-        textview_title = this.textview_plantitle
-        textview_date = this.textview_plandate
-        textview_theme = this.textview_plantheme
+            title = extras!!.getString("PlanTitle","NULL")
+            date = extras!!.getString("PlanDate","NULL")
+            theme = extras!!.getString("PlanTheme","NULL")
 
-        textview_title!!.setText(title)
-        textview_date!!.setText(date)
-        textview_theme!!.setText(theme)
+            textview_title = this.textview_plantitle
+            textview_date = this.textview_plandate
+            textview_theme = this.textview_plantheme
+
+            textview_title!!.setText(title)
+            textview_date!!.setText(date)
+            textview_theme!!.setText(theme)
+        }else {
+            var title_add:String
+            var date_add:String
+            var theme_add:String
+
+            title_add = extras!!.getString("PlanTitle_add","NULL")
+
+            textview_title = this.textview_plantitle
+            textview_date = this.textview_plandate
+            textview_theme = this.textview_plantheme
+
+            textview_title!!.setText(title_add)
+            textview_date!!.setText(null)
+            textview_theme!!.setText(null)
+        }
+
     }
 
 

@@ -3,6 +3,7 @@ package com.inseoul.SearchDetails;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -112,7 +113,7 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 // AlertDialog 안에 있는 AlertDialog
-                                String strName = adapter.getItem(id);
+                                final String strName = adapter.getItem(id);
                                 AlertDialog.Builder innBuilder = new AlertDialog.Builder(SearchDetail.this);
                                 innBuilder.setMessage(strName);
                                 innBuilder.setTitle("일정을 수정 하시겠습니까?");
@@ -124,8 +125,11 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
                                                             DialogInterface dialog,
                                                             int which) {
                                                         dialog.dismiss();
-                                                        Intent intent = new Intent(SearchDetail.this, AddPlaceActivity.class);
-                                                        startActivity(intent);
+                                                        Intent intent_add = new Intent(SearchDetail.this, AddPlaceActivity.class);
+                                                        intent_add.putExtra("PlanTitle_add",strName);
+                                                        intent_add.putExtra("flag_key",1);
+                                                        Log.d("alert",strName);
+                                                        startActivity(intent_add);
                                                     }
                                                 });
                                 innBuilder.setNegativeButton(
