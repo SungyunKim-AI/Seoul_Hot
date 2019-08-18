@@ -13,8 +13,9 @@
             android:roundIcon="@mipmap/ic_launcher_inseoul_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
-            android:usesCleartextTraffic="true"
-    >
+            android:usesCleartextTraffic="true">
+        <activity android:name=".culture.CultureActivity">
+        </activity>
         <activity android:name=".SearchDetails.SearchDetail">
         </activity>
         <activity android:name=".search.SearchDetails">
