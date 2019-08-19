@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".search.SearchActivity"
         android:orientation="vertical"
+        android:background="@color/white"
 >
     <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
@@ -14,26 +15,25 @@
             android:background="@color/white"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
-            android:id="@+id/toolbar_search"/>
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-    >
-        <EditText
-                android:hint="search"
+            android:id="@+id/toolbar_search">
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="10"
+                android:text="#"
+                android:textColor="#000000"
+                android:textSize="22dp"
         />
-        <Button
-                android:text="Search"
-                android:id="@+id/search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+        <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:iconifiedByDefault="false"
+                app:defaultQueryHint="키워드로 검색하기"
+                android:layout_margin="0dp"
+                app:searchIcon="@null"
+                app:goIcon="@drawable/search"
         />
-    </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
