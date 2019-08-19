@@ -18,20 +18,26 @@
     <EditText
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:id="@+id/sign_in_id"
+            android:id="@+id/id"
             android:hint="ID"
+    />
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/validateBtn"
+            android:text="중복확인"
     />
     <EditText
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:id="@+id/sign_up_pw"
+            android:id="@+id/pw"
             android:hint="Password"
     />
 
     <EditText
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:id="@+id/sign_up_name"
+            android:id="@+id/email"
             android:hint="Name"
     />
 
