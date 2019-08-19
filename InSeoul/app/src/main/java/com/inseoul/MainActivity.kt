@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -147,6 +148,11 @@ class MainActivity :
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar)
+
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -160,6 +166,8 @@ class MainActivity :
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+        toolbar.navigationIcon = getDrawable(R.drawable.hamburger)
+
         navView.setNavigationItemSelectedListener(this)
 
         /////////////////////////////////////////////////////
@@ -192,10 +200,11 @@ class MainActivity :
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+//        return when (item.itemId) {
+//            R.id.action_settings -> true
+//           else -> super.onOptionsItemSelected(item)
+//        }
+        return true
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
