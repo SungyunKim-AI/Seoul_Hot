@@ -27,7 +27,9 @@ public class Mapdata_Activity extends AppCompatActivity {
 
         new BackgroundTask().execute();// 어싱크태스크
     }
-    class BackgroundTask extends AsyncTask<Void,Void,String> {
+
+
+    public class BackgroundTask extends AsyncTask<Void,Void,String> {
 
         String target;
 
