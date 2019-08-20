@@ -22,4 +22,5 @@
         <item>맛집</item>
         <item>힐링</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 </resources>
