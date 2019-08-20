@@ -8,10 +8,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
+import com.naver.maps.map.overlay.Marker
 import kotlinx.android.synthetic.main.activity_add_place.*
 
 class AddPlaceActivity :
@@ -60,7 +62,7 @@ class AddPlaceActivity :
     ////////////////// Map //////////////////
     fun initMap(){
         val options = NaverMapOptions()
-            .camera(CameraPosition(LatLng(37.54345, 127.07747), 14.0))
+            .camera(CameraPosition(LatLng(37.566502, 126.977918), 10.0))
             .mapType(NaverMap.MapType.Basic)
 
         val fm = supportFragmentManager
@@ -72,13 +74,19 @@ class AddPlaceActivity :
 
     }
 
-    override fun onMapReady(p0: NaverMap) {
+    override fun onMapReady(naverMap: NaverMap) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
         ////////////////// Preconditioning //////////////////
 
+        val marker = Marker()
+        marker.position = LatLng(37.54345, 127.07747)
+        marker.map = naverMap
 
-
+        naverMap.setOnMapClickListener { point, coord ->
+            Toast.makeText(this, "${coord.latitude}, ${coord.longitude}",
+                Toast.LENGTH_SHORT).show()
+        }
 
 
         /////////////////////////////////////////////////////

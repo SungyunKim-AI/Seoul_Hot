@@ -54,6 +54,7 @@ public class my_schedule extends AppCompatActivity {
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
+
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
 
