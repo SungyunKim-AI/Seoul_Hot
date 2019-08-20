@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
@@ -17,6 +16,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.MotionEvent
 import android.widget.*
+import androidx.appcompat.widget.ListPopupWindow.MATCH_PARENT
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class MakePlanActivity : AppCompatActivity() {
@@ -40,6 +43,8 @@ class MakePlanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_make_plan)
         initBtn()
+        initTest()
+        initRecyclerView()
 
         //날짜 입력 포커스 되면 키보드 비활성화
         date_text_start!!.showSoftInputOnFocus = false
@@ -83,19 +88,15 @@ class MakePlanActivity : AppCompatActivity() {
     fun dateSetBtn_start() {
         pickDate(1)
     }
-
     fun dateSetBtn_end() {
         pickDate(2)
     }
-
     fun timeSetBtn_start() {
         TimeTouchListener(1)
     }
-
     fun timeSetBtn_end() {
         TimeTouchListener(2)
     }
-
     fun pickDate(flag: Int) {
         val dateSetListener = object : DatePickerDialog.OnDateSetListener {
             override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
@@ -231,19 +232,30 @@ class MakePlanActivity : AppCompatActivity() {
     val REQ_CODE: Int = 10000
 
     fun initBtn() {
+        //지도 비활성화
+        map_layout.visibility = View.GONE
+
         continueBtn.setOnClickListener {
             //미입력 부분이 있을시 toast 출력 및 버튼 비활성화
-            if (str_start == null || str_end == null || textview_plan_title == null || theme == null) {
-                Toast.makeText(this, "미입력", Toast.LENGTH_LONG).show()
-            } else {
-                val intent = Intent(this, AddPlaceActivity::class.java)
-                intent.putExtra("PlanTitle", textview_plan_title!!.text.toString())
-                intent.putExtra("PlanDate", str_start + " ~ " + str_end)
-                intent.putExtra("PlanTheme", theme.toString())
-                intent.putExtra("flag_key",2)
+//            if (str_start == null || str_end == null || textview_plan_title == null || theme == null) {
+//                Toast.makeText(this, "미입력", Toast.LENGTH_LONG).show()
+//            } else {
+//                val intent = Intent(this, AddPlaceActivity::class.java)
+//                intent.putExtra("PlanTitle", textview_plan_title!!.text.toString())
+//                intent.putExtra("PlanDate", str_start + " ~ " + str_end)
+//                intent.putExtra("PlanTheme", theme.toString())
+//                intent.putExtra("flag_key",2)
+//
+//                startActivityForResult(intent, REQ_CODE)
+//            }
 
-                startActivityForResult(intent, REQ_CODE)
-            }
+            val intent = Intent(this, AddPlaceActivity::class.java)
+            intent.putExtra("PlanTitle", textview_plan_title!!.text.toString())
+            intent.putExtra("PlanDate", str_start + " ~ " + str_end)
+            intent.putExtra("PlanTheme", theme.toString())
+            intent.putExtra("flag_key",2)
+
+            startActivityForResult(intent, REQ_CODE)
         }
     }
 
@@ -264,4 +276,56 @@ class MakePlanActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
+    ////////////////// Recycler View //////////////////
+    private val test = ArrayList<MakePlanItem>()
+    var layoutManager: RecyclerView.LayoutManager? = null
+    var adapter: MakePlanAdapter? = null
+
+    fun initTest(){
+
+        for(i in 0..10){
+            test.add(MakePlanItem("This is Title" + i.toString(), "This is Content" + i.toString()))
+        }
+    }
+
+    fun initRecyclerView(){
+        recyclerView.addOnLayoutChangeListener(View.OnLayoutChangeListener { view, i, i1, i2, i3, i4, i5, i6, i7 ->
+            if (i3 < i7) {
+                recyclerview_layout.visibility = View.GONE
+            } else {
+                recyclerview_layout.visibility = View.VISIBLE
+            }
+        })
+
+        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+        val listener = object: MakePlanAdapter.RecyclerViewAdapterEventListener{
+            override fun onClick(view: View, position: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates
+                inform_layout.visibility = View.GONE
+                map_layout.visibility = View.VISIBLE
+//                recyclerview.layoutParams.width = MATCH_PARENT
+//                recyclerview_layout.layoutParams.weight =
+
+                //intent로 장소 이름 전달
+//                val detailsIntent = Intent(this, SearchDetail::class.java)
+//                detailsIntent.putExtra("search_title",test[position].title)
+//                startActivity(detailsIntent)
+            }
+            //리사이클러 뷰를 클릭했을때 SearchDetails 액티비티로 넘어가는 클릭 리스너
+        }
+
+        adapter = MakePlanAdapter(this, listener, test)
+        recyclerView.adapter = adapter
+        recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+    }
+
+
 }
+
+
+
+
+

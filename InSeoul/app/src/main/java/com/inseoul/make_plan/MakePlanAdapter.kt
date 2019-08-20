@@ -1,7 +1,6 @@
-package com.inseoul.search
+package com.inseoul.make_plan
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
 
-class SearchAdapter(val context: Context,
+class MakePlanAdapter(val context: Context,
                     var listener:RecyclerViewAdapterEventListener,
-                    var items:ArrayList<SearchItem>
-): RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+                    var items:ArrayList<MakePlanItem>
+): RecyclerView.Adapter<MakePlanAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
         fun onClick(view: View, position: Int)
@@ -25,7 +24,7 @@ class SearchAdapter(val context: Context,
         return ViewHolder(v)
     }
 
-    fun getData(position: Int): SearchItem? {
+    fun getData(position: Int): MakePlanItem? {
         return if (items == null || items.size < position) {
             null
         } else items[position]
