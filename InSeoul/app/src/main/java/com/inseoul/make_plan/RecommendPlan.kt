@@ -1,38 +1,34 @@
-package com.inseoul
+package com.inseoul.make_plan
 
-import android.app.Activity
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.graphics.createBitmap
-import androidx.core.view.drawToBitmap
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
-import kotlin.collections.ArrayList
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.inseoul.R
+import com.inseoul.Server_mapdata.Spot
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
+import kotlin.text.Charsets.UTF_8
+
+class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnMapClickListener{
 
 
-class TestActivity_Yoon : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnMapClickListener {
+    var selectedMarker: Marker?= null
+    val markerList = ArrayList<MarkerItem>()
 
-
-
-    val apiKey = "AIzaSyArBMJ-s5uzGsRCNNyon9LeQsXDgCDmcTI"
-
-    var selectedMarker: Marker ?= null
     private val POLYLINE_STROKE_WIDTH_PX = 5f
-    lateinit var mMap:GoogleMap
+
+    lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_test__yoon)
+        setContentView(R.layout.activity_recommend_plan)
 
         // Get the SupportMapFragment and request notification
         // when the map is ready to be used.
@@ -40,14 +36,9 @@ class TestActivity_Yoon : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
             .findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
     }
-
-
     override fun onMapReady(googleMap: GoogleMap) {
 
         mMap = googleMap
-        if(mMap == null){
-            Log.v("Map", "ERROR")
-        }
 
 //        //폴리 라인 만들기
 //        val polyline1 = googleMap
@@ -66,7 +57,7 @@ class TestActivity_Yoon : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         googleMap.setOnMarkerClickListener(this)
         googleMap.setOnMapClickListener(this)
 
-        getMarkerItems()
+        jsonParsing(getJSONString())
     }
 
     //데이터 객체
@@ -76,24 +67,20 @@ class TestActivity_Yoon : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         var order: Int
     )
 
-    fun getMarkerItems() {
-        val markerList = ArrayList<MarkerItem>()
-        //순재야 여기다가 Marker Item add 시켜주면 된다잉
-//        for(i in 0 .. markerList.size-1) {
-//            markerList.add(MarkerItem(-35.016, 143.321, i))
-//        }
+    fun getMarkerItems(lat:Double, lng:Double, i:Int) {
 
+        markerList.add(MarkerItem(lat, lng, i))
         ///////////////Test Code////////////////
-        markerList.add(MarkerItem(-35.016, 143.321, 1))
-        markerList.add(MarkerItem(-34.747, 145.592, 2))
-        markerList.add(MarkerItem(-34.364, 147.891, 3))
-        markerList.add(MarkerItem(-33.501, 150.217, 4))
-        markerList.add(MarkerItem(-32.306, 149.248, 5))
-        markerList.add(MarkerItem(-32.491, 147.309, 6))
+//        markerList.add(MarkerItem(-35.016, 143.321, 1))
+//        markerList.add(MarkerItem(-34.747, 145.592, 2))
+//        markerList.add(MarkerItem(-34.364, 147.891, 3))
+//        markerList.add(MarkerItem(-33.501, 150.217, 4))
+//        markerList.add(MarkerItem(-32.306, 149.248, 5))
+//        markerList.add(MarkerItem(-32.491, 147.309, 6))
 
-        for (markerItem in markerList) {
-            addMarker(markerItem, false)
-        }
+//        for (markerItem in markerList) {
+//            addMarker(markerItem, false)
+//        }
     }
 
     private fun addMarker(
@@ -105,7 +92,7 @@ class TestActivity_Yoon : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         //String formatted = NumberFormat . getCurrencyInstance ().format((price))
 
 
-       var markerOptions = MarkerOptions()
+        var markerOptions = MarkerOptions()
         markerOptions.title(order.toString())
         markerOptions.position(position)
 
@@ -131,7 +118,7 @@ class TestActivity_Yoon : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
-        var center:CameraUpdate = CameraUpdateFactory.newLatLng(marker?.position)
+        var center: CameraUpdate = CameraUpdateFactory.newLatLng(marker?.position)
         mMap.animateCamera(center)
 
         changeSelectedMarker(marker)
@@ -155,11 +142,57 @@ class TestActivity_Yoon : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
 
 
     override fun onMapClick(p0: LatLng?) {
-       changeSelectedMarker(null)
+        changeSelectedMarker(null)
     }
 
 
 
+    ///////////////서버 파싱////////////////////////
+    private fun jsonParsing(json: String) {
+        try {
+            val jsonObject = JSONObject(json)
+
+            val movieArray = jsonObject.getJSONArray("data")
+
+            for (i in 0 until movieArray.length()) {
+                val movieObject = movieArray.getJSONObject(i)
+
+                val spot = Spot()
+
+                spot.setIDNUM(movieObject.getInt("IDNUM")) //movieObject.getInt("IDNUM") 업소 아이디
+                spot.setY(movieObject.getDouble("Yd")) //movieObject.getDouble("Yd") =위도
+                spot.setX(movieObject.getDouble("Xd")) /// movieObject.getDouble("Xd") =경도
+                ///////////////////////////////////////////////////////
+                getMarkerItems(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"), i)
+                ////////////////////////////////////////////////////
+
+            }
+            for (markerItem in markerList) {
+                addMarker(markerItem, false)
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun getJSONString(): String {
+        var json = ""
+        try {
+            val `is` = assets.open("is_map.json")
+            val fileSize = `is`.available()
+
+            val buffer = ByteArray(fileSize)
+            `is`.read(buffer)
+            `is`.close()
+            json = String(buffer, UTF_8)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        }
+
+        return json
+    }
+
+
 
 }
-
