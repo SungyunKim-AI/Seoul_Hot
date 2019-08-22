@@ -1,13 +1,10 @@
 package com.inseoul.Server_mapdata;
 
 public class Spot {
-    int IDNUM;
-    String Spot_new;
-    public Spot(int IDNUM , String Spot_new){
-        this.IDNUM =  IDNUM;
-        this.Spot_new = Spot_new;
-    }
 
+    private int IDNUM;
+    private  double Y;
+    private  double X;
     public int getIDNUM() {
         return IDNUM;
     }
@@ -16,13 +13,23 @@ public class Spot {
         this.IDNUM = IDNUM;
     }
 
-    public String getSpot_new() {
-        return Spot_new;
+    public double getY() {
+        return Y;
     }
 
-    public void setSpot_new(String spot_new) {
-        Spot_new = spot_new;
+    public void setY(double y) {
+        Y = y;
     }
+
+    public double getX() {
+        return X;
+    }
+
+    public void setX(double x) {
+        X = x;
+    }
+
+
 
 
 }
