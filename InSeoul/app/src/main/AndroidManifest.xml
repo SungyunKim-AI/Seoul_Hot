@@ -19,6 +19,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".make_plan.RangePickerActivity">
+        </activity>
         <activity android:name=".Server_mapdata.Mapdata_Activity">
         </activity>
         <!--
@@ -64,14 +66,13 @@
                 android:name=".MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".TestActivity_Yoon">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            </intent-filter>          
+        </activity>
+        <activity android:name=".TestActivity_Yoon">
         </activity>
     </application>
 
