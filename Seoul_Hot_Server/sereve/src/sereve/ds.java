@@ -8,11 +8,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-
-
 
 public class ds {
 	public static void main(String[] args) throws Exception, Exception {
@@ -29,160 +25,38 @@ public class ds {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://ksun1234.cafe24.com/ksun1234?characterEncoding=UTF-8&serverTimezone=UTC","ksun1234","kwonsunjae1!");
 			Statement stmt = conn.createStatement();
 			br = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\DGCOM\\Desktop\\Seoul_hot\\Seoul_Hot\\data.csv"),"euc-kr"));
-			Statement state = conn.createStatement();
-        	 while ((line = br.readLine()) != null) {
-            	
+            while ((line = br.readLine()) != null) {
             	if(line.equals(",,,,,,"))continue;
-            	String fin= "";
             	String[] field = line.split(cvsSplitBy);
             	
-            	if(field[1].equals("고유번호")|| field[1].equals("22996"))continue;
-				            	if(field.length>=7&& field.length<10) {
-				            		int hash_num = 0;
-				            		String request = "Select H from HashTag where HASH= '";
-				            		request+=field[field.length-1];
-				            		request += '\'';
-				            		ResultSet rs = state.executeQuery(request);
-				            		while(rs.next()) {
-				            			hash_num = rs.getInt("H");
-				            		}
-				            		fin += Integer.toString(hash_num);
-				         			
-				         			
-				         			String sql  = "insert into Connect_hash values(?,?)";
-				         			st = conn.prepareStatement(sql);
-				         			st.setInt(1,Integer.parseInt(field[1]) );
-				         			st.setString(2, fin);
-				         			System.out.println(st);
-				         			st.executeUpdate();
-				         			continue;
-				            	}
-            	if(line.split(",\"").length>2) {
-           		 	int i=0;
-           		 	String sql = "Insert into Connect_hash values(?,?)";
-           		 	st = conn.prepareStatement(sql);
-           		 	st.setInt(1, Integer.parseInt(field[1])); // ID_NUM
-      			
-           		 	
-           		 	field = line.split(",\"")[line.split(",\"").length-1].split(",");// HASHTAG
-        		 	int hash_num = 0;
-        		 	String request = "Select H from HashTag where HASH= '";
-        		 	request+=field[i];
-        		 	request += '\'';
-        		 	ResultSet rs = state.executeQuery(request);
-        		 	while(rs.next()) {
-        		 		hash_num = rs.getInt("H");
-        		 	}
-        		 	fin += Integer.toString(hash_num) + ',';
-        		 	
-        		 	
-        		 
-          			i++;
-                	 for(;!field[i].contains("\"");i+=1) {
-                		 request = "Select H from HashTag where HASH= '";
-             		 	request+=field[i];
-             		 	request += '\'';
-             		 	rs = state.executeQuery(request);
-             		 	while(rs.next()) {
-             		 		hash_num = rs.getInt("H");
-             		 	}
-             		 	fin += Integer.toString(hash_num) + ',';
-             			
-             			//st.executeUpdate();
-             			
-                	 }
-                	request = "Select H from HashTag where HASH= '";
-          		 	request+=field[i].split("\"")[0];
-          		 	request += '\'';
-          		 	rs = state.executeQuery(request);
-          		 	while(rs.next()) {
-          		 		hash_num = rs.getInt("H");
-          		 	}
-                	 
-                	 fin += Integer.toString(hash_num);
-          			st.setString(2,fin);
-          			
-          			System.out.println(st);
-          			
-          			st.executeUpdate();
-          			continue;
-           	 }
-            	 int i = 6;
-            	 while(!field[i].contains("\"")) {
-            		 i++;
-            	 }
-            	 String sql = "Insert into Connect_hash values(?,?)";
-        		 	st = conn.prepareStatement(sql);
-        		 	st.setInt(1, Integer.parseInt(field[1])); // ID_NUM
-   			
-        		 	
-        		 	
-     		 	int hash_num = 0;
-     		 	String request = "Select H from HashTag where HASH= '";
-     		 	request+=field[i];
-     		 	request += '\'';
-     		 	ResultSet rs = state.executeQuery(request);
-     		 	while(rs.next()) {
-     		 		hash_num = rs.getInt("H");
-     		 	}
-     		 	fin += Integer.toString(hash_num) + ',';
-     		 	
-     		 	
-     		 
-       			i++;
-             	 for(;!field[i].contains("\"");i+=1) {
-             		 request = "Select H from HashTag where HASH= '";
-          		 	request+=field[i];
-          		 	request += '\'';
-          		 	rs = state.executeQuery(request);
-          		 	while(rs.next()) {
-          		 		hash_num = rs.getInt("H");
-          		 	}
-          		 	fin += Integer.toString(hash_num) + ',';
-          			
-          			//st.executeUpdate();
-          			
-             	 }
-             	request = "Select H from HashTag where HASH= '";
-       		 	request+=field[i].split("\"")[0];
-       		 	request += '\'';
-       		 	rs = state.executeQuery(request);
-       		 	while(rs.next()) {
-       		 		hash_num = rs.getInt("H");
-       		 	}
-             	 
-             	 fin += Integer.toString(hash_num);
-       			st.setString(2,fin);
-       			
-       			System.out.println(st);
-       			
-       			st.executeUpdate();
-            	 /*String sql = "Insert into HashTag values(?)";
-      			st = conn.prepareStatement(sql);
-      			st.setString(1,field[i].split("\"")[1]);
-      			
-      			//System.out.println(st);
-      			
-      			//st.executeUpdate();
-      			i++;
-            	 for(;!field[i].contains("\"");i+=1) {
-            		sql = "Insert into HashTag values(?)";
-         			st = conn.prepareStatement(sql);
-         			st.setString(1,field[i]);
-         			
-         			//System.out.println(st);
-         			
-         			//st.executeUpdate();
-         			
-            	 }
-            	 sql = "Insert into HashTag values(?)";
-      			st = conn.prepareStatement(sql);
-      			st.setString(1,field[i].split("\"")[0]);
-      			
-      			//System.out.println(st);
-      			
-      			//st.executeUpdate();*/
-               
+            	 if(field[1].equals("고유번호"))continue;
+        
+                String sql = "Insert into InSeoul_map values(?,?,?,?,?)";
+    			st = conn.prepareStatement(sql);
+    			st.setInt(1, Integer.parseInt(field[1]));
+    			st.setString(2, field[3].split("서울")[1].split(" ")[1]);
+    			
+    			st.setString(3, field[3].split("서울")[1].split(" ")[2]);
+    			st.setString(4, field[3].split("서울")[1].split(" ")[3]);
+    			int i =4;
+    			if(field[4].equals(""))continue;
+    			while(!field[i].contains("서울")) {
+    				i+=1;
+    			}
+    			
+    			if( field[i].split("서울")[1].split(",")[0].contains("(")) {
+    				st.setString(5, field[i].split("서울")[1].split(",")[0].split("(")[0]);
+        			
+        			System.out.println(st);
+        			
+        			st.executeUpdate();
+        			continue;
+    			}
+    			st.setString(5, field[i].split("서울")[1].split(",")[0]);
+    			
+    			System.out.println(st);
+    			
+    			st.executeUpdate();
             }
             conn.close();
 		}catch( ClassNotFoundException e )
@@ -196,10 +70,8 @@ public class ds {
 		{
 			System.out.println("기타 오류 "+e);
 		}
-		finally { //예외가 있든 없든 무조건 실행
-			
-		}
 	}
 	
 
 }
+
