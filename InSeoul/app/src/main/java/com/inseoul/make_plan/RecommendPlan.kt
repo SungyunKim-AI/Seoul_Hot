@@ -2,7 +2,6 @@ package com.inseoul.make_plan
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.inseoul.R
@@ -136,14 +135,10 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     ///////////////서버 파싱////////////////////////
     private fun jsonParsing(json: String) {
         try {
-            Log.d("sunjae","ok")
-            Log.d("sunjae",json)
             val jsonObject = JSONObject(json)
 
             val movieArray = jsonObject.getJSONArray("data")
-            Log.d("sunjae","okd2")
             for (i in 0 until movieArray.length()) {
-                Log.d("sunjae","okd2312615")
                 val movieObject = movieArray.getJSONObject(i)
 
                 val spot = Spot()
@@ -154,7 +149,6 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 ///////////////////////////////////////////////////////
                 markerList.add(MarkerItem(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"), i))
                 markerList[i].latLng = LatLng(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"))
-                Log.d("sunjae",movieObject.getDouble("Yd").toString() + movieObject.getDouble("Xd").toString()+ i.toString())
                 ////////////////////////////////////////////////////
 
             }
@@ -171,9 +165,7 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         var json = ""
         try {
-            Log.d("sunjae","okd2312615")
             val `is` = assets.open("is_map.json")
-            Log.d("sunjae","okd2312615")
             val fileSize = `is`.available()
 
             val buffer = ByteArray(fileSize)
@@ -182,7 +174,6 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             json = String(buffer, UTF_8)
         } catch (ex: IOException) {
             ex.printStackTrace()
-            Log.d("sunjae",ex.toString())
         }
 
         return json
