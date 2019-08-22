@@ -4,10 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.inseoul.R
 import com.inseoul.Server_mapdata.Spot
 import org.json.JSONException
@@ -40,22 +37,9 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         mMap = googleMap
 
-//        //폴리 라인 만들기
-//        val polyline1 = googleMap
-//
-//        polyline1.addPolyline(
-//            PolylineOptions()
-//                .clickable(true)
-//                .addAll(marker)
-//                .width(POLYLINE_STROKE_WIDTH_PX)
-//        )
-
-
-        // Position the map's camera near Alice Springs in the center of Australia,
-        // and set the zoom factor so most of Australia shows on the screen.
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(-23.684, 133.903), 4f))
-        googleMap.setOnMarkerClickListener(this)
-        googleMap.setOnMapClickListener(this)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.566502, 126.977918), 11f))
+        mMap.setOnMarkerClickListener(this)
+        mMap.setOnMapClickListener(this)
 
         getMarkerItems()
     }
@@ -65,12 +49,24 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val lat: Double,
         val lng: Double,
         var order: Int
-    )
+    ){
+        var latLng: LatLng ?= null
+    }
 
     fun getMarkerItems() {
-        Log.d("sunjae","okd2312615")
         jsonParsing(getJSONString())
 
+        //        //폴리 라인 만들기
+        val polyline1 = mMap
+
+        for(i in 0 until markerList.size){
+            polyline1.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .add(markerList[i].latLng)
+                    .width(POLYLINE_STROKE_WIDTH_PX)
+            )
+        }
     }
 
     private fun addMarker(
@@ -154,6 +150,7 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 spot.setX(movieObject.getDouble("Xd")) /// movieObject.getDouble("Xd") =경도
                 ///////////////////////////////////////////////////////
                 markerList.add(MarkerItem(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"), i))
+                markerList[i].latLng = LatLng(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"))
                 Log.d("sunjae",movieObject.getDouble("Yd").toString() + movieObject.getDouble("Xd").toString()+ i.toString())
                 ////////////////////////////////////////////////////
 
