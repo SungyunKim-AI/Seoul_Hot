@@ -57,7 +57,7 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         googleMap.setOnMarkerClickListener(this)
         googleMap.setOnMapClickListener(this)
 
-        jsonParsing(getJSONString())
+        getMarkerItems()
     }
 
     //데이터 객체
@@ -67,20 +67,10 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         var order: Int
     )
 
-    fun getMarkerItems(lat:Double, lng:Double, i:Int) {
+    fun getMarkerItems() {
+        Log.d("sunjae","okd2312615")
+        jsonParsing(getJSONString())
 
-        markerList.add(MarkerItem(lat, lng, i))
-        ///////////////Test Code////////////////
-//        markerList.add(MarkerItem(-35.016, 143.321, 1))
-//        markerList.add(MarkerItem(-34.747, 145.592, 2))
-//        markerList.add(MarkerItem(-34.364, 147.891, 3))
-//        markerList.add(MarkerItem(-33.501, 150.217, 4))
-//        markerList.add(MarkerItem(-32.306, 149.248, 5))
-//        markerList.add(MarkerItem(-32.491, 147.309, 6))
-
-//        for (markerItem in markerList) {
-//            addMarker(markerItem, false)
-//        }
     }
 
     private fun addMarker(
@@ -163,7 +153,8 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 spot.setY(movieObject.getDouble("Yd")) //movieObject.getDouble("Yd") =위도
                 spot.setX(movieObject.getDouble("Xd")) /// movieObject.getDouble("Xd") =경도
                 ///////////////////////////////////////////////////////
-                getMarkerItems(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"), i)
+                markerList.add(MarkerItem(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"), i))
+                Log.d("sunjae",movieObject.getDouble("Yd").toString() + movieObject.getDouble("Xd").toString()+ i.toString())
                 ////////////////////////////////////////////////////
 
             }
