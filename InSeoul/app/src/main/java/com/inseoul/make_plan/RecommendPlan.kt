@@ -68,7 +68,7 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     )
 
     fun getMarkerItems() {
-        Log.d("sunjae","okd2312615")
+
         jsonParsing(getJSONString())
 
     }
@@ -140,11 +140,14 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     ///////////////서버 파싱////////////////////////
     private fun jsonParsing(json: String) {
         try {
+            Log.d("sunjae","ok")
+            Log.d("sunjae",json)
             val jsonObject = JSONObject(json)
 
             val movieArray = jsonObject.getJSONArray("data")
-
+            Log.d("sunjae","okd2")
             for (i in 0 until movieArray.length()) {
+                Log.d("sunjae","okd2312615")
                 val movieObject = movieArray.getJSONObject(i)
 
                 val spot = Spot()
@@ -168,9 +171,12 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun getJSONString(): String {
+
         var json = ""
         try {
+            Log.d("sunjae","okd2312615")
             val `is` = assets.open("is_map.json")
+            Log.d("sunjae","okd2312615")
             val fileSize = `is`.available()
 
             val buffer = ByteArray(fileSize)
@@ -179,6 +185,7 @@ class RecommendPlan: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             json = String(buffer, UTF_8)
         } catch (ex: IOException) {
             ex.printStackTrace()
+            Log.d("sunjae",ex.toString())
         }
 
         return json
