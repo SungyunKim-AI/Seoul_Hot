@@ -1,12 +1,14 @@
 package com.inseoul.make_plan
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
@@ -16,10 +18,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.MotionEvent
 import android.widget.*
+import android.widget.LinearLayout.HORIZONTAL
 import androidx.appcompat.widget.ListPopupWindow.MATCH_PARENT
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.applikeysolutions.cosmocalendar.dialog.CalendarDialog
+import com.applikeysolutions.cosmocalendar.dialog.OnDaysSelectionListener
 
 
 class MakePlanActivity : AppCompatActivity() {
@@ -39,33 +44,30 @@ class MakePlanActivity : AppCompatActivity() {
     var str_end: String? = null
     var theme: String? = null
 
+    // 날짜 저장
+    lateinit var range:String
+
+    lateinit var startYear:String
+    lateinit var startMonth:String
+    lateinit var startDay:String
+
+    lateinit var endYear:String
+    lateinit var endMonth:String
+    lateinit var endDay:String
+
+    lateinit var startDate:String
+    lateinit var endDate:String
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_make_plan)
         initBtn()
         initTest()
         initRecyclerView()
-
-        //날짜 입력 포커스 되면 키보드 비활성화
-        date_text_start!!.showSoftInputOnFocus = false
-        date_text_end!!.showSoftInputOnFocus = false
+        btnInit()
 
         //날짜 입력 레퍼런스 파일
-        textview_date_start = this.date_text_start
-        textview_time_start = this.time_text_start
-        //button_date_start = this.DatePickBtn_start
-
-        textview_date_end = this.date_text_end
-        textview_time_end = this.time_text_end
-        //button_date_end = this.DatePickBtn_end
-
         textview_plan_title = this.PlanTitle
-
-        dateSetBtn_start()
-        dateSetBtn_end()
-
-        timeSetBtn_start()
-        timeSetBtn_end()
 
         initTheme()
 
@@ -78,61 +80,86 @@ class MakePlanActivity : AppCompatActivity() {
         actionBar.setDisplayShowTitleEnabled(false)
 
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-        mtoolbar.title = "NEW PLAN"
-        mtoolbar.setTitleTextColor(Color.WHITE)
+        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
     }
 
 
     //////////DatePicker Dialog, TimePicker Dialog
-    fun dateSetBtn_start() {
-        pickDate(1)
-    }
-    fun dateSetBtn_end() {
-        pickDate(2)
-    }
-    fun timeSetBtn_start() {
-        TimeTouchListener(1)
-    }
-    fun timeSetBtn_end() {
-        TimeTouchListener(2)
-    }
-    fun pickDate(flag: Int) {
-        val dateSetListener = object : DatePickerDialog.OnDateSetListener {
-            override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, monthOfYear)
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateDateInView(flag)
-            }
-        }
-        if (flag == 1) {
-            textview_date_start!!.setOnTouchListener(View.OnTouchListener { v, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        DatePickerDialog(
-                            this@MakePlanActivity, dateSetListener,
-                            cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)
-                        ).show()
-                    }
-                }
-                false
-            })
-        } else if (flag == 2) {
-            textview_date_end!!.setOnTouchListener(View.OnTouchListener { v, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        DatePickerDialog(
-                            this@MakePlanActivity, dateSetListener,
-                            cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)
-                        ).show()
-                    }
-                }
-                false
-            })
-        }
 
+    inline fun Activity.showAlertDialog(func: RangePickerActivity.() -> Unit): AlertDialog =
+        RangePickerActivity(this).apply {
+            func()
+        }.create()
+
+    fun btnInit(){
+
+
+        select_date.setOnClickListener {
+
+            val dialog:AlertDialog = showAlertDialog {
+                cancelable = false
+                selectBtnClickListener {
+                    Log.v("Dialog", "submit")
+                    var days = calendar_view.selectedDates
+                    var r = days.size
+                    range = r.toString() + "일"
+
+                    if(r != 0){
+                        val start_calendar = days.get(0)
+                        startDay = start_calendar.get(Calendar.DAY_OF_MONTH).toString()
+                        startMonth = (start_calendar.get(Calendar.MONTH) + 1).toString()
+                        startYear = start_calendar.get(Calendar.YEAR).toString()
+//                        startDate= startYear + "년" + startMonth + "월" + startDay + "일"
+
+                        val end_calendar = days.get(r - 1)
+                        endDay = end_calendar.get(Calendar.DAY_OF_MONTH).toString()
+                        endMonth = (end_calendar.get(Calendar.MONTH) + 1).toString()
+                        endYear = end_calendar.get(Calendar.YEAR).toString()
+//                        endDate = endYear + "년" + endMonth + "월" + endDay + "일"
+
+                        var resultStr = ""
+                        if(startYear == endYear){
+                            resultStr = startYear + "." + startMonth + "." + startDay + " - " + endMonth + "." + endDay
+                        }
+                        if(startYear == endYear && startMonth == endMonth && startDay == endDay){
+                            resultStr = startYear + "." + startMonth + "." + startDay
+                        }
+                        rangeDay.text = range
+                        select_date.text = resultStr
+//                        date_text_start.text = startDate
+//                        date_text_end.text = endDate
+                        Log.v("Dialog", startDay + endDay)
+                    } else{
+                        Log.v("Dialog", "null")
+                    }
+                }
+                cancelBtnClickListener {
+                    Log.v("Dialog", "cancel")
+                }
+            }
+            dialog.show()
+            /*
+            CalendarDialog(this, OnDaysSelectionListener {
+                var days = it
+                var range = it.size
+                Toast.makeText(applicationContext, it[0].toString() + "~" + it[range-1].toString(), Toast.LENGTH_SHORT).show()
+
+            }
+            */
+//            ).setCalendarOrientation(HORIZONTAL)
+            //        calendar_view.weekendDayTextColor = Color.parseColor("#FF0000")
+            //
+            //        calendar_view.calendarOrientation = HORIZONTAL
+            //        calendar_view.selectionType = SelectionType.RANGE
+            //
+            //        calendar_view.currentDayIconRes = R.drawable.ic_down__arrow
+            //
+            //        calendar_view.selectedDayBackgroundStartColor = Color.parseColor("#B6E3E9")
+            //        calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#B6E3E9")
+            //        calendar_view.selectedDayBackgroundColor = Color.parseColor("#D9F1F1")
+        }
     }
+
 
     private fun updateDateInView(flag: Int) {
         val myFormat = "MM/dd/yyyy"
@@ -232,8 +259,6 @@ class MakePlanActivity : AppCompatActivity() {
     val REQ_CODE: Int = 10000
 
     fun initBtn() {
-        //지도 비활성화
-        map_layout.visibility = View.GONE
 
         continueBtn.setOnClickListener {
             //미입력 부분이 있을시 toast 출력 및 버튼 비활성화
@@ -291,13 +316,6 @@ class MakePlanActivity : AppCompatActivity() {
     }
 
     fun initRecyclerView(){
-        recyclerView.addOnLayoutChangeListener(View.OnLayoutChangeListener { view, i, i1, i2, i3, i4, i5, i6, i7 ->
-            if (i3 < i7) {
-                recyclerview_layout.visibility = View.GONE
-            } else {
-                recyclerview_layout.visibility = View.VISIBLE
-            }
-        })
 
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
@@ -305,7 +323,6 @@ class MakePlanActivity : AppCompatActivity() {
             override fun onClick(view: View, position: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates
                 inform_layout.visibility = View.GONE
-                map_layout.visibility = View.VISIBLE
 //                recyclerview.layoutParams.width = MATCH_PARENT
 //                recyclerview_layout.layoutParams.weight =
 
@@ -319,7 +336,6 @@ class MakePlanActivity : AppCompatActivity() {
 
         adapter = MakePlanAdapter(this, listener, test)
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
     }
 
 
