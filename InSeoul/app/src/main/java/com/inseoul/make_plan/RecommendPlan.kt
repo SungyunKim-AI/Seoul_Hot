@@ -15,6 +15,10 @@ import java.net.URL
 import kotlin.text.Charsets.UTF_8
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.Gap
+import com.google.android.gms.maps.model.Dot
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -26,8 +30,12 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
     val markerList = ArrayList<MarkerItem>()
     val lineList = ArrayList<LatLng>()
 
-    private val POLYLINE_STROKE_WIDTH_PX = 5f
+    private val POLYLINE_STROKE_WIDTH_PX = 7f
+    private val PATTERN_GAP_LENGTH_PX = 10f
     private val COLOR_BLACK_ARGB = -0x1000000
+    private val DOT = Dot()
+    private val GAP = Gap(PATTERN_GAP_LENGTH_PX)
+    private val PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT)
 
     lateinit var mMap: GoogleMap
 
@@ -61,10 +69,6 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         var latLng: LatLng? = null
     }
 
-    data class lineItem(
-        var latLng: LatLng
-    )
-
     fun getMarkerItems() {
         jsonParsing(getJSONString())
 
@@ -76,8 +80,9 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         )
 
         polyline.width = POLYLINE_STROKE_WIDTH_PX
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[0], 12f))
+        polyline.pattern = PATTERN_POLYLINE_DOTTED
 
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[0], 12f))
     }
 
 
@@ -165,12 +170,12 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
                         spot.setX(movieObject.getDouble("Xd")) /// movieObject.getDouble("Xd") =경도
                         ///////////////////////////////////////////////////////
                         markerList.add(MarkerItem(movieObject.getDouble("Yd"), movieObject.getDouble("Xd"), j))
-                        Log.d("alert", j.toString())
+                        //Log.d("alert", j.toString())
 
                         markerList[count].latLng = LatLng(markerList[count].lat, markerList[count].lng)
                         lineList.add(markerList[count].latLng!!)
                         count++
-                        continue
+                        break
                         ////////////////////////////////////////////////////
                     }
 
