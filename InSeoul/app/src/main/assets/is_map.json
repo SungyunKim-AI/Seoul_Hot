@@ -1,7 +1,4 @@
-[
-{"type":"header","version":"4.9.0.1","comment":"Export to JSON plugin for PHPMyAdmin"},
-{"type":"database","name":"ksun1234"},
-{"type":"table","name":"IS_MAP","database":"ksun1234","data":
+{"data":
 [
 {"#":"1","IDNUM":"34","Yd":"37.569406443","Xd":"126.979100633"},
 {"#":"2","IDNUM":"36","Yd":"37.551116258","Xd":"126.987871433"},
@@ -1892,4 +1889,3 @@
 {"#":"2144","IDNUM":"29578","Yd":"37.599504266","Xd":"126.955678695"}
 ]
 }
-]
