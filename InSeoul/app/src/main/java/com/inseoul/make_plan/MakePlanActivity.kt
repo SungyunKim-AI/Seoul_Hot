@@ -2,10 +2,8 @@ package com.inseoul.make_plan
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,16 +16,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.MotionEvent
 import android.widget.*
-import android.widget.LinearLayout.HORIZONTAL
-import androidx.appcompat.widget.ListPopupWindow.MATCH_PARENT
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.applikeysolutions.cosmocalendar.dialog.CalendarDialog
-import com.applikeysolutions.cosmocalendar.dialog.OnDaysSelectionListener
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
+import java.net.URL
 
 
 class MakePlanActivity : AppCompatActivity() {
+
+    //JSON LIST
+    var planList = ArrayList<MakePlanItem>()
 
     //datepicker 선언
     //var button_date_start: Button? = null
@@ -61,16 +61,25 @@ class MakePlanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_make_plan)
-        initBtn()
-        initTest()
+        init()
         initRecyclerView()
         btnInit()
 
         //날짜 입력 레퍼런스 파일
         textview_plan_title = this.PlanTitle
+    }
 
-        initTheme()
 
+
+    ////////////////INIT///////////////////////////
+    fun init(){
+        initToolbar()           //툴바 세팅
+        initTheme()             //여행 테마 세팅
+        fetchJson()             //서버 파일 다운로드
+        initBtn()               //새로운 일정 버튼 클릭 리스너
+    }
+
+    fun initToolbar(){
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_make_plan) as Toolbar
         setSupportActionBar(mtoolbar)
@@ -82,17 +91,26 @@ class MakePlanActivity : AppCompatActivity() {
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
         actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
     }
+    ///////////////toolbar에서 back 버튼
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 
     //////////DatePicker Dialog, TimePicker Dialog
-
     inline fun Activity.showAlertDialog(func: RangePickerActivity.() -> Unit): AlertDialog =
         RangePickerActivity(this).apply {
             func()
         }.create()
 
     fun btnInit(){
-
 
         select_date.setOnClickListener {
 
@@ -255,12 +273,14 @@ class MakePlanActivity : AppCompatActivity() {
     }
 
 
+
+
     //////////////다음 액티비티로 넘어가는 부분
     val REQ_CODE: Int = 10000
 
     fun initBtn() {
-
         continueBtn.setOnClickListener {
+
             //미입력 부분이 있을시 toast 출력 및 버튼 비활성화
 //            if (str_start == null || str_end == null || textview_plan_title == null || theme == null) {
 //                Toast.makeText(this, "미입력", Toast.LENGTH_LONG).show()
@@ -291,29 +311,13 @@ class MakePlanActivity : AppCompatActivity() {
         }
     }
 
-    ///////////////toolbar에서 back 버튼
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+
 
 
     ////////////////// Recycler View //////////////////
-    private val test = ArrayList<MakePlanItem>()
+    //private val planData = ArrayList<MakePlanItem>()
     var layoutManager: RecyclerView.LayoutManager? = null
     var adapter: MakePlanAdapter? = null
-
-    fun initTest(){
-
-        for(i in 0..10){
-            test.add(MakePlanItem("This is Title" + i.toString(), "This is Content" + i.toString()))
-        }
-    }
 
     fun initRecyclerView(){
 
@@ -321,26 +325,59 @@ class MakePlanActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         val listener = object: MakePlanAdapter.RecyclerViewAdapterEventListener{
             override fun onClick(view: View, position: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates
-                inform_layout.visibility = View.GONE
-//                recyclerview.layoutParams.width = MATCH_PARENT
-//                recyclerview_layout.layoutParams.weight =
 
                 //intent로 장소 이름 전달
-//                val detailsIntent = Intent(this, SearchDetail::class.java)
-//                detailsIntent.putExtra("search_title",test[position].title)
-//                startActivity(detailsIntent)
+                val recommendIntent = Intent(this@MakePlanActivity, RecommendPlan::class.java)
+                recommendIntent.putExtra("planData",planList[position])
+                recommendIntent.putExtra("plan_array",planList[position].PLAN)
+                Log.d("alert_sdf",planList[position].PLAN.toString())
+                startActivity(recommendIntent)
             }
-            //리사이클러 뷰를 클릭했을때 SearchDetails 액티비티로 넘어가는 클릭 리스너
         }
-
-        adapter = MakePlanAdapter(this, listener, test)
+        adapter = MakePlanAdapter(this, listener, planList)
         recyclerView.adapter = adapter
     }
 
 
-}
+    fun fetchJson() {
 
+        val url = URL("http://ksun1234.cafe24.com/PlanList.php")
+        val request = Request.Builder().url(url).build()
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call?, response: Response?) {
+                val body = response?.body()?.string()
+                //println("Success to execute request! : $body")
+                val jsonObject = JSONObject(body)
+
+
+                val movieArray = jsonObject.getJSONArray("response")
+
+                for (i in 0 until movieArray.length()) {
+                    val movieObject = movieArray.getJSONObject(i)
+                    val cache_nm = movieObject.getString("TRIP_NAME")
+                    planList.add(MakePlanItem(cache_nm))
+                    val cache_theme = movieObject.getString("THEME")
+                    planList[i].THEME = cache_theme
+                    val cache_likes = movieObject.getString("LIKES")
+                    planList[i].LIKES = cache_likes.toInt()
+                    val cache_plan = movieObject.getString("PLAN").split(",")
+                    for (j in 0 until cache_plan.size) {
+                        planList[i].PLAN.add(j,cache_plan[j].toInt())
+                    }
+                    /////////////preview 작성 필요///////////////
+                    planList[i].preview = "This is preview   $i"
+                }
+            }
+
+            override fun onFailure(call: Call?, e: IOException?) {
+                println("Failed to execute request!")
+            }
+        })
+    }
+
+
+}
 
 
 
