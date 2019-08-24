@@ -2,29 +2,21 @@ package com.inseoul.make_plan
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_make_plan.*
-import java.text.SimpleDateFormat
 import java.util.*
-import android.view.MotionEvent
 import android.widget.*
-import android.widget.LinearLayout.HORIZONTAL
-import androidx.appcompat.widget.ListPopupWindow.MATCH_PARENT
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.applikeysolutions.cosmocalendar.dialog.CalendarDialog
-import com.applikeysolutions.cosmocalendar.dialog.OnDaysSelectionListener
+
 
 
 class MakePlanActivity : AppCompatActivity() {
@@ -81,10 +73,14 @@ class MakePlanActivity : AppCompatActivity() {
 
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
         actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+
+
+        ///////////////////////////////////////////////////////
+
     }
 
 
-    //////////DatePicker Dialog, TimePicker Dialog
+    //////////DatePicker Dialog
 
     inline fun Activity.showAlertDialog(func: RangePickerActivity.() -> Unit): AlertDialog =
         RangePickerActivity(this).apply {
@@ -92,8 +88,6 @@ class MakePlanActivity : AppCompatActivity() {
         }.create()
 
     fun btnInit(){
-
-
         select_date.setOnClickListener {
 
             val dialog:AlertDialog = showAlertDialog {
@@ -158,74 +152,6 @@ class MakePlanActivity : AppCompatActivity() {
             //        calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#B6E3E9")
             //        calendar_view.selectedDayBackgroundColor = Color.parseColor("#D9F1F1")
         }
-    }
-
-
-    private fun updateDateInView(flag: Int) {
-        val myFormat = "MM/dd/yyyy"
-        val sdf = SimpleDateFormat(myFormat, Locale.KOREA)
-        if (flag == 1) {
-            textview_date_start!!.setText(sdf.format(cal.time))
-            str_start = textview_date_start!!.text.toString()
-            textview_time_start!!.requestFocus()
-            focus_event()
-
-        } else if (flag == 2) {
-            textview_date_end!!.setText(sdf.format(cal.time))
-            str_end = textview_date_end!!.text.toString()
-            textview_time_end!!.requestFocus()
-            focus_event()
-        }
-    }
-
-    fun focus_event() {
-        if (currentFocus == textview_time_start) {
-            pickTime(1)
-        } else if (currentFocus == textview_time_end) {
-            pickTime(2)
-        }
-    }
-
-    fun TimeTouchListener(flag: Int) {
-        if (flag == 1) {
-            textview_time_start!!.setOnTouchListener(View.OnTouchListener { v, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        pickTime(flag)
-                    }
-                }
-                false
-            })
-        } else if (flag == 2) {
-            textview_time_end!!.setOnTouchListener(View.OnTouchListener { v, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        pickTime(flag)
-                    }
-                }
-                false
-            })
-        }
-
-    }
-
-    fun pickTime(flag: Int) {
-
-        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
-            cal.set(Calendar.HOUR_OF_DAY, hour)
-            cal.set(Calendar.MINUTE, minute)
-            if (flag == 1) {
-                textview_time_start!!.setText(SimpleDateFormat("HH:mm").format(cal.time))
-                str_start += " :: "
-                str_start += textview_time_start!!.text
-            } else if (flag == 2) {
-                textview_time_end!!.setText(SimpleDateFormat("HH:mm").format(cal.time))
-                str_end += " :: "
-                str_end += textview_time_end!!.text
-            }
-
-        }
-        TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
     }
 
 
