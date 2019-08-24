@@ -3,26 +3,28 @@ package com.inseoul.make_plan
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.inseoul.R
 import com.inseoul.Server_mapdata.Spot
-import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import java.net.URL
 import kotlin.text.Charsets.UTF_8
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.Dot
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnMapClickListener {
+
+    //////////Activity Inform Setting/////////
+    var planNm : String? = null
     var listIDNUM = ArrayList<Int>()
     var listUPSO = ArrayList<String>()
 
@@ -42,15 +44,14 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recommend_plan)
-        fetchJson()
-        // Get the SupportMapFragment and request notification
-        // when the map is ready to be used.
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        init()
 
         mMap = googleMap
 
@@ -60,14 +61,16 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         getMarkerItems()
     }
 
-    //데이터 객체
-    data class MarkerItem(
-        val lat: Double,
-        val lng: Double,
-        var order: Int
-    ) {
-        var latLng: LatLng? = null
+    fun init(){
+
+        var planData = intent.getParcelableExtra<MakePlanItem>("planData")
+        listIDNUM = intent.getIntegerArrayListExtra("plan_array")
+        Log.d("alert",listIDNUM.toString())
+        planNm = planData.TRIP_NAME
+
+        initToolbar()
     }
+
 
     fun getMarkerItems() {
         jsonParsing(getJSONString())
@@ -78,7 +81,6 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
                 .clickable(true)
                 .addAll(lineList)
         )
-
         polyline.width = POLYLINE_STROKE_WIDTH_PX
         polyline.pattern = PATTERN_POLYLINE_DOTTED
 
@@ -93,19 +95,17 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
 
         var position = LatLng(markerItem.lat, markerItem.lng)
         var order = markerItem.order
-        //String formatted = NumberFormat . getCurrencyInstance ().format((price))
-
 
         var markerOptions = MarkerOptions()
-        markerOptions.title(order.toString())
         markerOptions.position(position)
+        markerOptions.title(order.toString())
+        markerOptions.snippet(order.toString())
 
         if (isSelectedMarker) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
         } else {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
         }
-
 
         return mMap.addMarker(markerOptions!!)
     }
@@ -141,6 +141,7 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         //선택한 마커 표시
         if (marker != null) {
             selectedMarker = addMarker(marker, true)
+            selectedMarker?.showInfoWindow()                        //정보창 띄우기
             marker.remove()
         }
     }
@@ -193,7 +194,6 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
 
     }
 
-
     private fun getJSONString(): String {
 
         var json = ""
@@ -212,35 +212,38 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         return json
     }
 
-    fun fetchJson() {
+    fun initToolbar(){
+        //toolbar 커스텀 코드
+        val mtoolbar = findViewById(R.id.toolbar_recommend_plan) as Toolbar
+        setSupportActionBar(mtoolbar)
+        // Get the ActionBar here to configure the way it behaves.
+        val actionBar = supportActionBar
+        actionBar!!.setDisplayShowCustomEnabled(true) //커스터마이징 하기 위해 필요
+        actionBar.setDisplayShowTitleEnabled(false)
 
-        val url = URL("http://ksun1234.cafe24.com/PlanList.php")
-        val request = Request.Builder().url(url).build()
-        val client = OkHttpClient()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call?, response: Response?) {
-                val body = response?.body()?.string()
-                //println("Success to execute request! : $body")
-                val jsonObject = JSONObject(body)
-
-
-                val movieArray = jsonObject.getJSONArray("response")
-                for (i in 0 until movieArray.length()) {
-                    val movieObject = movieArray.getJSONObject(i)
-                    val cache = movieObject.getString("PLAN").split(",")
-                    for (j in 0 until cache.size) {
-                        listIDNUM.add(j, cache[j].toInt())
-                    }
-
-                }
-            }
-
-            override fun onFailure(call: Call?, e: IOException?) {
-                println("Failed to execute request!")
-            }
-        })
-
+        actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
+        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+        mtoolbar.title = planNm
     }
 
+    ///////////////toolbar에서 back 버튼
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
+}
+
+//데이터 객체
+data class MarkerItem(
+    val lat: Double,
+    val lng: Double,
+    var order: Int
+) {
+    var latLng: LatLng? = null
 }

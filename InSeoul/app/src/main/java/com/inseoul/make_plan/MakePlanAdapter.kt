@@ -40,7 +40,7 @@ class MakePlanAdapter(val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = items!!.get(position)
 
-        holder.item_title.text = data.title
+        holder.item_title.text = data.TRIP_NAME
         holder.item_content.text = data.preview
 
         holder.itemView.setOnClickListener {
