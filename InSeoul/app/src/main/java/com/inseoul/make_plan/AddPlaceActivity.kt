@@ -2,11 +2,12 @@ package com.inseoul.make_plan
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -20,17 +21,18 @@ class AddPlaceActivity :
     AppCompatActivity(),
     OnMapReadyCallback {
 
-    var textview_title: TextView? = null
-    var textview_date: TextView? = null
-    var textview_theme: TextView? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place)
         initMap()
         initBtn()
         initTitle()     //intent 받기
+        initToolbar()
+//        initTheme()             //여행 테마 세팅
 
+    }
+
+    fun initToolbar(){
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_add_place) as Toolbar
         setSupportActionBar(mtoolbar)
@@ -42,7 +44,30 @@ class AddPlaceActivity :
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
         actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
     }
+    fun initTheme() {
+        theme_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
 
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (theme_spinner.getItemAtPosition(position)) {
+                    "역사" -> {
+//                        theme = "역사"
+                    }
+                    "맛집" -> {
+//                        theme = "맛집"
+                    }
+                    "힐링" -> {
+//                        theme = "힐링"
+                    }
+                    else -> {
+//                        theme = null
+                    }
+                }
+
+            }
+        }
+    }
 
     fun initBtn(){
         finishBtn.setOnClickListener {
@@ -51,8 +76,6 @@ class AddPlaceActivity :
             val intent = Intent()
             intent.putExtra("result", 1)    // TEST CODE
             setResult(Activity.RESULT_OK, intent)
-
-
             finish()
 
         }
@@ -99,21 +122,17 @@ class AddPlaceActivity :
         Log.d("alert",flag.toString())
         if(flag==2){
             //flag가 2이라면 MakePlanActivity에서 넘어옴
-            var title:String
             var date:String
             var theme:String
-
-            title = extras!!.getString("PlanTitle","NULL")
+            
             date = extras!!.getString("PlanDate","NULL")
             theme = extras!!.getString("PlanTheme","NULL")
 
-            textview_title = this.textview_plantitle
-            textview_date = this.textview_plandate
-            textview_theme = this.textview_plantheme
+//            textview_theme = this.textview_plantheme
 
-            textview_title!!.setText(title)
-            textview_date!!.setText(date)
-            textview_theme!!.setText(theme)
+            PlanTitle.hint = date + " 여정"
+            textview_plandate.text = date
+//            textview_theme!!.setText(theme)
 
         }else if(flag==1){
             //flag가 1이라면 SearchDetail에서 넘어옴
@@ -124,26 +143,19 @@ class AddPlaceActivity :
 
             title_add = extras!!.getString("PlanTitle_add","NULL")
 
-            textview_title = this.textview_plantitle
-            textview_date = this.textview_plandate
-            textview_theme = this.textview_plantheme
+//            textview_theme = this.textview_plantheme
+            textview_plandate.text = ""
 
-            textview_title!!.setText(title_add)
-            textview_date!!.setText(null)
-            textview_theme!!.setText(null)
+//            textview_theme!!.setText(null)
         }else if(flag==3){
             //flag가 3이라면 my_schedule에서 넘어옴
             var title_edit:String
 
             title_edit = extras!!.getString("textview_title","NULL")
 
-            textview_title = this.textview_plantitle
-            textview_date = this.textview_plandate
-            textview_theme = this.textview_plantheme
+//            textview_theme = this.textview_plantheme
 
-            textview_title!!.setText(title_edit)
-            textview_date!!.setText(null)
-            textview_theme!!.setText(null)
+            textview_plandate.text = ""
         }
 
     }

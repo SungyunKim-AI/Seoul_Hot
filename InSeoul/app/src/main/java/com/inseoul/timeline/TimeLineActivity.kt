@@ -16,12 +16,12 @@ class TimeLineActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_line)
-
+        initToolbar()
         initTest()
-
         initViewPager()
+    }
 
-
+    fun initToolbar(){
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_timeline) as Toolbar
         setSupportActionBar(mtoolbar)
@@ -31,10 +31,23 @@ class TimeLineActivity : AppCompatActivity() {
         actionBar.setDisplayShowTitleEnabled(false)
 
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-        mtoolbar.title = "Time Line"
-        mtoolbar.setTitleTextColor(Color.WHITE)
+        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+
+
+        ///////////////////////////////////////////////////////
+
     }
+    ///////////////toolbar에서 back 버튼
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     private val test = ArrayList<TimeLineItem>()
     var layoutManager: RecyclerView.LayoutManager? = null
@@ -60,14 +73,5 @@ class TimeLineActivity : AppCompatActivity() {
         }).attach()
     }
 
-    //toolbar에서 back 버튼
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+
 }
