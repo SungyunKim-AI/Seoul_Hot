@@ -43,17 +43,8 @@
                         android:background="@drawable/home_bg"
                 >
                     <Button
-                            android:layout_margin="5dp"
-                            android:id="@+id/searchBtn"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:text="Search"
-                            android:background="@drawable/home_btn"
-                            android:textColor="@color/white"
-                    />
-                    <Button
                             android:text="Plan"
-                            android:layout_margin="5dp"
+                            android:layout_margin="15dp"
                             android:id="@+id/MkPlanBtn"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
@@ -62,7 +53,7 @@
                     />
                     <Button
                             android:text="History"
-                            android:layout_margin="5dp"
+                            android:layout_margin="15dp"
                             android:id="@+id/HistoryBtn"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
@@ -71,7 +62,7 @@
                     />
                     <Button
                             android:text="TimeLine"
-                            android:layout_margin="5dp"
+                            android:layout_margin="15dp"
                             android:id="@+id/TimeLineBtn"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
@@ -89,6 +80,7 @@
                     app:title=" "
                     android:background="@color/colorPrimaryDark"
                     app:layout_collapseMode="pin"
+                    app:menu="@menu/main"
             />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -100,7 +92,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:showIn="@layout/app_bar_main"
             tools:context=".MainActivity"
             android:orientation="vertical"
     >

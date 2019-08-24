@@ -3,17 +3,16 @@ package com.inseoul.make_plan
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_make_plan.*
 import java.util.*
-import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import okhttp3.*
@@ -27,21 +26,6 @@ class MakePlanActivity : AppCompatActivity() {
     //JSON LIST
     var planList = ArrayList<MakePlanItem>()
 
-    //datepicker 선언
-    //var button_date_start: Button? = null
-    var textview_date_start: EditText? = null
-    //var button_date_end: Button? = null
-    var textview_date_end: EditText? = null
-    var textview_time_start: EditText? = null
-    var textview_time_end: EditText? = null
-    var cal = Calendar.getInstance()
-
-    var textview_plan_title: EditText? = null
-
-    var str_start: String? = null
-    var str_end: String? = null
-    var theme: String? = null
-
     // 날짜 저장
     lateinit var range:String
 
@@ -53,28 +37,17 @@ class MakePlanActivity : AppCompatActivity() {
     lateinit var endMonth:String
     lateinit var endDay:String
 
-    lateinit var startDate:String
-    lateinit var endDate:String
-    
+    lateinit var resultStr:String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_make_plan)
-        init()
-        initRecyclerView()
-        btnInit()
 
-        //날짜 입력 레퍼런스 파일
-        textview_plan_title = this.PlanTitle
-    }
-
-
-
-    ////////////////INIT///////////////////////////
-    fun init(){
         initToolbar()           //툴바 세팅
-        initTheme()             //여행 테마 세팅
         fetchJson()             //서버 파일 다운로드
         initBtn()               //새로운 일정 버튼 클릭 리스너
+        initRecyclerView()
+
     }
 
     fun initToolbar(){
@@ -106,107 +79,11 @@ class MakePlanActivity : AppCompatActivity() {
 
 
 
-    //////////DatePicker Dialog, TimePicker Dialog
+    //////////DatePicker Dialog
     inline fun Activity.showAlertDialog(func: RangePickerActivity.() -> Unit): AlertDialog =
         RangePickerActivity(this).apply {
             func()
         }.create()
-
-    fun btnInit(){
-        select_date.setOnClickListener {
-
-            val dialog:AlertDialog = showAlertDialog {
-                cancelable = false
-                selectBtnClickListener {
-                    Log.v("Dialog", "submit")
-                    var days = calendar_view.selectedDates
-                    var r = days.size
-                    range = r.toString() + "일"
-
-                    if(r != 0){
-                        val start_calendar = days.get(0)
-                        startDay = start_calendar.get(Calendar.DAY_OF_MONTH).toString()
-                        startMonth = (start_calendar.get(Calendar.MONTH) + 1).toString()
-                        startYear = start_calendar.get(Calendar.YEAR).toString()
-//                        startDate= startYear + "년" + startMonth + "월" + startDay + "일"
-
-                        val end_calendar = days.get(r - 1)
-                        endDay = end_calendar.get(Calendar.DAY_OF_MONTH).toString()
-                        endMonth = (end_calendar.get(Calendar.MONTH) + 1).toString()
-                        endYear = end_calendar.get(Calendar.YEAR).toString()
-//                        endDate = endYear + "년" + endMonth + "월" + endDay + "일"
-
-                        var resultStr = ""
-                        if(startYear == endYear){
-                            resultStr = startYear + "." + startMonth + "." + startDay + " - " + endMonth + "." + endDay
-                        }
-                        if(startYear == endYear && startMonth == endMonth && startDay == endDay){
-                            resultStr = startYear + "." + startMonth + "." + startDay
-                        }
-                        rangeDay.text = range
-                        select_date.text = resultStr
-//                        date_text_start.text = startDate
-//                        date_text_end.text = endDate
-                        Log.v("Dialog", startDay + endDay)
-                    } else{
-                        Log.v("Dialog", "null")
-                    }
-                }
-                cancelBtnClickListener {
-                    Log.v("Dialog", "cancel")
-                }
-            }
-            dialog.show()
-            /*
-            CalendarDialog(this, OnDaysSelectionListener {
-                var days = it
-                var range = it.size
-                Toast.makeText(applicationContext, it[0].toString() + "~" + it[range-1].toString(), Toast.LENGTH_SHORT).show()
-
-            }
-            */
-//            ).setCalendarOrientation(HORIZONTAL)
-            //        calendar_view.weekendDayTextColor = Color.parseColor("#FF0000")
-            //
-            //        calendar_view.calendarOrientation = HORIZONTAL
-            //        calendar_view.selectionType = SelectionType.RANGE
-            //
-            //        calendar_view.currentDayIconRes = R.drawable.ic_down__arrow
-            //
-            //        calendar_view.selectedDayBackgroundStartColor = Color.parseColor("#B6E3E9")
-            //        calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#B6E3E9")
-            //        calendar_view.selectedDayBackgroundColor = Color.parseColor("#D9F1F1")
-        }
-    }
-
-
-    fun initTheme() {
-        theme_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (theme_spinner.getItemAtPosition(position)) {
-                    "역사" -> {
-                        theme = "역사"
-                    }
-                    "맛집" -> {
-                        theme = "맛집"
-                    }
-                    "힐링" -> {
-                        theme = "힐링"
-                    }
-                    else -> {
-                        theme = null
-                    }
-                }
-
-            }
-        }
-    }
-
-
-
 
     //////////////다음 액티비티로 넘어가는 부분
     val REQ_CODE: Int = 10000
@@ -228,12 +105,56 @@ class MakePlanActivity : AppCompatActivity() {
 //            }
 
             val intent = Intent(this, AddPlaceActivity::class.java)
-            intent.putExtra("PlanTitle", textview_plan_title!!.text.toString())
-            intent.putExtra("PlanDate", str_start + " ~ " + str_end)
-            intent.putExtra("PlanTheme", theme.toString())
+
+            intent.putExtra("PlanDate", resultStr)
+            intent.putExtra("PlanRange", range)
             intent.putExtra("flag_key",2)
 
             startActivityForResult(intent, REQ_CODE)
+        }
+
+        select_date.setOnClickListener {
+
+            val dialog:AlertDialog = showAlertDialog {
+                cancelable = false
+                selectBtnClickListener {
+                    Log.v("Dialog", "submit")
+                    var days = calendar_view.selectedDates
+                    var r = days.size
+                    range = r.toString() + "일"
+
+                    if(r != 0){
+                        val start_calendar = days.get(0)
+                        startDay = start_calendar.get(Calendar.DAY_OF_MONTH).toString()
+                        startMonth = (start_calendar.get(Calendar.MONTH) + 1).toString()
+                        startYear = start_calendar.get(Calendar.YEAR).toString()
+
+                        val end_calendar = days.get(r - 1)
+                        endDay = end_calendar.get(Calendar.DAY_OF_MONTH).toString()
+                        endMonth = (end_calendar.get(Calendar.MONTH) + 1).toString()
+                        endYear = end_calendar.get(Calendar.YEAR).toString()
+
+                        if(startYear == endYear){
+                            resultStr = startYear + "." + startMonth + "." + startDay + " - " + endMonth + "." + endDay
+                        }
+                        if(startYear == endYear && startMonth == endMonth && startDay == endDay){
+                            resultStr = startYear + "." + startMonth + "." + startDay
+                        }
+                        rangeDay.text = range
+                        select_date.text = resultStr
+//                        date_text_start.text = startDate
+//                        date_text_end.text = endDate
+                        Log.v("Dialog", startDay + endDay)
+                        continueBtn.isEnabled = true
+                    } else{
+                        Log.v("Dialog", "null")
+                    }
+                }
+                cancelBtnClickListener {
+                    Log.v("Dialog", "cancel")
+                }
+            }
+            dialog.show()
         }
     }
 
@@ -246,13 +167,41 @@ class MakePlanActivity : AppCompatActivity() {
 
 
 
-
     ////////////////// Recycler View //////////////////
     //private val planData = ArrayList<MakePlanItem>()
+
     var layoutManager: RecyclerView.LayoutManager? = null
     var adapter: MakePlanAdapter? = null
 
+    var img = ArrayList<ImgItem>()
+    var reviewSize = -1
+    fun initTest(){
+
+        Log.v("size", reviewSize.toString())
+        // ******************************************** //
+        // Okhttp Callback -> notifyDataSetUpdate Call  //
+        // ******************************************** //
+
+        ///////////// TestImage Setting /////////////
+        for(i in 0..2 - 1){
+            var rnd = Random()
+            var n = rnd.nextInt(5) + 1
+
+            val temp = ArrayList<Drawable?>()
+            for(j in 0..n){
+                val index = rnd.nextInt(5) + 1
+                val str = "sample$index"
+                Log.v("TestImg", str)
+                temp.add(baseContext.getDrawable(baseContext.resources.getIdentifier(str, "drawable",  baseContext.packageName)))
+            }
+            img.add(ImgItem(temp))
+        }
+
+        /////////////////////////////////////////////
+    }
     fun initRecyclerView(){
+
+        initTest()
 
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
@@ -267,7 +216,7 @@ class MakePlanActivity : AppCompatActivity() {
                 startActivity(recommendIntent)
             }
         }
-        adapter = MakePlanAdapter(this, listener, planList)
+        adapter = MakePlanAdapter(this, listener, planList, img)
         recyclerView.adapter = adapter
     }
 
@@ -286,6 +235,7 @@ class MakePlanActivity : AppCompatActivity() {
 
                 val movieArray = jsonObject.getJSONArray("response")
 
+                reviewSize = movieArray.length()
                 for (i in 0 until movieArray.length()) {
                     val movieObject = movieArray.getJSONObject(i)
                     val cache_nm = movieObject.getString("TRIP_NAME")
@@ -300,6 +250,7 @@ class MakePlanActivity : AppCompatActivity() {
                     }
                     /////////////preview 작성 필요///////////////
                     planList[i].preview = "This is preview   $i"
+
                 }
             }
 
@@ -307,6 +258,8 @@ class MakePlanActivity : AppCompatActivity() {
                 println("Failed to execute request!")
             }
         })
+
+
     }
 
 
