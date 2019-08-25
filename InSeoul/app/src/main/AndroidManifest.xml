@@ -19,6 +19,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".add_place.AddPlaceSearch">
+        </activity>
         <activity android:name=".make_plan.RecommendPlan">
         </activity>
         <activity android:name=".Server_mapdata.Mapdata_Activity">
@@ -52,7 +54,9 @@
         </activity>
         <activity android:name=".timeline.TimeLineActivity">
         </activity>
-        <activity android:name=".make_plan.AddPlaceActivity">
+        <activity
+                android:name=".add_place.AddPlaceActivity"
+                android:windowSoftInputMode="adjustNothing">
         </activity>
         <activity android:name=".search.SearchActivity">
         </activity>

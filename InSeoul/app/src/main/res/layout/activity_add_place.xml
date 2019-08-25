@@ -5,16 +5,16 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".make_plan.AddPlaceActivity"
+        tools:context=".add_place.AddPlaceActivity"
         android:orientation="vertical"
 >
     <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@color/toolbar_background"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
-            android:id="@+id/toolbar_add_place">
+            android:id="@+id/toolbar_add_place" android:layout_weight="1">
         <ImageButton
                 android:id="@+id/finishBtn"
                 android:layout_marginVertical="10dp"
@@ -28,14 +28,14 @@
     </androidx.appcompat.widget.Toolbar>
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:orientation="vertical" android:layout_weight="9">
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:gravity="center"
                 android:orientation="horizontal"
-        >
+                android:layout_weight="1">
             <TextView
                     android:text="일정 추가하기"
                     android:textSize="28dp"
@@ -57,24 +57,19 @@
         <EditText
                 android:id="@+id/PlanTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_margin="10dp"
                 android:textSize="20dp"
-        />
+                android:layout_weight="1"/>
         <Spinner
                 android:id="@+id/theme_spinner"
                 android:padding="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:spinnerMode="dialog"
                 android:prompt="@string/spinner_prompt"
                 android:entries="@array/theme_array"
-        />
-        <FrameLayout
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
-        />
+                android:layout_weight="1"/>
         <TextView
                 android:text="친구 초대"
                 android:layout_margin="10dp"
@@ -82,21 +77,28 @@
                 android:layout_gravity="right"
                 android:id="@+id/shareBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:background="@drawable/radius_btn"
                 android:textColor="@color/white"
-        />
+                android:layout_weight="1"/>
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:id="@+id/map"
+                  android:name="com.google.android.gms.maps.SupportMapFragment"
+                  android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  tools:context=".make_plan.RecommendPlan" android:layout_weight="4"/>
         <Button
                 android:id="@+id/addBtn"
                 android:text="Add Place"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-        />
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:layout_weight="4"
         />
     </LinearLayout>
 
