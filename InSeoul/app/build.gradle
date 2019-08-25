@@ -79,5 +79,5 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:2.0.0'
 
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
-
+    implementation 'me.relex:circleindicator:2.1.4'
 }
