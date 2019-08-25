@@ -183,7 +183,7 @@ class MakePlanActivity : AppCompatActivity() {
         // ******************************************** //
 
         ///////////// TestImage Setting /////////////
-        for(i in 0..2 - 1){
+        for(i in 0..1){
             var rnd = Random()
             var n = rnd.nextInt(5) + 1
 

@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.inseoul.R
+import me.relex.circleindicator.CircleIndicator3
 
 class MakePlanAdapter(
     val context: Context,
@@ -51,6 +52,7 @@ class MakePlanAdapter(
         val img = imgItems[position].img
         val vp = ViewPagerAdpater_recommand(context, img)
         holder.view_pager2.adapter = vp
+        holder.indicator.setViewPager(holder.view_pager2);
 
 
         holder.itemView.setOnClickListener {
@@ -62,10 +64,12 @@ class MakePlanAdapter(
         var item_title: TextView
         var item_content: TextView
         var view_pager2: ViewPager2
+        var indicator:CircleIndicator3
         init {
             item_title = itemView.findViewById(R.id.r_title)
             item_content = itemView.findViewById(R.id.r_content)
             view_pager2 = itemView.findViewById(R.id.view_pager2)
+            indicator = itemView.findViewById(R.id.indicator)
         }
     }
 
