@@ -1,13 +1,14 @@
 package com.inseoul.make_plan
 
 import android.content.Context
-import android.graphics.drawable.Drawable
+import android.content.Intent
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.inseoul.R
@@ -16,8 +17,9 @@ import me.relex.circleindicator.CircleIndicator3
 class MakePlanAdapter(
     val context: Context,
     var listener:RecyclerViewAdapterEventListener,
-    var items:ArrayList<MakePlanItem>,
-    var imgItems:ArrayList<ImgItem>
+    var vListener:ViewPagerAdpater_recommand.ViewPagerAdapterEventListener,
+    var items:ArrayList<MakePlanItem>
+//    , var imgItems:ArrayList<ImgItem>
 ): RecyclerView.Adapter<MakePlanAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
@@ -49,11 +51,12 @@ class MakePlanAdapter(
         val data = items!!.get(position)
         holder.item_title.text = data.TRIP_NAME
         holder.item_content.text = data.preview
-        val img = imgItems[position].img
-        val vp = ViewPagerAdpater_recommand(context, img)
-        holder.view_pager2.adapter = vp
-        holder.indicator.setViewPager(holder.view_pager2);
+//        val img = imgItems[position].img
 
+        val vp = ViewPagerAdpater_recommand(context, vListener, data.imgList, holder.itemView, position)
+        holder.view_pager2.adapter = vp
+
+        holder.indicator.setViewPager(holder.view_pager2);
 
         holder.itemView.setOnClickListener {
             listener!!.onClick(it, position)
@@ -70,6 +73,7 @@ class MakePlanAdapter(
             item_content = itemView.findViewById(R.id.r_content)
             view_pager2 = itemView.findViewById(R.id.view_pager2)
             indicator = itemView.findViewById(R.id.indicator)
+
         }
     }
 

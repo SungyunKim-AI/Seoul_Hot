@@ -9,8 +9,19 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
 
-class ViewPagerAdpater_recommand (val c: Context, val itemlist:ArrayList<Drawable?>)
+class ViewPagerAdpater_recommand (
+    val c: Context,
+    var listener:ViewPagerAdapterEventListener,
+    val itemlist:ArrayList<Drawable?>,
+    val parentView:View,
+    val parentPosition:Int
+)
     : RecyclerView.Adapter<ViewPagerAdpater_recommand.ViewHolder>() {
+
+
+    interface ViewPagerAdapterEventListener {
+        fun onClick(view: View, position:Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -25,7 +36,9 @@ class ViewPagerAdpater_recommand (val c: Context, val itemlist:ArrayList<Drawabl
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         var img = itemlist[position]
         holder.previewImg.setImageDrawable(img)
-
+        holder.itemView.setOnClickListener {
+            listener!!.onClick(parentView, parentPosition)
+        }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){

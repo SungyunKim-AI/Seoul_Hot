@@ -173,41 +173,16 @@ class MakePlanActivity : AppCompatActivity() {
     var layoutManager: RecyclerView.LayoutManager? = null
     var adapter: MakePlanAdapter? = null
 
-    var img = ArrayList<ImgItem>()
-    var reviewSize = -1
-    fun initTest(){
-
-        Log.v("size", reviewSize.toString())
-        // ******************************************** //
-        // Okhttp Callback -> notifyDataSetUpdate Call  //
-        // ******************************************** //
-
-        ///////////// TestImage Setting /////////////
-        for(i in 0..1){
-            var rnd = Random()
-            var n = rnd.nextInt(5) + 1
-
-            val temp = ArrayList<Drawable?>()
-            for(j in 0..n){
-                val index = rnd.nextInt(5) + 1
-                val str = "sample$index"
-                Log.v("TestImg", str)
-                temp.add(baseContext.getDrawable(baseContext.resources.getIdentifier(str, "drawable",  baseContext.packageName)))
-            }
-            img.add(ImgItem(temp))
-        }
-
-        /////////////////////////////////////////////
-    }
     fun initRecyclerView(){
 
-        initTest()
+//        initTest()
 
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
         val listener = object: MakePlanAdapter.RecyclerViewAdapterEventListener{
-            override fun onClick(view: View, position: Int) {
 
+            override fun onClick(view: View, position: Int) {
+                // ViewPager Touch Listener
                 //intent로 장소 이름 전달
                 val recommendIntent = Intent(this@MakePlanActivity, RecommendPlan::class.java)
                 recommendIntent.putExtra("planData",planList[position])
@@ -216,7 +191,16 @@ class MakePlanActivity : AppCompatActivity() {
                 startActivity(recommendIntent)
             }
         }
-        adapter = MakePlanAdapter(this, listener, planList, img)
+        val vListener = object: ViewPagerAdpater_recommand.ViewPagerAdapterEventListener{
+            override fun onClick(view: View, position:Int) {
+                val recommendIntent = Intent(this@MakePlanActivity, RecommendPlan::class.java)
+                recommendIntent.putExtra("planData",planList[position])
+                recommendIntent.putExtra("plan_array",planList[position].PLAN)
+                Log.d("alert_sdf",planList[position].PLAN.toString())
+                startActivity(recommendIntent)
+            }
+        }
+        adapter = MakePlanAdapter(this, listener, vListener, planList)
         recyclerView.adapter = adapter
     }
 
@@ -235,7 +219,6 @@ class MakePlanActivity : AppCompatActivity() {
 
                 val movieArray = jsonObject.getJSONArray("response")
 
-                reviewSize = movieArray.length()
                 for (i in 0 until movieArray.length()) {
                     val movieObject = movieArray.getJSONObject(i)
                     val cache_nm = movieObject.getString("TRIP_NAME")
@@ -250,8 +233,25 @@ class MakePlanActivity : AppCompatActivity() {
                     }
                     /////////////preview 작성 필요///////////////
                     planList[i].preview = "This is preview   $i"
+                    var rnd = Random()
+                    var n = rnd.nextInt(5) + 1
+
+//                val temp = ArrayList<Drawable?>()
+                    for(j in 0..n){
+                        val index = rnd.nextInt(5) + 1
+                        val str = "sample$index"
+                        Log.v("TestImg", str)
+                        planList[i].imgList.add(baseContext.getDrawable(baseContext.resources.getIdentifier(str, "drawable",  baseContext.packageName)))
+                    }
+//                img.add(ImgItem(temp))
 
                 }
+                // UI update Thread
+                runOnUiThread {
+                    adapter!!.notifyDataSetChanged()
+
+                }
+//                updateView()
             }
 
             override fun onFailure(call: Call?, e: IOException?) {
