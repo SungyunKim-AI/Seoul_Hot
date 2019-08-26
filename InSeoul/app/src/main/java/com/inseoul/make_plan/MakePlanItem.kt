@@ -12,6 +12,7 @@ data class  MakePlanItem(
     var THEME: String? = null
     var LIKES: Int? = null
     var PLAN = ArrayList<Int>()
+    var imgList = ArrayList<Drawable?>()
 
     constructor(parcel: Parcel) : this(parcel.readString()) {
         preview = parcel.readString()
