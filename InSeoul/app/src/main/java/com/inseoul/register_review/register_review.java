@@ -1,8 +1,14 @@
 package com.inseoul.register_review;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -15,12 +21,19 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class register_review extends AppCompatActivity {
 
@@ -32,11 +45,17 @@ public class register_review extends AppCompatActivity {
     private ImageButton imgBtn;
     private ImageView img_view;
     final private int REQUEST_IMAGE_CAPTURE = 1111;
-
+    private String IMGpath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_review);
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                .penaltyLog().build());
+
 
         // Init Variable
         imgBtn = findViewById(R.id.imageButton);
@@ -101,27 +120,70 @@ public class register_review extends AppCompatActivity {
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-                }
+                sendTakePhotoIntent();
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
+
+
             imgBtn.setVisibility(View.GONE);
             img_view.setVisibility(View.VISIBLE);
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
             ((ImageView)findViewById(R.id.img_view))
-                    .setImageBitmap(imageBitmap);
+                    .setImageURI(photoUri);
+            HTTpfileUpload();
         }
 
+
+
+
     }
+
+    private Uri photoUri;
+
+
+
+    private void sendTakePhotoIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+
+            if (photoFile != null) {
+                photoUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+
+    public String imageFilePath;
+    public String imageFileName;
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+         imageFileName = "TEST_" + timeStamp + "";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,      /* prefix */
+                ".jpg",         /* suffix */
+                storageDir          /* directory */
+        );
+        imageFilePath = image.getAbsolutePath();
+        imageFileName += ".jpg";
+        return image;
+    }
+
 
     //toolbar에서 back 버튼
     @Override
@@ -134,4 +196,80 @@ public class register_review extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void HTTpfileUpload(){
+        String pathToOurFile = imageFilePath;
+        String urlServer = "http://ksun1234.cafe24.com/UploadIMG.php";
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        try {
+            FileInputStream mFileInputStream = new FileInputStream(imageFilePath);
+            URL connectUrl = new URL(urlServer);
+            Log.d("Test", "mFileInputStream  is " + mFileInputStream);
+
+            // open connection
+            HttpURLConnection conn = (HttpURLConnection)connectUrl.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+            // write data
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + imageFileName +"\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+
+            int bytesAvailable = mFileInputStream.available();
+            int maxBufferSize = 1024;
+            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+            byte[] buffer = new byte[bufferSize];
+            int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+
+            Log.d("Test", "image byte is " + bytesRead);
+
+            // read image
+            while (bytesRead > 0) {
+                dos.write(buffer, 0, bufferSize);
+                bytesAvailable = mFileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+            }
+
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+            // close streams
+            Log.e("Test" , "File is written");
+            mFileInputStream.close();
+            dos.flush(); // finish upload...
+
+            // get response
+            int ch;
+            InputStream is = conn.getInputStream();
+            StringBuffer b =new StringBuffer();
+            while( ( ch = is.read() ) != -1 ){
+                b.append( (char)ch );
+            }
+            String s=b.toString();
+            Log.e("Test", "result = " + s);
+
+            dos.close();
+            conn.disconnect();
+            mFileInputStream.close();
+
+
+        } catch (Exception e) {
+            Log.d("Test", "exception " + e.getMessage());
+            // TODO: handle exception
+        }
+    }
+
+
+
+
 }
