@@ -172,7 +172,7 @@ public class register_review extends AppCompatActivity {
     public String imageFileName;
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-         imageFileName = "TEST_" + timeStamp + "_";
+         imageFileName = "TEST_" + timeStamp + "";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,      /* prefix */
@@ -180,6 +180,7 @@ public class register_review extends AppCompatActivity {
                 storageDir          /* directory */
         );
         imageFilePath = image.getAbsolutePath();
+        imageFileName += ".jpg";
         return image;
     }
 
