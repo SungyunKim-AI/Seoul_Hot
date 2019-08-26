@@ -3,7 +3,6 @@ package com.inseoul.make_plan
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_make_plan.*
 import java.util.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.inseoul.add_place.AddPlaceActivity
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -187,7 +187,6 @@ class MakePlanActivity : AppCompatActivity() {
                 val recommendIntent = Intent(this@MakePlanActivity, RecommendPlan::class.java)
                 recommendIntent.putExtra("planData",planList[position])
                 recommendIntent.putExtra("plan_array",planList[position].PLAN)
-                Log.d("alert_sdf",planList[position].PLAN.toString())
                 startActivity(recommendIntent)
             }
         }

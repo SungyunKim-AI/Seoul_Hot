@@ -15,8 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import com.inseoul.R;
-import com.inseoul.make_plan.AddPlaceActivity;
-import com.inseoul.manage_schedules.my_schedule;
+import com.inseoul.add_place.AddPlaceActivity;
 
 import java.util.ArrayList;
 

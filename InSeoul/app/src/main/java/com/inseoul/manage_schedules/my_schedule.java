@@ -7,7 +7,6 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.inseoul.R;
-import com.inseoul.make_plan.AddPlaceActivity;
+import com.inseoul.add_place.AddPlaceActivity;
 import com.inseoul.make_plan.MakePlanActivity;
 import com.inseoul.register_review.register_review;
 

@@ -206,8 +206,8 @@ public class register_review extends AppCompatActivity {
         try {
             FileInputStream mFileInputStream = new FileInputStream(imageFilePath);
             URL connectUrl = new URL(urlServer);
-            Log.d("Test", "mFileInputStream  is " + mFileInputStream);
-
+            Log.d("Test", "mFileInputStream  is " + imageFileName);
+            Log.d("Test", "mFileInputStream  is " + imageFilePath);
             // open connection
             HttpURLConnection conn = (HttpURLConnection)connectUrl.openConnection();
             conn.setDoInput(true);
