@@ -44,8 +44,6 @@ class SearchAdapter(val context: Context,
         holder.item_title.text = data.title
         holder.item_content.text = data.preview
 
-
-        Log.v("In RecyclerView", "Bind Item")
         holder.itemView.setOnClickListener {
             listener!!.onClick(it, position)
         }

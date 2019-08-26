@@ -16,7 +16,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.inseoul.R;
+import com.inseoul.make_plan.AddPlaceActivity;
 import com.inseoul.make_plan.MakePlanActivity;
 import com.inseoul.register_review.register_review;
 
@@ -51,6 +53,7 @@ public class my_schedule extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+
 
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
@@ -92,13 +95,12 @@ public class my_schedule extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration_past = new DividerItemDecoration(mRecyclerView_past.getContext(),
                 mLinearLayoutManager_past.getOrientation());
         mRecyclerView_past.addItemDecoration(dividerItemDecoration_past);
-
     }
 
-    //버튼 세팅팅
+    //버튼 세팅
     public void initBtn() {
         // 일정 추가하기 클릭 이벤트
-        Button add_schedule = (Button) findViewById(R.id.add_schedule);
+        FloatingActionButton add_schedule = (FloatingActionButton) findViewById(R.id.add_schedule);
         add_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +108,30 @@ public class my_schedule extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        //수정 중인 여정 리사이클러뷰 클릭시 현재 액티비티에서 AdDPlaceActivity로 데이터 전달
+        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mRecyclerView_past, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                recyclerview_schedule Schedules = mArrayList.get(position);
+
+                //intent 전달
+                Intent intent_addPlace = new Intent(getBaseContext(), AddPlaceActivity.class);
+                intent_addPlace.putExtra("textview_title", Schedules.getSchedule_title());
+                intent_addPlace.putExtra("textview_date", Schedules.getSchedule_date());
+                intent_addPlace.putExtra("flag_key",3);
+                startActivity(intent_addPlace);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+            }
+        }));
+
+
+
+
 
         //지난 여정 리사이클러뷰 클릭시 현재 액티비티에서 register_review액티비티에 데이터 전달
         mRecyclerView_past.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mRecyclerView_past, new ClickListener() {

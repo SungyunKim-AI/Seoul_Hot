@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.inseoul">
-    <!-- CAMERA || GALLERY PERMISSION -->
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!-- CAMERA || GALLERY PERMISSION -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -27,12 +32,36 @@
                     android:resource="@xml/file_paths" />
         </provider>
         <activity android:name=".SearchDetails.SearchDetail">
+
+        <activity android:name=".make_plan.RecommendPlan">
+
         </activity>
-        <activity android:name=".search.SearchDetails">
+        <activity android:name=".Server_mapdata.Mapdata_Activity">
+        </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="@string/google_maps_key"/>
+        <meta-data
+                android:name="com.naver.maps.map.CLIENT_ID"
+                android:value="jqxe84nuvy"/>
+
+        <activity android:name=".TestActivity">
+        </activity>
+        <activity android:name=".manage_member.SignUpActivity">
+        </activity>
+        <activity android:name=".manage_member.SignInActivity">
+        </activity>
+        <activity android:name=".SearchDetails.SearchDetail">
         </activity>
         <activity android:name=".register_review.register_review">
-        </activity>
-        <activity android:name=".regist_review.review">
         </activity>
         <activity android:name=".manage_schedules.my_schedule">
         </activity>
@@ -44,28 +73,19 @@
         </activity>
         <activity android:name=".make_plan.MakePlanActivity">
         </activity>
-
-        <meta-data
-                android:name="com.naver.maps.map.CLIENT_ID"
-                android:value="jqxe84nuvy"/>
-
-        <activity android:name=".manage_member.SignUpActivity">
-        </activity>
-        <activity android:name=".manage_member.SignInActivity">
-        </activity>
         <activity
                 android:name=".SplashActivity"
                 android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
                 android:name=".MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
     </application>
 

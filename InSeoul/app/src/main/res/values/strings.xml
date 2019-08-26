@@ -16,10 +16,14 @@
 
 
     <string name="spinner_prompt">Theme</string>
-    <string-array name="spinner_array">
+    <string-array name="theme_array">
         <item>여행 테마 설정</item>
         <item>역사</item>
         <item>맛집</item>
         <item>힐링</item>
     </string-array>
+    <string-array name="spot_new">
+
+    </string-array>
+    <string name="title_activity_maps">Map</string>
 </resources>

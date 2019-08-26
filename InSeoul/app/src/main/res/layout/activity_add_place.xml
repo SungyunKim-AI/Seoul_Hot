@@ -11,54 +11,94 @@
     <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/toolbar_background"
             android:theme="?attr/actionBarTheme"
-            android:minHeight="?attr/actionBarSize" android:id="@+id/toolbar_add_place"/>
-    <Button
-            android:id="@+id/finishBtn"
-            android:text="Commit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-    />
-    <ScrollView
+            android:minHeight="?attr/actionBarSize"
+            android:id="@+id/toolbar_add_place">
+        <ImageButton
+                android:id="@+id/finishBtn"
+                android:layout_marginVertical="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_save"
+                android:background="#00000000"
+                android:layout_gravity="right"
+        />
+    </androidx.appcompat.widget.Toolbar>
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+        >
             <TextView
-                    android:text="Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_plantitle"/>
-            <TextView
-                    android:text="Date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_plandate"/>
-            <TextView
-                    android:text="Theme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview_plantheme"/>
-            <FrameLayout
-                    android:id="@+id/map"
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp"/>
-            <Button
-                    android:id="@+id/addBtn"
-                    android:text="Add Place"
+                    android:text="일정 추가하기"
+                    android:textSize="28dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
             />
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
+            <TextView
+                    android:layout_margin="5dp"
+                    android:textSize="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:id="@+id/textview_plandate"
+                    android:textColor="@color/black"
             />
         </LinearLayout>
-    </ScrollView>
+        <EditText
+                android:id="@+id/PlanTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="20dp"
+        />
+        <Spinner
+                android:id="@+id/theme_spinner"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"
+                android:prompt="@string/spinner_prompt"
+                android:entries="@array/theme_array"
+        />
+        <FrameLayout
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+        />
+        <TextView
+                android:text="친구 초대"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:layout_gravity="right"
+                android:id="@+id/shareBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radius_btn"
+                android:textColor="@color/white"
+        />
+        <Button
+                android:id="@+id/addBtn"
+                android:text="Add Place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+        />
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+        />
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -4,8 +4,10 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,14 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
 import com.inseoul.SearchDetails.SearchDetail
 import kotlinx.android.synthetic.main.activity_search.*
+import kotlinx.android.synthetic.main.activity_search.recyclerView
 
 class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        setSupportActionBar(toolbar_search)
         initTest()
-        initBtn()
 
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search) as Toolbar
@@ -31,15 +34,62 @@ class SearchActivity : AppCompatActivity() {
         actionBar.setDisplayShowTitleEnabled(false)
 
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-        mtoolbar.title = "검색"
-        mtoolbar.setTitleTextColor(Color.WHITE)
-    }
+        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+//        mtoolbar.title = "검색"
+//        mtoolbar.setTitleTextColor("#000000")
+        searchView.performClick()
+        searchView.requestFocus()
+        searchView.isSubmitButtonEnabled = true;
 
-    fun initBtn(){
-        search.setOnClickListener {
-            initRecyclerView()
-        }
+        // Search View EventListener
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+
+            // Text Change
+            override fun onQueryTextChange(p0: String?): Boolean {
+                Log.d("Text Change",p0)
+
+                //////////////////////// DB Connect & Query ////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+                /////////////////////////////////////////////////////////////////////
+
+                return false
+            }
+
+            // Submit
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+//                textView.text = p0
+//                Toast.makeText(applicationContext,"Submit Button!",Toast.LENGTH_SHORT).show()
+                Log.d("Submit",p0)
+
+                //////////////////////// DB Connect & Query ////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+                /////////////////////////////////////////////////////////////////////
+
+                initRecyclerView()
+
+                return false
+            }
+        })
     }
 
     ////////////////// Recycler View //////////////////

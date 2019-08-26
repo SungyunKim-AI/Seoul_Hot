@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +39,7 @@ class MainActivity :
     NavigationView.OnNavigationItemSelectedListener,
     OnMapReadyCallback
 {
-    val key = "4d4956476768736f3131397547724879"
+    val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
 
     /////////////// Permission Check ///////////////
 
@@ -147,6 +148,11 @@ class MainActivity :
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar)
+
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -160,6 +166,8 @@ class MainActivity :
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+        toolbar.navigationIcon = getDrawable(R.drawable.hamburger)
+
         navView.setNavigationItemSelectedListener(this)
 
         /////////////////////////////////////////////////////
@@ -183,6 +191,7 @@ class MainActivity :
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         type_mini.setOpenAPIKey(key)
+        cultural_type_mini.setOpenAPIKey(key);
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -192,32 +201,20 @@ class MainActivity :
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+            R.id.search -> {
+                val intent = Intent(this, SearchActivity::class.java)
+                startActivity(intent)
+                true
+            }
+           else -> super.onOptionsItemSelected(item)
         }
+        return true
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_home -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
 
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_tools -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -228,10 +225,6 @@ class MainActivity :
 
     ////////////////// Button //////////////////
     fun initBtn(){
-        searchBtn.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
-        }
 
         MkPlanBtn.setOnClickListener {
             val intent = Intent(this, MakePlanActivity::class.java)

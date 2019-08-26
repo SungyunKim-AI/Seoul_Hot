@@ -11,95 +11,81 @@
     <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/toolbar_background"
             android:theme="?attr/actionBarTheme"
-            android:minHeight="?attr/actionBarSize" android:id="@+id/toolbar_make_plan"/>
-    <EditText
-            android:hint="Title"
-            android:id="@+id/PlanTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:minHeight="?attr/actionBarSize"
+            android:id="@+id/toolbar_make_plan"/>
 
     <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="1">
-        <Button
-                android:id="@+id/DatePickBtn_start"
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:focusableInTouchMode="true"
-                android:background="@drawable/datepickbtn_start_24dp" android:layout_weight="1"/>
-        <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="date"
-                android:ems="10"
-                android:id="@+id/date_text_start" android:layout_weight="3"
-                android:hint="출발 날짜"/>
-        <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="time"
-                android:ems="10"
-                android:id="@+id/time_text_start" android:layout_weight="2"
-                android:hint="출발 시간"/>
-    </LinearLayout>
-
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="1">
-        <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/DatePickBtn_end"
-                android:focusableInTouchMode="true"
-                android:background="@drawable/datepickbtn_end_24dp" android:layout_weight="1"/>
-        <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="date"
-                android:ems="10"
-                android:id="@+id/date_text_end" android:layout_weight="3"
-                android:hint="도착 날짜"/>
-        <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="time"
-                android:ems="10"
-                android:id="@+id/time_text_end" android:layout_weight="2"
-                android:hint="도착 시간"/>
-    </LinearLayout>
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:id="@+id/inform_layout"
+    >
         <TextView
-                android:text="Theme"
+                android:text="언제 가나요?"
+                android:textSize="28dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
         />
-        <Spinner
-                android:id="@+id/theme_spinner"
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:spinnerMode="dialog"
-                android:prompt="@string/spinner_prompt"
-                android:entries="@array/spinner_array"
-        ></Spinner>
-
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp"
+        >
+            <TextView
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:id="@+id/select_date"
+                    android:background="@drawable/radius_btn"
+                    android:textColor="@color/white"
+                    android:text="날짜를 선택하세요"
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
+                    android:textSize="20dp"
+            />
+            <TextView
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:hint="기간"
+                    android:id="@+id/rangeDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+            />
+        </LinearLayout>
     </LinearLayout>
-    <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp" app:srcCompat="@drawable/seoulmap" android:id="@+id/imageView3"
-            android:layout_weight="7"/>
-    <Button
-            android:text="Continue"
+    <TextView
+            android:text="일정 만들기"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_gravity="right"
             android:id="@+id/continueBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radius_btn"
+            android:textColor="@color/white"
+            android:enabled="false"
+    />
+
+    <TextView
+            android:text="인기 리뷰"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="20dp"
+            android:textColor="@color/black"
+    />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recyclerView"
+    />
+
 </LinearLayout>

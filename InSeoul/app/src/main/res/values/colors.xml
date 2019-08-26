@@ -4,7 +4,11 @@
     <color name="colorPrimaryDark">#B6E3E9</color>
     <color name="white">#FFFFFf</color>
     <color name="colorAccent">#FDAFAB</color>
+    <color name="black">#000000</color>
+    <color name="falseBtn">#CECECE</color>
 
+    <color name="toolbar_background">#00000000</color>
+    <color name="invisible">#00000000</color>
     <!-- Color -->
     <color name="c1">#FAF1D6</color>
     <color name="c2">#FAD4AE</color>
