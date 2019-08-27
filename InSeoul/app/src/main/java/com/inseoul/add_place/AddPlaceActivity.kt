@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.*
 import com.inseoul.R
 import com.inseoul.make_plan.MarkerItem
 import kotlinx.android.synthetic.main.activity_add_place.*
+import java.util.*
 
 class AddPlaceActivity :
     AppCompatActivity(),
@@ -21,6 +22,15 @@ class AddPlaceActivity :
 
     lateinit var mMap: GoogleMap
     var selectedMarker: Marker? = null
+    val markerList = ArrayList<AddPlaceItem>()
+    val lineList = ArrayList<LatLng>()
+
+    private val POLYLINE_STROKE_WIDTH_PX = 7f
+    private val PATTERN_GAP_LENGTH_PX = 10f
+    private val COLOR_BLACK_ARGB = -0x1000000
+    private val DOT = Dot()
+    private val GAP = Gap(PATTERN_GAP_LENGTH_PX)
+    private val PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +43,7 @@ class AddPlaceActivity :
         mapFragment!!.getMapAsync(this)
     }
 
-    fun init(){
+    fun init() {
 
         initToolbar()
 
@@ -78,6 +88,8 @@ class AddPlaceActivity :
 //            textview_theme = this.textview_plantheme
 
             textview_plandate.text = ""
+        } else if (flag == 4) {
+            //flag가 4이라면 AddPlaceSearch에서 넘어옴
         }
 
 
@@ -88,13 +100,32 @@ class AddPlaceActivity :
             intent.putExtra("result", 1)    // TEST CODE
             setResult(Activity.RESULT_OK, intent)
             finish()
-
         }
         addBtn.setOnClickListener {
             val intent = Intent(this, AddPlaceSearch::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, 0)
         }
     }
+
+
+    /////////////////AddPlaceSearch에서 넘어왔을때 호출//////////////////////////////
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == 1) {
+            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
+            markerList.add(placeData!!)
+            lineList.add(markerList[markerList.size-1].latLng!!)
+        }
+        for (i in 0 until markerList.size) {
+            markerList[i].count = i
+            Log.d("alert_대입",markerList[i].count.toString())
+            addMarker(markerList[i], false)
+
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
+
+    }
+
 
     fun initTheme() {
         theme_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -125,8 +156,7 @@ class AddPlaceActivity :
     ////////////////// Map //////////////////
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.566502, 126.977918), 12f))          //map 시작 위치 : 서울 시청
-
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.51957588, 126.939837477), 12f))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
 
@@ -135,29 +165,29 @@ class AddPlaceActivity :
 
     fun getMarkerItems() {
 
-//        //폴리 라인 만들기
-//        val polyline = mMap.addPolyline(
-//            PolylineOptions()
-//                .clickable(true)
-//                .addAll(lineList)
-//        )
-//        polyline.width = POLYLINE_STROKE_WIDTH_PX
-//        polyline.pattern = PATTERN_POLYLINE_DOTTED
-//
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[0], 12f))
+        //폴리 라인 만들기
+        val polyline = mMap.addPolyline(
+            PolylineOptions()
+                .clickable(true)
+                .addAll(lineList)
+        )
+        polyline.width = POLYLINE_STROKE_WIDTH_PX
+        polyline.pattern = PATTERN_POLYLINE_DOTTED
+
     }
 
 
     private fun addMarker(
-        markerItem: MarkerItem,
+        markerItem: AddPlaceItem,
         isSelectedMarker: Boolean
     ): Marker {
 
-        var position = LatLng(markerItem.lat, markerItem.lng)
-        var order = markerItem.order
+        var position = markerItem.latLng
+        var order = markerItem.count
+        Log.d("alert_출력",markerItem.count.toString())
 
         var markerOptions = MarkerOptions()
-        markerOptions.position(position)
+        markerOptions.position(position!!)
         markerOptions.title(order.toString())
         markerOptions.snippet(order.toString())
 
@@ -174,10 +204,10 @@ class AddPlaceActivity :
         marker: Marker,
         isSelectedMarker: Boolean
     ): Marker {
-        var lat = marker.position.latitude
-        var lng = marker.position.longitude
-        var order = marker.title.toInt()
-        var temp: MarkerItem = MarkerItem(lat, lng, order)
+        var title = marker.title
+        var preview = marker.title
+        var latlng = marker.position
+        var temp: AddPlaceItem = AddPlaceItem(title, preview, latlng)
 
         return addMarker(temp, isSelectedMarker)
     }
@@ -212,7 +242,6 @@ class AddPlaceActivity :
     }
 
 
-
     ////////////////Toolbar//////////////
     fun initToolbar() {
         //toolbar 커스텀 코드
@@ -226,6 +255,7 @@ class AddPlaceActivity :
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
         actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -236,4 +266,3 @@ class AddPlaceActivity :
         return super.onOptionsItemSelected(item)
     }
 }
-

@@ -1,5 +1,6 @@
 package com.inseoul.add_place
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +11,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.model.LatLng
 import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_search.*
 
 class AddPlaceSearch : AppCompatActivity() {
+
+    val RESULT_CODE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +95,10 @@ class AddPlaceSearch : AppCompatActivity() {
 
     fun initTest(){
 
-        for(i in 0..10){
-            test.add(AddPlaceItem("This is Title" + i.toString(), "This is Content" + i.toString()))
+        test.add(AddPlaceItem("This is Title0" , "This is Content0" , LatLng(37.567899,127.009506)))
+        test.add(AddPlaceItem("This is Title1", "This is Content1", LatLng(37.520246,126.940682)))
+        for(i in 2..10){
+            test.add(AddPlaceItem("This is Title" + i.toString(), "This is Content" + i.toString(), LatLng(37.567899,127.009506)))
         }
     }
 
@@ -104,11 +110,10 @@ class AddPlaceSearch : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         val listener = object: AddPlaceAdapter.RecyclerViewAdapterEventListener{
             override fun onClick(view: View, position: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates
-                //intent로 장소 이름 전달
-//                val detailsIntent = Intent(this, SearchDetail::class.java)
-//                detailsIntent.putExtra("search_title",test[position].title)
-//                startActivity(detailsIntent)
+                val intent = Intent()
+                intent.putExtra("placeData",test[position])
+                setResult(RESULT_CODE,intent)
+                finish()
             }
             //리사이클러 뷰를 클릭했을때 SearchDetails 액티비티로 넘어가는 클릭 리스너
         }
