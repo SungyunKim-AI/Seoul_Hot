@@ -48,7 +48,7 @@ class AddPlaceAdapter(val context: Context,
         holder.itemView.setOnClickListener {
             listener!!.onClick(it, position)
         }
-    }
+    } 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var thumbnail: ImageView

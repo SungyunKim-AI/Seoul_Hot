@@ -1,6 +1,7 @@
 package com.inseoul.register_review;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -46,15 +47,22 @@ public class register_review extends AppCompatActivity {
     private ImageView img_view;
     final private int REQUEST_IMAGE_CAPTURE = 1111;
     private String IMGpath;
+    private SharedPreferences appData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_review);
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .detectNetwork()
-                .penaltyLog().build());
+                .permitDiskReads()
+                .permitDiskWrites()
+                .permitNetwork().build());
+
+         appData = getSharedPreferences("appData", MODE_PRIVATE);
+        Boolean saveLoginData = appData.getBoolean("SAVE_LOGIN_DATA", false);
+        int idNUM = appData.getInt("ID", 0);
+
+
+
 
 
         // Init Variable
@@ -172,7 +180,7 @@ public class register_review extends AppCompatActivity {
     public String imageFileName;
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-         imageFileName = "TEST_" + timeStamp + "";
+        imageFileName = "TEST_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,      /* prefix */
@@ -260,7 +268,6 @@ public class register_review extends AppCompatActivity {
 
             dos.close();
             conn.disconnect();
-            mFileInputStream.close();
 
 
         } catch (Exception e) {
