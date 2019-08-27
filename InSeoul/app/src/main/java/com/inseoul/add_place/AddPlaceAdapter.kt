@@ -10,19 +10,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import android.widget.Toast
+import kotlinx.android.synthetic.main.item_add_place_search.view.*
 
-class AddPlaceAdapter(val context: Context,
+
+class AddPlaceAdapter  (var context: Context,
                       var listener:RecyclerViewAdapterEventListener,
                       var items:ArrayList<AddPlaceItem>
 ): RecyclerView.Adapter<AddPlaceAdapter.ViewHolder>() {
 
+    
     interface RecyclerViewAdapterEventListener {
         fun onClick(view: View, position: Int)
     }
+    
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_search, parent, false)
+            .inflate(R.layout.item_add_place_search, parent, false)
         return ViewHolder(v)
     }
 
@@ -45,10 +51,16 @@ class AddPlaceAdapter(val context: Context,
         holder.item_title.text = data.title
         holder.item_content.text = data.preview
 
-        holder.itemView.setOnClickListener {
-            listener!!.onClick(it, position)
+
+//        holder.itemView.setOnClickListener {
+//            listener!!.onClick(it, position)
+//        }
+
+        holder.itemView.selectBtn.setOnClickListener{
+            listener!!.onClick(it,position)
         }
-    } 
+    }
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var thumbnail: ImageView
@@ -62,13 +74,6 @@ class AddPlaceAdapter(val context: Context,
             item_content = itemView.findViewById(R.id.search_preview)
             selectBtn = itemView.findViewById(R.id.selectBtn)
 
-
-            itemView.setOnClickListener(View.OnClickListener {
-                val pos = adapterPosition
-                if (pos != RecyclerView.NO_POSITION) {
-                    Log.d("alert",pos.toString())
-                }
-            })
         }
 
     }
