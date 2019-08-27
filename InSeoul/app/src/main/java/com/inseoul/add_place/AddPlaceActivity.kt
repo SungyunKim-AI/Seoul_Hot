@@ -118,12 +118,12 @@ class AddPlaceActivity :
         }
         for (i in 0 until markerList.size) {
             markerList[i].count = i
-            Log.d("alert_대입",markerList[i].count.toString())
+            //Log.d("alert_대입",markerList[i].count.toString())
             addMarker(markerList[i], false)
 
         }
+        getMarkerItems()
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
-
     }
 
 
@@ -159,8 +159,6 @@ class AddPlaceActivity :
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.51957588, 126.939837477), 12f))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
-
-        getMarkerItems()
     }
 
     fun getMarkerItems() {
@@ -173,7 +171,6 @@ class AddPlaceActivity :
         )
         polyline.width = POLYLINE_STROKE_WIDTH_PX
         polyline.pattern = PATTERN_POLYLINE_DOTTED
-
     }
 
 
@@ -184,7 +181,7 @@ class AddPlaceActivity :
 
         var position = markerItem.latLng
         var order = markerItem.count
-        Log.d("alert_출력",markerItem.count.toString())
+       //Log.d("alert_출력",markerItem.count.toString())
 
         var markerOptions = MarkerOptions()
         markerOptions.position(position!!)
