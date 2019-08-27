@@ -2,24 +2,40 @@ package com.inseoul.make_plan
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.Gson
 import com.inseoul.R
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.*
-import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.NaverMapOptions
 import kotlinx.android.synthetic.main.activity_add_place.*
+import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.PI
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
+
 
 class AddPlaceActivity :
     AppCompatActivity(),
-    OnMapReadyCallback {
+    OnMapReadyCallback,
+    GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnMapClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,37 +96,114 @@ class AddPlaceActivity :
 
         }
     }
+
     ////////////////// Map //////////////////
-    fun initMap(){
-        val options = NaverMapOptions()
-            .camera(CameraPosition(LatLng(37.566502, 126.977918), 10.0))
-            .mapType(NaverMap.MapType.Basic)
 
-        val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-            ?: MapFragment.newInstance(options).also {
-                fm.beginTransaction().add(R.id.map, it).commit()
-            }
-        mapFragment.getMapAsync(this)
+    lateinit var mMap:GoogleMap
+    var positionArray = ArrayList<ArrayList<Double>>()
 
+
+    fun readFile(){
+        val scan = Scanner(resources.openRawResource(R.raw.is_map))
+        var result = ""
+        while(scan.hasNextLine()){
+            val line = scan.nextLine()
+            result += line
+        }
+        parsingGson(result)
     }
 
-    override fun onMapReady(naverMap: NaverMap) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
-        ////////////////// Preconditioning //////////////////
-
-        val marker = Marker()
-        marker.position = LatLng(37.54345, 127.07747)
-        marker.map = naverMap
-
-        naverMap.setOnMapClickListener { point, coord ->
-            Toast.makeText(this, "${coord.latitude}, ${coord.longitude}",
-                Toast.LENGTH_SHORT).show()
+    fun parsingGson(result:String){
+        val json = JSONObject(result)
+        val array = json.getJSONArray("data")
+        for(i in 0 until array.length()){
+            val lat = array.getJSONObject(i).getString("Yd")
+            val lng = array.getJSONObject(i).getString("Xd")
+            val pos = ArrayList<Double>()
+            pos.add(lat.toDouble())
+            pos.add(lng.toDouble())
+            positionArray.add(pos)
+            Log.d("LatLng", "$lat, $lng")
         }
+    }
+    fun initMap(){
+        readFile()
+        val fm = supportFragmentManager
+        val mapFragment = fm.findFragmentById(R.id.map) as SupportMapFragment?
 
+        mapFragment!!.getMapAsync(this)
 
-        /////////////////////////////////////////////////////
+    }
+    ////////////////// Compute Distance //////////////////
+    fun distance(lat1:Double, lat2:Double, lng1:Double, lng2:Double):Double{
+        val theta = lng1 - lng2;
+        var dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1))*cos(deg2rad(lat2))*cos(deg2rad(theta))
+        dist = acos(dist)
+        dist = rad2deg(dist)
+        dist = dist * 60 * 1.1515
+        dist = dist * 1609.344      // Mile to Meter
+
+        return dist
+    }
+
+    fun deg2rad(deg:Double):Double{     // Degree to Radian
+        return (deg * PI/ 180.0)
+    }
+    fun rad2deg(rad:Double):Double{     // Radian to Degree
+        return (rad * 180/ PI)
+    }
+    //////////////////////////////////////////////////////
+
+//    Camera Option Reference
+//    1: World
+//    5: Landmass/continent
+//    10: City
+//    15: Streets
+//    20: Buildings
+    override fun onMapReady(p0: GoogleMap?) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mMap = p0!!
+
+        val Default = LatLng(37.543578, 127.077363)     // 새천년관
+        val DISTANCE = 1000
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Default, 15f))
+
+        mMap.setOnMapClickListener {
+            mMap.clear()
+            /////////////// 클릭한 지점의 위치 ///////////////
+            val mk = MarkerOptions();
+            mk.title("좌표")
+            val lat = it.latitude
+            val lng = it.longitude
+            Log.e("position", "$lat, $lng")
+            mk.snippet("$lat, $lng");
+            mk.position(it)
+            mMap.addMarker(mk)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 15f))
+            //////////////////////////////////////////////////
+
+            /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
+            for(i in 0 until positionArray.size){
+                if(distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1])< DISTANCE){
+                    var marker = MarkerOptions()
+
+                    marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
+                    mMap.addMarker(marker)
+
+                }
+            }
+            /////////////////////////////////////////////////////////////////////////
+        }
+    }
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return true
+    }
+
+    override fun onMapClick(p0: LatLng?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 

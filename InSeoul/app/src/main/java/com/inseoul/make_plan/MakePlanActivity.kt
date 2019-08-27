@@ -91,18 +91,6 @@ class MakePlanActivity : AppCompatActivity() {
     fun initBtn() {
         continueBtn.setOnClickListener {
 
-            //미입력 부분이 있을시 toast 출력 및 버튼 비활성화
-//            if (str_start == null || str_end == null || textview_plan_title == null || theme == null) {
-//                Toast.makeText(this, "미입력", Toast.LENGTH_LONG).show()
-//            } else {
-//                val intent = Intent(this, AddPlaceActivity::class.java)
-//                intent.putExtra("PlanTitle", textview_plan_title!!.text.toString())
-//                intent.putExtra("PlanDate", str_start + " ~ " + str_end)
-//                intent.putExtra("PlanTheme", theme.toString())
-//                intent.putExtra("flag_key",2)
-//
-//                startActivityForResult(intent, REQ_CODE)
-//            }
 
             val intent = Intent(this, AddPlaceActivity::class.java)
 
@@ -142,8 +130,6 @@ class MakePlanActivity : AppCompatActivity() {
                         }
                         rangeDay.text = range
                         select_date.text = resultStr
-//                        date_text_start.text = startDate
-//                        date_text_end.text = endDate
                         Log.v("Dialog", startDay + endDay)
                         continueBtn.isEnabled = true
                     } else{
@@ -168,14 +154,12 @@ class MakePlanActivity : AppCompatActivity() {
 
 
     ////////////////// Recycler View //////////////////
-    //private val planData = ArrayList<MakePlanItem>()
 
     var layoutManager: RecyclerView.LayoutManager? = null
     var adapter: MakePlanAdapter? = null
 
     fun initRecyclerView(){
 
-//        initTest()
 
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
@@ -236,14 +220,14 @@ class MakePlanActivity : AppCompatActivity() {
                     var rnd = Random()
                     var n = rnd.nextInt(5) + 1
 
-//                val temp = ArrayList<Drawable?>()
+                    ///////////////////////// Test Image /////////////////////////
                     for(j in 0..n){
                         val index = rnd.nextInt(5) + 1
                         val str = "sample$index"
                         Log.v("TestImg", str)
                         planList[i].imgList.add(baseContext.getDrawable(baseContext.resources.getIdentifier(str, "drawable",  baseContext.packageName)))
                     }
-//                img.add(ImgItem(temp))
+                    //////////////////////////////////////////////////////////////
 
                 }
                 // UI update Thread
@@ -251,7 +235,6 @@ class MakePlanActivity : AppCompatActivity() {
                     adapter!!.notifyDataSetChanged()
 
                 }
-//                updateView()
             }
 
             override fun onFailure(call: Call?, e: IOException?) {

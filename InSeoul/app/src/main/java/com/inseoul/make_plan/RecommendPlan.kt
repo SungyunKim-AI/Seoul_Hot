@@ -102,9 +102,9 @@ class RecommendPlan : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         markerOptions.snippet(order.toString())
 
         if (isSelectedMarker) {
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
-        } else {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
+        } else {
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
         }
 
         return mMap.addMarker(markerOptions!!)

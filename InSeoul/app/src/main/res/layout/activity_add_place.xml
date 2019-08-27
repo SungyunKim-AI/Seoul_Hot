@@ -70,10 +70,13 @@
                 android:prompt="@string/spinner_prompt"
                 android:entries="@array/theme_array"
         />
-        <FrameLayout
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:id="@+id/map"
+                  android:name="com.google.android.gms.maps.SupportMapFragment"
+                  android:layout_width="match_parent"
+                  android:layout_height="350dp"
+                  tools:context=".make_plan.RecommendPlan"
         />
         <TextView
                 android:text="친구 초대"
