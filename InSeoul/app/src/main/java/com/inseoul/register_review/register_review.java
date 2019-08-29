@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -28,6 +29,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.inseoul.R;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -48,6 +52,7 @@ public class register_review extends AppCompatActivity {
     final private int REQUEST_IMAGE_CAPTURE = 1111;
     private String IMGpath;
     private SharedPreferences appData;
+    private ArrayList<String> planlist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +82,17 @@ public class register_review extends AppCompatActivity {
 
         review_title = extras.getString("textview_title_past");
         review_date = extras.getString("textview_date_past");
+        String plan_LIST = extras.getString("PLANLIST");
+        String []planist = plan_LIST.split(",");
+        int o = planist.length;
+        Log.d("json",Integer.toString(o));
+        Log.d("json",plan_LIST.toString());
+        while(o>0){
+            Log.d("json",Integer.toString(o));
+
+ 0               planlist.add(planist[planist.length-o].toString());
+            o--;
+        }
 
         TextView textView1 = (TextView)findViewById(R.id.text_review_date);
 
@@ -94,10 +110,10 @@ public class register_review extends AppCompatActivity {
 
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
-
+        jsonParsing(getJsonString());
         /////////Test Code///////////
         for(int i=0; i<3;i++){
-            mArrayList.add(new register_review_recyclerview("장소명"+i, "장소유형"+i,"★★★★★"));
+
         }
 
         mAdapter = new register_review_adapter(mArrayList);
@@ -155,6 +171,49 @@ public class register_review extends AppCompatActivity {
     private Uri photoUri;
 
 
+    private String getJsonString()
+    {
+        String json = "";
+
+        try {
+            InputStream is = getAssets().open("inseoul_upso_data.json");
+            int fileSize = is.available();
+
+            byte[] buffer = new byte[fileSize];
+            is.read(buffer);
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return json;
+    }
+    private void jsonParsing(String json)
+    {
+        try{
+            JSONObject jsonObject = new JSONObject(json);
+
+            JSONArray movieArray = jsonObject.getJSONArray("data");
+
+            for(int j=0; j<planlist.size();j++){
+                for(int i=0; i<movieArray.length(); i++)
+                {
+                    JSONObject movieObject = movieArray.getJSONObject(i);
+                    if(movieObject.getInt("Id_Num")==Integer.parseInt(planlist.get(j))){
+                        mArrayList.add(new register_review_recyclerview(movieObject.getString("Upso_nm"), movieObject.getString("class"),"★★★★★"));
+                    }
+
+
+                }
+            }
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void sendTakePhotoIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

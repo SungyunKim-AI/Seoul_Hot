@@ -1,26 +1,44 @@
 package com.inseoul.manage_schedules;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.inseoul.R;
 import com.inseoul.add_place.AddPlaceActivity;
 import com.inseoul.make_plan.MakePlanActivity;
+import com.inseoul.manage_member.SignUpActivity;
+import com.inseoul.manage_member.ValidateRequest;
 import com.inseoul.register_review.register_review;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class my_schedule extends AppCompatActivity {
@@ -33,12 +51,16 @@ public class my_schedule extends AppCompatActivity {
     private adapter_schedule_past mAdapter_past;
     private RecyclerView mRecyclerView_past;
     private LinearLayoutManager mLinearLayoutManager_past;
-
-
+    private SharedPreferences appData;
+    private AlertDialog dialog;
+    public ArrayList<Integer> planidarray = new ArrayList<Integer>();
+    private  ArrayList<String> planlist = new ArrayList<>();
+    private  ArrayList<String> planlist_past = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_schedule);
+
 
         initToolbar();
         init();
@@ -48,28 +70,73 @@ public class my_schedule extends AppCompatActivity {
 
     //리사이클러뷰 세팅
     public void init() {
-        /////////////수정 중인 일정
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
-        mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager = new LinearLayoutManager(my_schedule.this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
 
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
+        /////////////수정 중인 일정
+
 
         //////////////////// Test Code ////////////////////
-        for (int i = 0; i < 3; i++) {
-            mArrayList.add(new recyclerview_schedule("title" + i, "date" + i));
-        }
+        appData = getSharedPreferences("appData", MODE_PRIVATE);
+        Boolean saveLoginData = appData.getBoolean("SAVE_LOGIN_DATA", false);
+        String idNUM = appData.getString("ID", "a");
 
-        mAdapter = new adapter_schedule(mArrayList);
-        mRecyclerView.setAdapter(mAdapter);
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try
+                {
+                    Log.d("dd", response);
+                    JSONObject jsonResponse = new JSONObject(response);
+                    JSONArray success= jsonResponse.getJSONArray("response");
+                    int count=0;
+                    while (count<success.length()){
+                        JSONObject object = success.getJSONObject(count);
+                        planidarray.add(object.getInt("PLANID"));
+                        Log.d(this.getClass().getName(), planidarray.toString());
+
+
+                        count++;
+
+                    }
+                    if(success.length()>=1)
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(my_schedule.this);
+                        dialog = builder.setMessage("아이디 확인되었습니다.")
+                                .setPositiveButton("확인", null)
+                                .create();
+                        dialog.show();
+
+
+                    }
+                    else{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(my_schedule.this);
+                        dialog = builder.setMessage("사용할 수 없는 아이디 입니다.")
+                                .setNegativeButton("확인", null)
+                                .create();
+                        dialog.show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        idnumRequest idnumrequest = new idnumRequest(idNUM, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(my_schedule.this);
+        queue.add(idnumrequest);
+
+        ShowPlanTask showPlanTask = new ShowPlanTask();
+        showPlanTask.execute();
 
         // RecyclerView의 줄(row) 사이에 수평선을 넣기위해 사용됩니다.
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
-
 
 
 
@@ -80,14 +147,11 @@ public class my_schedule extends AppCompatActivity {
 
         // 현재 액티비티에서 에서 RecyclerView의 데이터에 접근
         mArrayList_past = new ArrayList<>();
-        mAdapter_past = new adapter_schedule_past(mArrayList_past);
-        mRecyclerView_past.setAdapter(mAdapter_past);
+
 
 
         //////////////////// Test Code ////////////////////
-        for (int i = 0; i < 3; i++) {
-            mArrayList_past.add(new recyclerview_schedule_past("title" + i, "date" + i));
-        }
+
 
 
         // RecyclerView의 줄(row) 사이에 수평선을 넣기위해 사용됩니다.
@@ -142,6 +206,7 @@ public class my_schedule extends AppCompatActivity {
                 Intent intent2 = new Intent(getBaseContext(), register_review.class);
                 intent2.putExtra("textview_title_past", pastSchedules.getSchedule_title_past());
                 intent2.putExtra("textview_date_past", pastSchedules.getSchedule_date_past());
+                intent2.putExtra("PLANLIST",planlist_past.get(position));
                 startActivity(intent2);
             }
 
@@ -230,5 +295,108 @@ public class my_schedule extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public class ShowPlanTask extends AsyncTask<Void,Void,String> {
 
+        String target;
+        int PlanID;
+        ProgressDialog asyncDialog = new ProgressDialog(my_schedule.this);
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+            asyncDialog.setMessage("콘텐츠 확인 중 입니다...");
+
+
+
+            // show dialog
+
+            asyncDialog.show();
+
+
+
+            super.onPreExecute();
+
+            target="http://ksun1234.cafe24.com/ShowPlan.php"; // 웹 호스팅 정보를 받기위한  php 파일 주소
+
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                Log.d("asyncTask","Strart");
+                URL url = new URL(target);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                Log.d("asyncTask","Connect");
+                InputStream inputStream = con.getInputStream();
+                StringBuilder stringBuilder = new StringBuilder();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String json;
+                while ((json = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(json + "\n");
+                }
+                bufferedReader.close();
+                inputStream.close();
+                con.disconnect();
+                return stringBuilder.toString().trim();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result){
+
+
+            try{
+                Log.d("asyncTask","onPostExecute");
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray jsonArray = jsonObject.getJSONArray("response");
+
+                int count=0;
+                while (count<jsonArray.length()){
+                    Log.d("asyncTask","Reading"+jsonArray);
+                    JSONObject object = jsonArray.getJSONObject(count);
+                    int planID = object.getInt("H");
+                    Log.d("as",planidarray.toString());
+                    if(planidarray.contains(planID)){
+                        Log.d("async","ss"+ Integer.toString(planID));
+                        mArrayList.add(new recyclerview_schedule(object.getString("TripName")  , object.getString("DPDATE" )));
+                        mAdapter = new adapter_schedule(mArrayList);
+                        mRecyclerView.setAdapter(mAdapter);
+                        planlist.add(object.getString("PLAN"));
+                        planlist_past.add(object.getString("PLAN"));
+                        mArrayList_past.add(new recyclerview_schedule_past(object.getString("TripName"), object.getString("DPDATE" )));
+                        mAdapter_past = new adapter_schedule_past(mArrayList_past);
+                        mRecyclerView_past.setAdapter(mAdapter_past);
+
+                    }
+
+
+
+
+
+
+                    count++;
+
+                }
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            asyncDialog.dismiss();
+        }
+        protected void onCancelled()
+        {
+
+            super.onCancelled();
+        }
+    }
 }
