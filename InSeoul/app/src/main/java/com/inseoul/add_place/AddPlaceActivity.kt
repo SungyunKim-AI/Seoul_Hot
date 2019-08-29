@@ -124,7 +124,12 @@ class AddPlaceActivity :
 
         }
         getMarkerItems()
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
+        if(markerList.size != 0){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
+        }else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.51957588, 126.939837477), 12f))
+        }
+
     }
 
 
@@ -214,11 +219,10 @@ class AddPlaceActivity :
     ////////////////// Map //////////////////
     override fun onMapReady(googleMap: GoogleMap) {
 
-        val Default = LatLng(37.543578, 127.077363)     // 새천년관
+        val Default = LatLng(37.51957588, 126.939837477)     //서울 시청
         val DISTANCE = 1000
 
         mMap = googleMap
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.51957588, 126.939837477), 12f))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Default, 13f))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
