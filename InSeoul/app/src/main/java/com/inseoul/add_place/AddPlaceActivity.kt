@@ -14,7 +14,12 @@ import com.google.android.gms.maps.model.*
 import com.inseoul.R
 import com.inseoul.make_plan.MarkerItem
 import kotlinx.android.synthetic.main.activity_add_place.*
+import org.json.JSONObject
 import java.util.*
+import kotlin.math.PI
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
 
 class AddPlaceActivity :
     AppCompatActivity(),
@@ -35,18 +40,14 @@ class AddPlaceActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place)
+        initToolbar()
         init()
+        initMap()
 //        initTheme()             //여행 테마 세팅
 
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment!!.getMapAsync(this)
     }
 
     fun init() {
-
-        initToolbar()
-
 
         val extras = intent.extras
         var flag: Int
@@ -153,12 +154,105 @@ class AddPlaceActivity :
     }
 
 
+    fun initMap(){
+        readFile()
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment!!.getMapAsync(this)
+    }
+    var positionArray = ArrayList<ArrayList<Double>>()
+
+    fun readFile(){
+        val scan = Scanner(resources.openRawResource(R.raw.is_map))
+        var result = ""
+        while(scan.hasNextLine()){
+            val line = scan.nextLine()
+            result += line
+        }
+        parsingGson(result)
+    }
+
+    fun parsingGson(result:String){
+        val json = JSONObject(result)
+        val array = json.getJSONArray("data")
+        for(i in 0 until array.length()){
+            val lat = array.getJSONObject(i).getString("Yd")
+            val lng = array.getJSONObject(i).getString("Xd")
+            val pos = ArrayList<Double>()
+            pos.add(lat.toDouble())
+            pos.add(lng.toDouble())
+            positionArray.add(pos)
+            Log.d("LatLng", "$lat, $lng")
+        }
+    }
+    ////////////////// Compute Distance //////////////////
+    fun distance(lat1:Double, lat2:Double, lng1:Double, lng2:Double):Double{
+        val theta = lng1 - lng2;
+        var dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1))*cos(deg2rad(lat2))*cos(deg2rad(theta))
+        dist = acos(dist)
+        dist = rad2deg(dist)
+        dist = dist * 60 * 1.1515
+        dist = dist * 1609.344      // Mile to Meter
+
+        return dist
+    }
+
+    fun deg2rad(deg:Double):Double{     // Degree to Radian
+        return (deg * PI/ 180.0)
+    }
+    fun rad2deg(rad:Double):Double{     // Radian to Degree
+        return (rad * 180/ PI)
+    }
+    //////////////////////////////////////////////////////
+
+    //    Camera Option Reference
+//    1: World
+//    5: Landmass/continent
+//    10: City
+//    15: Streets
+//    20: Buildings
     ////////////////// Map //////////////////
     override fun onMapReady(googleMap: GoogleMap) {
+
+        val Default = LatLng(37.543578, 127.077363)     // 새천년관
+        val DISTANCE = 1000
+
         mMap = googleMap
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.51957588, 126.939837477), 12f))
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.51957588, 126.939837477), 12f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Default, 13f))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
+
+        mMap.setOnMapClickListener {
+            mMap.clear()                    // 수정 필요
+            /////////////// 클릭한 지점의 위치 ///////////////
+            val mk = MarkerOptions();
+            mk.title("좌표")
+            val lat = it.latitude
+            val lng = it.longitude
+            Log.e("position", "$lat, $lng")
+            mk.snippet("$lat, $lng");
+            mk.position(it)
+            mk.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
+
+            mMap.addMarker(mk)
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(it))
+
+            //////////////////////////////////////////////////
+
+            /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
+            for(i in 0 until positionArray.size){
+                if(distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1])< DISTANCE){
+                    var marker = MarkerOptions()
+                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
+                    marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
+                    mMap.addMarker(marker)
+
+                }
+            }
+            /////////////////////////////////////////////////////////////////////////
+        }
+
     }
 
     fun getMarkerItems() {
