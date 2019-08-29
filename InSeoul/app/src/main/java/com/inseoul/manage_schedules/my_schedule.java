@@ -12,6 +12,7 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -133,12 +134,6 @@ public class my_schedule extends AppCompatActivity {
         ShowPlanTask showPlanTask = new ShowPlanTask();
         showPlanTask.execute();
 
-        // RecyclerView의 줄(row) 사이에 수평선을 넣기위해 사용됩니다.
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                mLinearLayoutManager.getOrientation());
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
-
-
 
         ////////////지나간 일정
         mRecyclerView_past = (RecyclerView) findViewById(R.id.recyclerview_past_list);
@@ -152,18 +147,12 @@ public class my_schedule extends AppCompatActivity {
 
         //////////////////// Test Code ////////////////////
 
-
-
-        // RecyclerView의 줄(row) 사이에 수평선을 넣기위해 사용됩니다.
-        DividerItemDecoration dividerItemDecoration_past = new DividerItemDecoration(mRecyclerView_past.getContext(),
-                mLinearLayoutManager_past.getOrientation());
-        mRecyclerView_past.addItemDecoration(dividerItemDecoration_past);
     }
 
     //버튼 세팅
     public void initBtn() {
         // 일정 추가하기 클릭 이벤트
-        FloatingActionButton add_schedule = (FloatingActionButton) findViewById(R.id.add_schedule);
+        TextView add_schedule = (TextView) findViewById(R.id.add_schedule);
         add_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -279,9 +268,7 @@ public class my_schedule extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);
 
         actionBar.setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp); //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-        mtoolbar.setTitle("내 일정");
-        mtoolbar.setTitleTextColor(Color.WHITE);
+        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow); //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
     }
 
     //toolbar에서 back 버튼

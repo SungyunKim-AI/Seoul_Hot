@@ -21,13 +21,11 @@ public class adapter_schedule extends RecyclerView.Adapter<adapter_schedule.Cust
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView title;
         protected TextView date;
-        protected Button btn;
 
         public CustomViewHolder(View view) {
             super(view);
             this.title = (TextView) view.findViewById(R.id.textview_recyclerview_title);
             this.date = (TextView) view.findViewById(R.id.textview_recyclerview_date);
-            this.btn = (Button) view.findViewById(R.id.button_recyclerview_btn);
         }
     }
 
@@ -52,12 +50,6 @@ public class adapter_schedule extends RecyclerView.Adapter<adapter_schedule.Cust
     // Adapter의 특정 위치(position)에 있는 데이터를 보여줘야 할때 호출
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder viewholder, int position) {
-
-        viewholder.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-        viewholder.date.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-
-        viewholder.title.setGravity(Gravity.CENTER);
-        viewholder.date.setGravity(Gravity.CENTER);
 
         viewholder.title.setText(mList.get(position).getSchedule_title());
         viewholder.date.setText(mList.get(position).getSchedule_date());
