@@ -83,10 +83,17 @@ public class register_review extends AppCompatActivity {
         review_title = extras.getString("textview_title_past");
         review_date = extras.getString("textview_date_past");
         String plan_LIST = extras.getString("PLANLIST");
-        String []planist = plan_LIST.split(",");
-        int o = planist.length;
+        String[] planist = plan_LIST.split(",");
+        int o = planist.length-1;
         Log.d("json",Integer.toString(o));
         Log.d("json",plan_LIST.toString());
+        tripList = new ArrayList<String>();
+        for(int p=0; p<=o; p++){
+            Log.d("json",plan_LIST.split(",")[p]);
+
+            tripList.add(plan_LIST.split(",")[p]);
+
+        }
 //        while(o>0){
 //            Log.d("json",Integer.toString(o));
 //
@@ -110,7 +117,7 @@ public class register_review extends AppCompatActivity {
 
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
-        //jsonParsing(getJsonString());
+        jsonParsing(getJsonString());
         /////////Test Code///////////
         for(int i=0; i<3;i++){
 
@@ -198,13 +205,14 @@ public class register_review extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(json);
 
             JSONArray movieArray = jsonObject.getJSONArray("data");
-
+            Log.d("json",Integer.toString(tripList.size()));
             for(int j=0; j<tripList.size();j++){
                 for(int i=0; i<movieArray.length(); i++)
                 {
                     JSONObject movieObject = movieArray.getJSONObject(i);
                     if(movieObject.getInt("Id_Num")==Integer.parseInt(tripList.get(j))){
                         mArrayList.add(new register_review_recyclerview(movieObject.getString("Upso_nm"), movieObject.getString("class"),"★★★★★"));
+                        Log.d("json",movieObject.getString("Upso_nm"));
                     }
 
 
