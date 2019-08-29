@@ -47,13 +47,6 @@ public class adapter_schedule_past extends RecyclerView.Adapter<adapter_schedule
     // Adapter의 특정 위치(position)에 있는 데이터를 보여줘야 할때 호출
     @Override
     public void onBindViewHolder(@NonNull adapter_schedule_past.CustomViewHolder viewholder, final int position) {
-
-        viewholder.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-        viewholder.date.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-
-        viewholder.title.setGravity(Gravity.CENTER);
-        viewholder.date.setGravity(Gravity.CENTER);
-
         viewholder.title.setText(mList.get(position).getSchedule_title_past());
         viewholder.date.setText(mList.get(position).getSchedule_date_past());
     }
