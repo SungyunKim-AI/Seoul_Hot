@@ -90,7 +90,7 @@ public class register_review extends AppCompatActivity {
         while(o>0){
             Log.d("json",Integer.toString(o));
 
- 0               planlist.add(planist[planist.length-o].toString());
+                planlist.add(planist[planist.length-o].toString());
             o--;
         }
 
