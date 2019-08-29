@@ -46,7 +46,7 @@ public class register_review extends AppCompatActivity {
     private register_review_adapter mAdapter;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-
+    private  ArrayList<String> tripList;
     private ImageButton imgBtn;
     private ImageView img_view;
     final private int REQUEST_IMAGE_CAPTURE = 1111;
@@ -87,12 +87,12 @@ public class register_review extends AppCompatActivity {
         int o = planist.length;
         Log.d("json",Integer.toString(o));
         Log.d("json",plan_LIST.toString());
-        while(o>0){
-            Log.d("json",Integer.toString(o));
-
-                planlist.add(planist[planist.length-o].toString());
-            o--;
-        }
+//        while(o>0){
+//            Log.d("json",Integer.toString(o));
+//
+//                tripList.add(planist[planist.length-o]);
+//            o--;
+//        }
 
         TextView textView1 = (TextView)findViewById(R.id.text_review_date);
 
@@ -110,7 +110,7 @@ public class register_review extends AppCompatActivity {
 
         // MainActivity에서 RecyclerView의 데이터에 접근
         mArrayList = new ArrayList<>();
-        jsonParsing(getJsonString());
+        //jsonParsing(getJsonString());
         /////////Test Code///////////
         for(int i=0; i<3;i++){
 
@@ -199,11 +199,11 @@ public class register_review extends AppCompatActivity {
 
             JSONArray movieArray = jsonObject.getJSONArray("data");
 
-            for(int j=0; j<planlist.size();j++){
+            for(int j=0; j<tripList.size();j++){
                 for(int i=0; i<movieArray.length(); i++)
                 {
                     JSONObject movieObject = movieArray.getJSONObject(i);
-                    if(movieObject.getInt("Id_Num")==Integer.parseInt(planlist.get(j))){
+                    if(movieObject.getInt("Id_Num")==Integer.parseInt(tripList.get(j))){
                         mArrayList.add(new register_review_recyclerview(movieObject.getString("Upso_nm"), movieObject.getString("class"),"★★★★★"));
                     }
 
