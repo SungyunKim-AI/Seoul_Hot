@@ -127,7 +127,7 @@ class AddPlaceActivity :
         if(markerList.size != 0){
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
         }else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.51957588, 126.939837477), 12f))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
         }
 
     }
@@ -219,7 +219,7 @@ class AddPlaceActivity :
     ////////////////// Map //////////////////
     override fun onMapReady(googleMap: GoogleMap) {
 
-        val Default = LatLng(37.51957588, 126.939837477)     //서울 시청
+        val Default = LatLng(37.552122, 126.988270)     //남산타워
         val DISTANCE = 1000
 
         mMap = googleMap
