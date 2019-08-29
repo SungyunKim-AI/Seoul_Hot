@@ -12,6 +12,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,6 +54,10 @@ public class register_review extends AppCompatActivity {
     private String IMGpath;
     private SharedPreferences appData;
     private ArrayList<String> planlist;
+    private String review_title;
+    private String review_date;
+    private int planID;
+    private EditText reviewEdittext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,14 +80,13 @@ public class register_review extends AppCompatActivity {
         img_view = findViewById(R.id.img_view);
 
         //리뷰 작성시 인텐트로 데이터 전발 받을 함수 선언
-        String review_title;
-        String review_date;
 
         Bundle extras = getIntent().getExtras();
 
         review_title = extras.getString("textview_title_past");
         review_date = extras.getString("textview_date_past");
         String plan_LIST = extras.getString("PLANLIST");
+        planID = extras.getInt("PLANID");
         String[] planist = plan_LIST.split(",");
         int o = planist.length-1;
         Log.d("json",Integer.toString(o));
@@ -119,9 +123,7 @@ public class register_review extends AppCompatActivity {
         mArrayList = new ArrayList<>();
         jsonParsing(getJsonString());
         /////////Test Code///////////
-        for(int i=0; i<3;i++){
 
-        }
 
         mAdapter = new register_review_adapter(mArrayList);
         mRecyclerView.setAdapter(mAdapter);

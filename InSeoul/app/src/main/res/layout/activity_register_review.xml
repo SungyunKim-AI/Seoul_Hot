@@ -58,9 +58,10 @@
                     android:layout_weight="4"
                     android:gravity="center_vertical"/>
         </LinearLayout>
-        <TextView
-                android:text="여행 종합 리뷰"
+        <EditText
+                android:hint="여행 종합 리뷰"
                 android:layout_width="match_parent"
+                android:maxLines="3"
                 android:layout_height="0dp" android:id="@+id/trip_comment" android:layout_weight="4"/>
     </LinearLayout>
 

@@ -207,6 +207,7 @@ public class my_schedule extends AppCompatActivity {
                 intent2.putExtra("textview_title_past", pastSchedules.getSchedule_title_past());
                 intent2.putExtra("textview_date_past", pastSchedules.getSchedule_date_past());
                 intent2.putExtra("PLANLIST",planlist_past.get(position));
+                intent2.putExtra("PLANID",planidarray.get(position));
                 startActivity(intent2);
             }
 
