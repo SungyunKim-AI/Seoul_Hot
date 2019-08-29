@@ -12,15 +12,13 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.graphics.Color;
 import android.view.MenuItem;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
@@ -29,7 +27,12 @@ import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.inseoul.R;
+import com.inseoul.manage_member.RegisterRequest;
+import com.inseoul.manage_member.SignUpActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +61,10 @@ public class register_review extends AppCompatActivity {
     private String review_date;
     private int planID;
     private EditText reviewEdittext;
+    private Button submitBtn;
+    private AlertDialog dialog;
+    private String reviewcomment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +77,9 @@ public class register_review extends AppCompatActivity {
          appData = getSharedPreferences("appData", MODE_PRIVATE);
         Boolean saveLoginData = appData.getBoolean("SAVE_LOGIN_DATA", false);
         int idNUM = appData.getInt("ID", 0);
+        reviewEdittext = findViewById(R.id.trip_comment);
+        submitBtn =findViewById(R.id.submit_review);
+
 
 
 
@@ -154,6 +164,45 @@ public class register_review extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendTakePhotoIntent();
+            }
+        });
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reviewcomment = reviewEdittext.getText().toString();
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try
+                        {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success= jsonResponse.getBoolean("success");
+                            if(success)
+                            {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(register_review.this);
+                                dialog = builder.setMessage("리뷰 작성에 성공하였습니다.")
+                                        .setPositiveButton("확인", null)
+                                        .create();
+                                dialog.show();
+                                finish();
+
+                            }
+                            else{
+                                AlertDialog.Builder builder = new AlertDialog.Builder(register_review.this);
+                                dialog = builder.setMessage("리뷰작성에 실패하였습니다.")
+                                        .setNegativeButton("확인", null)
+                                        .create();
+                                dialog.show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                review_request registerRequest = new review_request(planID, 5, imageFileName ,reviewcomment, responseListener);
+                Log.d("ddd",imageFileName + reviewcomment);
+                RequestQueue queue = Volley.newRequestQueue(register_review.this);
+                queue.add(registerRequest);
             }
         });
     }
