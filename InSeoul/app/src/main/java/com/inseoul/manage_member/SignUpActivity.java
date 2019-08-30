@@ -151,12 +151,6 @@ public class SignUpActivity extends AppCompatActivity {
                     queue.add(registerRequest);
 
 
-
-
-
-
-
-
                 ////////////////////////////////
                 finish();
             }
