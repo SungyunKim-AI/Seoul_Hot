@@ -17,6 +17,9 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
+import com.inseoul.make_plan.MarkerItem
+import com.inseoul.search.SearchActivity
+
 import kotlinx.android.synthetic.main.activity_add_place.*
 import kotlinx.android.synthetic.main.activity_add_place_2.*
 import kotlinx.android.synthetic.main.activity_add_place_main.*
@@ -162,7 +165,7 @@ class AddPlaceActivity :
             finish()
         }
         addBtn.setOnClickListener {
-            val intent = Intent(this, AddPlaceSearch::class.java)
+            val intent = Intent(this, SearchActivity::class.java)
             startActivityForResult(intent, 0)
         }
     }
