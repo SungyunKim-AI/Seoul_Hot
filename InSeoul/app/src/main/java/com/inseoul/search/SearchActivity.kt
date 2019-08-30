@@ -1,6 +1,7 @@
 package com.inseoul.search
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,13 +12,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Response
+import com.android.volley.toolbox.Volley
 import com.inseoul.R
 import com.inseoul.SearchDetails.SearchDetail
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search.recyclerView
+import org.json.JSONObject
+import kotlin.collections.ArrayList
 
 class SearchActivity : AppCompatActivity() {
-
+    var hNUM :ArrayList<Int> = ArrayList()
+    var succ = false
+    var upNUM :ArrayList<Int> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -72,13 +79,71 @@ class SearchActivity : AppCompatActivity() {
 
                 //////////////////////// DB Connect & Query ////////////////////////
 
+                val responseListener = Response.Listener<String> { response ->
+                    try {
+                        Log.d("dd", response)
+                        val jsonResponse = JSONObject(response)
+                        val success = jsonResponse.getJSONArray("response")
+                        var count = 0
+                        while (count < success.length()) {
+                            val `object` = success.getJSONObject(count)
+                            ////////////////////////
+                            `object`.getInt("H") //Hash값
+                            hNUM.add(`object`.getInt("H"))
+
+                            count++
+
+                        }
+                        if (success.length() >= 1) {
+                            succ = true
+                            val responseListener2 = Response.Listener<String> { response ->
+                                Log.d("dd",succ.toString())
+                                if (succ) {
+                                    try {
+                                        Log.d("dd", response)
+                                        val jsonResponse = JSONObject(response)
+                                        val success = jsonResponse.getJSONArray("response")
+                                        var count = 0
+                                        while (count < success.length()) {
+                                            val `object` = success.getJSONObject(count)
+                                            ////////////////////////
+                                            val s= `object`.getString("H").split(",")// 업소번호의 출력 형태가 int,int,int,... 식이어서 split(',') 필요
+                                            for(i in s){
+                                                if(i=="")continue
+                                                upNUM.add(i.toInt()) /// 업소 번호를 저장
+                                            }
 
 
+                                            count++
 
+                                        }
 
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
 
+                                }
+                            }
+                            if (succ) {
+                                for (j in hNUM.indices) {
+                                    val idnumrequest2 = ConnectRequest(hNUM.get(j).toString(), responseListener2)
+                                    var queue = Volley.newRequestQueue(this@SearchActivity)
+                                    queue.add(idnumrequest2)
+                                }
+                            }
 
+                        } else {
 
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                val idnumrequest = SearchRequest(p0, responseListener)
+                var queue = Volley.newRequestQueue(this@SearchActivity)
+                queue.add(idnumrequest)
+                queue.start()
+                Log.d("dd","queue")
 
 
 
@@ -98,11 +163,6 @@ class SearchActivity : AppCompatActivity() {
 
     fun initTest(){
 
-//        val hhh = Search(this)
-//        for(i in hhh.hashArray.listIterator()){
-//            Log.d("Hash", "${i.hashtag}, ${i.h}")
-//        }
-//
         for(i in 0..10){
             test.add(SearchItem("This is Title" + i.toString(), "This is Content" + i.toString()))
         }
@@ -129,6 +189,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
     }
+
 
 
 
