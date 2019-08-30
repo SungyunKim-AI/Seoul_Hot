@@ -27,12 +27,6 @@ class TestActivity :
         // Create a new Places client instance
         val placesClient = Places.createClient(this)
 
-
-
-
-
-
-
         // Define a Place ID.
         val placeId = "ChIJYxd6fL6ifDURy7wm894BUcQ"
 
