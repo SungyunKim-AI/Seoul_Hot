@@ -13,6 +13,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.inseoul.R
 import com.inseoul.make_plan.MarkerItem
+import com.inseoul.search.SearchActivity
 import kotlinx.android.synthetic.main.activity_add_place.*
 import org.json.JSONObject
 import java.util.*
@@ -103,7 +104,7 @@ class AddPlaceActivity :
             finish()
         }
         addBtn.setOnClickListener {
-            val intent = Intent(this, AddPlaceSearch::class.java)
+            val intent = Intent(this, SearchActivity::class.java)
             startActivityForResult(intent, 0)
         }
     }

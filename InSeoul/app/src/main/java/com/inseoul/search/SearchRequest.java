@@ -15,7 +15,7 @@ public class SearchRequest extends StringRequest {
 
         super(Request.Method.POST, URL, listener, null);
         parameters=new HashMap<>();
-        parameters.put("userNum", userID);
+        parameters.put("userID", userID);
 
 
 

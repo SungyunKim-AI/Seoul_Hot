@@ -22,7 +22,9 @@ import org.json.JSONObject
 import kotlin.collections.ArrayList
 
 class SearchActivity : AppCompatActivity() {
-
+    var hNUM :ArrayList<Int> = ArrayList()
+    var succ = false
+    var upNUM :ArrayList<Int> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -93,8 +95,42 @@ class SearchActivity : AppCompatActivity() {
 
                         }
                         if (success.length() >= 1) {
-                            succ[0] = true
+                            succ = true
+                            val responseListener2 = Response.Listener<String> { response ->
+                                Log.d("dd",succ.toString())
+                                if (succ) {
+                                    try {
+                                        Log.d("dd", response)
+                                        val jsonResponse = JSONObject(response)
+                                        val success = jsonResponse.getJSONArray("response")
+                                        var count = 0
+                                        while (count < success.length()) {
+                                            val `object` = success.getJSONObject(count)
+                                            ////////////////////////
+                                            val s= `object`.getString("H").split(",")// 업소번호의 출력 형태가 int,int,int,... 식이어서 split(',') 필요
+                                            for(i in s){
+                                                if(i=="")continue
+                                                upNUM.add(i.toInt()) /// 업소 번호를 저장
+                                            }
 
+
+                                            count++
+
+                                        }
+
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+
+                                }
+                            }
+                            if (succ) {
+                                for (j in hNUM.indices) {
+                                    val idnumrequest2 = ConnectRequest(hNUM.get(j).toString(), responseListener2)
+                                    var queue = Volley.newRequestQueue(this@SearchActivity)
+                                    queue.add(idnumrequest2)
+                                }
+                            }
 
                         } else {
 
@@ -106,37 +142,9 @@ class SearchActivity : AppCompatActivity() {
                 val idnumrequest = SearchRequest(p0, responseListener)
                 var queue = Volley.newRequestQueue(this@SearchActivity)
                 queue.add(idnumrequest)
+                queue.start()
+                Log.d("dd","queue")
 
-                val responseListener2 = Response.Listener<String> { response ->
-                    if (succ[0]) {
-                        try {
-                            Log.d("dd", response)
-                            val jsonResponse = JSONObject(response)
-                            val success = jsonResponse.getJSONArray("response")
-                            var count = 0
-                            while (count < success.length()) {
-                                val `object` = success.getJSONObject(count)
-                                ////////////////////////
-                                `object`.getInt("H") // 업소번호의 출력 형태가 int,int,int,... 식이어서 split(',') 필요
-                                upNUM.add(`object`.getInt("H")) /// 업소 번호를 저장
-
-                                count++
-
-                            }
-
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
-                    }
-                }
-                if (succ[0]) {
-                    for (j in hNUM.indices) {
-                        val idnumrequest2 = ConnectRequest(hNUM.get(j).toString(), responseListener2)
-                        queue = Volley.newRequestQueue(this@SearchActivity)
-                        queue.add(idnumrequest2)
-                    }
-                }
 
 
                 /////////////////////////////////////////////////////////////////////

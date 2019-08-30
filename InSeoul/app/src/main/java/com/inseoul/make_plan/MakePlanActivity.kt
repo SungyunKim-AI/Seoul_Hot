@@ -105,7 +105,7 @@ class MakePlanActivity : AppCompatActivity() {
 //                startActivityForResult(intent, REQ_CODE)
 //            }
 
-            val intent = Intent(this, Search2Activity::class.java)
+            val intent = Intent(this, AddPlaceActivity::class.java)
 
             intent.putExtra("PlanDate", resultStr)
             intent.putExtra("PlanRange", range)

@@ -15,7 +15,7 @@ public class ConnectRequest extends StringRequest {
 
         super(Method.POST, URL, listener, null);
         parameters=new HashMap<>();
-        parameters.put("userNum", userID);
+        parameters.put("userID", userID);
 
 
 
