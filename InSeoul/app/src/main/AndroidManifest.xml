@@ -51,7 +51,6 @@
 
         <activity android:name=".TestActivity">
         </activity>
-        <activity android:name=".search.Search2Activity"></activity>
         <activity android:name=".manage_member.SignUpActivity">
         </activity>
         <activity android:name=".manage_member.SignInActivity">
@@ -70,8 +69,8 @@
         </activity>
         <activity android:name=".add_place.AddPlaceSearch">
         </activity>
-
-
+        <activity android:name=".search.SearchActivity">
+        </activity>
         <activity android:name=".make_plan.MakePlanActivity">
         </activity>
         <activity
