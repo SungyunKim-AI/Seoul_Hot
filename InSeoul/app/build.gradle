@@ -69,7 +69,6 @@ dependencies {
 
     // 서울 API
     implementation 'com.inseoul:airquality-release:1.0@aar'
-    implementation 'com.inseoul:culturalevents-release:1.0@aar'
 
     implementation 'com.android.volley:volley:1.1.1'
 
@@ -77,5 +76,10 @@ dependencies {
 
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
     implementation 'me.relex:circleindicator:2.1.4'
+
+    // gif 라이브러리
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+
 
 }
