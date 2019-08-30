@@ -2,20 +2,27 @@ package com.inseoul.add_place
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.AdapterView
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
-import com.inseoul.make_plan.MarkerItem
 import kotlinx.android.synthetic.main.activity_add_place.*
+import kotlinx.android.synthetic.main.activity_add_place_2.*
+import kotlinx.android.synthetic.main.activity_add_place_main.*
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.PI
 import kotlin.math.acos
 import kotlin.math.cos
@@ -39,14 +46,66 @@ class AddPlaceActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_place)
+        setContentView(R.layout.activity_add_place_main)
+
         initToolbar()
+        initBottomSheet()
         init()
         initMap()
 //        initTheme()             //여행 테마 세팅
 
     }
 
+    ////////////////////// Bottom Sheet //////////////////////
+    lateinit var sheetBehavior:BottomSheetBehavior<LinearLayout>
+    var STATEFLAG = 0;     // STATE_HALF_EXPANDED = 0
+                            // STATE_EXPANDED = 1
+                            // STATE_COLLAPSED = 2
+    fun initBottomSheet(){
+        app_bar.isActivated = true
+        sheetBehavior = BottomSheetBehavior.from(add_place_bottom_sheet)
+        sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+        sheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow))
+                } else{
+                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
+                }
+                if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+                }
+            }
+
+        }
+        )
+
+        bottomSheet_btn.setOnClickListener {
+            if(sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED){
+                STATEFLAG = 0
+                sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            } else if(sheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED){
+                STATEFLAG = 1
+                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            } else{
+                STATEFLAG = 0
+                sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                app_bar.setExpanded(true, true)
+                add_place_title.text = ""
+            }
+
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////
     fun init() {
 
         val extras = intent.extras
@@ -228,33 +287,41 @@ class AddPlaceActivity :
         mMap.setOnMapClickListener(this)
 
         mMap.setOnMapClickListener {
-            mMap.clear()                    // 수정 필요
-            /////////////// 클릭한 지점의 위치 ///////////////
-            val mk = MarkerOptions();
-            mk.title("좌표")
-            val lat = it.latitude
-            val lng = it.longitude
-            Log.e("position", "$lat, $lng")
-            mk.snippet("$lat, $lng");
-            mk.position(it)
-            mk.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
 
-            mMap.addMarker(mk)
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(it))
+            if(sheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED){
+                STATEFLAG = 2
+                sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                app_bar.setExpanded(false, true)
+                add_place_title.text = textview_plandate.text.toString() + "여정"
+            } else{
+                mMap.clear()                    // 수정 필요
+                /////////////// 클릭한 지점의 위치 ///////////////
+                val mk = MarkerOptions();
+                mk.title("좌표")
+                val lat = it.latitude
+                val lng = it.longitude
+                Log.e("position", "$lat, $lng")
+                mk.snippet("$lat, $lng");
+                mk.position(it)
+                mk.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
 
-            //////////////////////////////////////////////////
+                mMap.addMarker(mk)
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(it))
 
-            /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
-            for(i in 0 until positionArray.size){
-                if(distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1])< DISTANCE){
-                    var marker = MarkerOptions()
-                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
-                    marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
-                    mMap.addMarker(marker)
+                //////////////////////////////////////////////////
 
+                /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
+                for(i in 0 until positionArray.size){
+                    if(distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1])< DISTANCE){
+                        var marker = MarkerOptions()
+                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
+                        marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
+                        mMap.addMarker(marker)
+
+                    }
                 }
+                /////////////////////////////////////////////////////////////////////////
             }
-            /////////////////////////////////////////////////////////////////////////
         }
 
     }
@@ -340,8 +407,7 @@ class AddPlaceActivity :
     ////////////////Toolbar//////////////
     fun initToolbar() {
         //toolbar 커스텀 코드
-        val mtoolbar = findViewById(R.id.toolbar_add_place) as Toolbar
-        setSupportActionBar(mtoolbar)
+        setSupportActionBar(toolbar_add_place)
         // Get the ActionBar here to configure the way it behaves.
         val actionBar = supportActionBar
         actionBar!!.setDisplayShowCustomEnabled(true) //커스터마이징 하기 위해 필요

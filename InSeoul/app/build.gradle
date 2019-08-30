@@ -41,9 +41,6 @@ dependencies {
     // Recycler View
     implementation 'androidx.recyclerview:recyclerview:1.1.0-beta01'
 
-    // Naver Map SDK
-    implementation 'com.naver.maps:map-sdk:3.5.0'
-
     // RETROFIT2
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
@@ -80,4 +77,5 @@ dependencies {
 
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
     implementation 'me.relex:circleindicator:2.1.4'
+
 }

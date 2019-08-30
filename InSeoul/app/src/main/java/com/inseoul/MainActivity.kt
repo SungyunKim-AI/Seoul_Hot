@@ -23,21 +23,22 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.MapFragment
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.inseoul.home.HomeAdapter
 import com.inseoul.home.HomeItem
 import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_schedules.my_schedule
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity :
     AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener,
-    OnMapReadyCallback
+    NavigationView.OnNavigationItemSelectedListener
 {
     val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
 
@@ -242,33 +243,6 @@ class MainActivity :
             startActivity(intent)
 
         }
-    }
-
-    ////////////////// Map //////////////////
-    fun initMap(){
-        val options = NaverMapOptions()
-            .camera(CameraPosition(LatLng(37.54345, 127.07747), 14.0))
-            .mapType(NaverMap.MapType.Basic)
-
-        val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-            ?: MapFragment.newInstance(options).also {
-                fm.beginTransaction().add(R.id.map, it).commit()
-            }
-        mapFragment.getMapAsync(this)
-
-    }
-
-    override fun onMapReady(p0: NaverMap) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
-        ////////////////// Preconditioning //////////////////
-
-
-
-
-
-        /////////////////////////////////////////////////////
     }
 
     ////////////////// Recycler View //////////////////

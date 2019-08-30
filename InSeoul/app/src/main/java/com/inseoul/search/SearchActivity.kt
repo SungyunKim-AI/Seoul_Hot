@@ -1,7 +1,6 @@
 package com.inseoul.search
 
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -99,6 +98,11 @@ class SearchActivity : AppCompatActivity() {
 
     fun initTest(){
 
+//        val hhh = Search(this)
+//        for(i in hhh.hashArray.listIterator()){
+//            Log.d("Hash", "${i.hashtag}, ${i.h}")
+//        }
+//
         for(i in 0..10){
             test.add(SearchItem("This is Title" + i.toString(), "This is Content" + i.toString()))
         }
