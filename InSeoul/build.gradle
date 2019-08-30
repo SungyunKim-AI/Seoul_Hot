@@ -18,6 +18,7 @@ buildscript {
 
 allprojects {
     repositories {
+    	mavenCentral()
         google()
         jcenter()
         flatDir{
@@ -26,7 +27,7 @@ allprojects {
 
         // 네이버 지도 저장소
         maven {
-            url 'https://navercorp.bintray.com/maps'
+            url "https://jitpack.io"
         }
 
     }

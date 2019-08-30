@@ -23,21 +23,23 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.MapFragment
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.inseoul.home.HomeAdapter
 import com.inseoul.home.HomeItem
 import com.inseoul.make_plan.MakePlanActivity
+import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_schedules.my_schedule
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity :
     AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener,
-    OnMapReadyCallback
+    NavigationView.OnNavigationItemSelectedListener
 {
     val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
 
@@ -49,49 +51,50 @@ class MainActivity :
     fun initPermission(){
         if(!checkAppPermission (arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE))){
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage("겔러리 읽기에 대한 권한이 허용되어야 합니다.")
-                .setTitle("권한 허용")
-                .setIcon(R.drawable.abc_ic_star_black_48dp)
-            builder.setPositiveButton("OK") { _, _ ->
-                askPermission (arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQ_READ_GALLERY);
-            }
-            val dialog = builder.create()
-            dialog.show()
+//            val builder = AlertDialog.Builder(this)
+//            builder.setMessage("겔러리 읽기에 대한 권한이 허용되어야 합니다.")
+//                .setTitle("권한 허용")
+//                .setIcon(R.drawable.abc_ic_star_black_48dp)
+//            builder.setPositiveButton("OK") { _, _ ->
+//                askPermission (arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQ_READ_GALLERY);
+//            }
+//            val dialog = builder.create()
+//            dialog.show()
         }else{
-            Toast . makeText ( getApplicationContext (),
-                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
+//            Toast . makeText ( getApplicationContext (),
+//                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
         }
         if(!checkAppPermission (arrayOf(
                 Manifest.permission.CAMERA))){
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage("카메라에 대한 권한이 허용되어야 합니다.")
-                .setTitle("권한 허용")
-                .setIcon(R.drawable.abc_ic_star_black_48dp)
-            builder.setPositiveButton("OK") { _, _ ->
-                askPermission (arrayOf(Manifest.permission.CAMERA), REQ_CAMERA);
-
-            }
-            val dialog = builder.create()
-            dialog.show()
+//            val builder = AlertDialog.Builder(this)
+//            builder.setMessage("카메라에 대한 권한이 허용되어야 합니다.")
+//                .setTitle("권한 허용")
+//                .setIcon(R.drawable.abc_ic_star_black_48dp)
+//            builder.setPositiveButton("OK") { _, _ ->
+//                askPermission (arrayOf(Manifest.permission.CAMERA), REQ_CAMERA);
+//
+//            }
+//            val dialog = builder.create()
+//            dialog.show()
         }else{
-            Toast . makeText ( getApplicationContext (),
-                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
+//            Toast . makeText ( getApplicationContext (),
+//                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
         }
+
         if(!checkAppPermission (arrayOf(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE))){
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage("겔러리 쓰기에 대한 권한이 허용되어야 합니다.")
-                .setTitle("권한 허용")
-                .setIcon(R.drawable.abc_ic_star_black_48dp)
-            builder.setPositiveButton("OK") { _, _ ->
-                askPermission (arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQ_WRITE_GALLERY);
-            }
-            val dialog = builder.create()
-            dialog.show()
+//            val builder = AlertDialog.Builder(this)
+//            builder.setMessage("겔러리 쓰기에 대한 권한이 허용되어야 합니다.")
+//                .setTitle("권한 허용")
+//                .setIcon(R.drawable.abc_ic_star_black_48dp)
+//            builder.setPositiveButton("OK") { _, _ ->
+//                askPermission (arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQ_WRITE_GALLERY);
+//            }
+//            val dialog = builder.create()
+//            dialog.show()
         }else{
-            Toast . makeText ( getApplicationContext (),
-                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
+//            Toast . makeText ( getApplicationContext (),
+//                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
         }
     }
 
@@ -154,11 +157,11 @@ class MainActivity :
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeButtonEnabled(true)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+//        val fab: FloatingActionButton = findViewById(R.id.fab)
+//        fab.setOnClickListener { view ->
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
+//        }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
@@ -173,7 +176,6 @@ class MainActivity :
         /////////////////////////////////////////////////////
         initPermission()
         initBtn()
-//        initMap()
         initTest()
         initRecyclerView()
 
@@ -191,7 +193,7 @@ class MainActivity :
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         type_mini.setOpenAPIKey(key)
-        cultural_type_mini.setOpenAPIKey(key);
+
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -221,6 +223,19 @@ class MainActivity :
         return true
     }
 
+    ///////////////Navigation Drawer Setting/////////////////
+    fun initNav(){
+
+        if(SaveSharedPreference.getUserID(this)==""){
+
+        }else{
+            login_status.text = "로그 아웃"
+            login_status.setOnClickListener{
+                SaveSharedPreference.clearUserID(this)
+
+            }
+        }
+    }
 
 
     ////////////////// Button //////////////////
@@ -242,33 +257,6 @@ class MainActivity :
             startActivity(intent)
 
         }
-    }
-
-    ////////////////// Map //////////////////
-    fun initMap(){
-        val options = NaverMapOptions()
-            .camera(CameraPosition(LatLng(37.54345, 127.07747), 14.0))
-            .mapType(NaverMap.MapType.Basic)
-
-        val fm = supportFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.map) as MapFragment?
-            ?: MapFragment.newInstance(options).also {
-                fm.beginTransaction().add(R.id.map, it).commit()
-            }
-        mapFragment.getMapAsync(this)
-
-    }
-
-    override fun onMapReady(p0: NaverMap) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
-        ////////////////// Preconditioning //////////////////
-
-
-
-
-
-        /////////////////////////////////////////////////////
     }
 
     ////////////////// Recycler View //////////////////
@@ -300,4 +288,11 @@ class MainActivity :
         recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if(!SaveSharedPreference.getAutoFlag(this)){
+            //자동 로그인 체크 안 되어있을 때
+            SaveSharedPreference.clearUserID(this)
+        }
+    }
 }

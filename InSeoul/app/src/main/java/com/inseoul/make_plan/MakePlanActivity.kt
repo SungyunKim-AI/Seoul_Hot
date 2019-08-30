@@ -15,7 +15,6 @@ import java.util.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.add_place.AddPlaceActivity
-import com.inseoul.search.Search2Activity
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException

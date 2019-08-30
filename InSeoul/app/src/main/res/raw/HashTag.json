@@ -1,7 +1,4 @@
-[
-{"type":"header","version":"4.9.0.1","comment":"Export to JSON plugin for PHPMyAdmin"},
-{"type":"database","name":"ksun1234"},
-{"type":"table","name":"HashTag","database":"ksun1234","data":
+{"data":
 [
 {"HASH":"엽전도시락","H":"1"},
 {"HASH":"종로통인시장","H":"2"},
@@ -53,8 +50,8 @@
 {"HASH":"된장찌개","H":"50"},
 {"HASH":"된장","H":"51"},
 {"HASH":"서초동음식점","H":"52"},
-{"HASH":" 간장","H":"53"},
-{"HASH":" 고추장","H":"54"},
+{"HASH":"간장","H":"53"},
+{"HASH":"고추장","H":"54"},
 {"HASH":"진진바라","H":"55"},
 {"HASH":"서울역음식점","H":"56"},
 {"HASH":"용산음식점","H":"57"},
@@ -7090,4 +7087,4 @@
 {"HASH":"현대공예","H":"16019"}
 ]
 }
-]
+

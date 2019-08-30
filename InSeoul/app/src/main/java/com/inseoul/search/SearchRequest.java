@@ -1,4 +1,3 @@
-package com.inseoul.search;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,3 +28,4 @@ public class SearchRequest extends StringRequest {
         return parameters;
     }
 }
+
