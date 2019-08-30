@@ -15,6 +15,7 @@ import java.util.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.add_place.AddPlaceActivity
+import com.inseoul.search.Search2Activity
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -104,7 +105,7 @@ class MakePlanActivity : AppCompatActivity() {
 //                startActivityForResult(intent, REQ_CODE)
 //            }
 
-            val intent = Intent(this, AddPlaceActivity::class.java)
+            val intent = Intent(this, Search2Activity::class.java)
 
             intent.putExtra("PlanDate", resultStr)
             intent.putExtra("PlanRange", range)
