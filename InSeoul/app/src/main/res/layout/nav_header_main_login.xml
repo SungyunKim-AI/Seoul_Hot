@@ -40,7 +40,6 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/nav_header_vertical_spacing"
                         android:text="회원 이름"
-                        android:linksClickable="true"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
                 <TextView
@@ -48,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:text="일정을 생성하고 관리하세요"
                         android:linksClickable="true"
-                        android:id="@+id/textView"/>
+                        android:id="@+id/tv_plan_count"/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -78,6 +77,8 @@
                     android:textColor="@color/white"
                     android:background="@drawable/btn_style"
                     android:clickable="true"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
             />
             <Button
                     android:id="@+id/login_status_on"
