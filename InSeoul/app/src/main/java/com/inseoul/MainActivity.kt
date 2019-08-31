@@ -43,6 +43,8 @@ class MainActivity :
 {
     val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
 
+    lateinit var backPressCloseHandler: BackPressCloseHandler
+
     /////////////// Permission Check ///////////////
 
     val REQ_CAMERA = 1000
@@ -180,13 +182,16 @@ class MainActivity :
         initRecyclerView()
 
 
+
+
     }
     override fun onBackPressed() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            //super.onBackPressed()
+            backPressCloseHandler.onBackPressed()
         }
     }
 
@@ -240,6 +245,9 @@ class MainActivity :
 
     ////////////////// Button //////////////////
     fun initBtn(){
+        /////////backpress//////////
+        backPressCloseHandler = BackPressCloseHandler(this)
+
 
         MkPlanBtn.setOnClickListener {
             val intent = Intent(this, MakePlanActivity::class.java)
@@ -295,4 +303,5 @@ class MainActivity :
             SaveSharedPreference.clearUserID(this)
         }
     }
+
 }
