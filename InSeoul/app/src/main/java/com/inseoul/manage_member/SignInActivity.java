@@ -2,14 +2,12 @@ package com.inseoul.manage_member;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +41,7 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
 
         idText= (EditText)findViewById(R.id.input_id);
         pwText= (EditText)findViewById(R.id.input_pw);
+        pwText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         signInBtn = (Button)findViewById(R.id.signInBtn);
         checkBox = (CheckBox)findViewById(R.id.autoLogin);
 
@@ -103,11 +102,7 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
                     }
                     else
                     {
-                        AlertDialog.Builder builder= new AlertDialog.Builder(SignInActivity.this);
-                        dialog=builder.setMessage("아이디 또는 비밀번호가 맞지 않습니다")
-                                .setNegativeButton("다시시도",null)
-                                .create();
-                        dialog.show();
+                        Toast.makeText(SignInActivity.this,"회원 정보가 일치하지 않습니다.",Toast.LENGTH_SHORT).show();
 
                     }
                 }
