@@ -41,8 +41,8 @@ class SearchAdapter(val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = items!!.get(position)
 
-        holder.item_title.text = data.title
-        holder.item_content.text = data.preview
+        holder.thumbnail.setImageResource(data.placeIcon)
+        holder.item_title.text = data.placeNm
 
         holder.itemView.setOnClickListener {
             listener!!.onClick(it, position)
@@ -52,11 +52,9 @@ class SearchAdapter(val context: Context,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var thumbnail: ImageView
         var item_title: TextView
-        var item_content: TextView
         init {
             item_title = itemView.findViewById(R.id.search_title)
             thumbnail = itemView.findViewById(R.id.search_thumbnail)
-            item_content = itemView.findViewById(R.id.search_preview)
         }
     }
 
