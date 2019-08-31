@@ -19,12 +19,14 @@ import com.inseoul.SearchDetails.SearchDetail
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search.recyclerView
 import org.json.JSONObject
+import java.util.*
 import kotlin.collections.ArrayList
 
 class SearchActivity : AppCompatActivity() {
     var hNUM :ArrayList<Int> = ArrayList()
     var succ = false
     var upNUM :ArrayList<Int> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -110,6 +112,7 @@ class SearchActivity : AppCompatActivity() {
                                             val s= `object`.getString("H").split(",")// 업소번호의 출력 형태가 int,int,int,... 식이어서 split(',') 필요
                                             for(i in s){
                                                 if(i=="")continue
+                                                if(upNUM.contains(i.toInt()))continue
                                                 upNUM.add(i.toInt()) /// 업소 번호를 저장
                                             }
 
@@ -117,6 +120,8 @@ class SearchActivity : AppCompatActivity() {
                                             count++
 
                                         }
+
+
 
                                     } catch (e: Exception) {
                                         e.printStackTrace()
@@ -130,6 +135,13 @@ class SearchActivity : AppCompatActivity() {
                                     var queue = Volley.newRequestQueue(this@SearchActivity)
                                     queue.add(idnumrequest2)
                                 }
+                               val responseListener3 = Response.Listener<String> {response->
+                                   readFile()
+                                   initRecyclerView()
+                               }
+                                val idnumrequest3 = ConnectRequest("oooooo",responseListener3)
+                                var queue = Volley.newRequestQueue(this@SearchActivity)
+                                queue.add(idnumrequest3)
                             }
 
                         } else {
@@ -149,13 +161,35 @@ class SearchActivity : AppCompatActivity() {
 
                 /////////////////////////////////////////////////////////////////////
 
-                initRecyclerView()
+
 
                 return false
             }
         })
     }
+    fun readFile(){
+        val scan = Scanner(resources.openRawResource(R.raw.inseoul_upso_data))
+        var result = ""
+        while(scan.hasNextLine()){
+            val line = scan.nextLine()
+            result += line
+        }
+        parsingGson(result)
+    }
 
+    fun parsingGson(result:String){
+        val json = JSONObject(result)
+        val array = json.getJSONArray("data")
+        for(i in 0 until array.length()){
+           if(upNUM.contains(array.getJSONObject(i).getInt("Id_Num"))){
+               val lat = array.getJSONObject(i).getString("class")
+               val lng = array.getJSONObject(i).getString("Upso_nm")
+
+               test.add(SearchItem(lng, lat))
+               Log.d("Log", "$lat, $lng")
+           }
+        }
+    }
     ////////////////// Recycler View //////////////////
     private val test = ArrayList<SearchItem>()
     var layoutManager: RecyclerView.LayoutManager? = null
@@ -164,7 +198,7 @@ class SearchActivity : AppCompatActivity() {
     fun initTest(){
 
         for(i in 0..10){
-            test.add(SearchItem("This is Title" + i.toString(), "This is Content" + i.toString()))
+
         }
     }
 
