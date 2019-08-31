@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.view.GravityCompat
@@ -35,6 +36,7 @@ import com.inseoul.manage_schedules.my_schedule
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity :
@@ -42,6 +44,8 @@ class MainActivity :
     NavigationView.OnNavigationItemSelectedListener
 {
     val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
+
+    lateinit var backPressCloseHandler: BackPressCloseHandler
 
     /////////////// Permission Check ///////////////
 
@@ -163,7 +167,14 @@ class MainActivity :
 //                .setAction("Action", null).show()
 //        }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
+        Log.d("alert",SaveSharedPreference.getUserID(this))
+        if(SaveSharedPreference.getUserID(this)!=""){
+            nav_view.removeHeaderView(nav_view.getHeaderView(0))
+            nav_view.inflateHeaderView(R.layout.nav_header_main_login)
+        }
         val navView: NavigationView = findViewById(R.id.nav_view)
+
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -180,13 +191,16 @@ class MainActivity :
         initRecyclerView()
 
 
+
+
     }
     override fun onBackPressed() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            //super.onBackPressed()
+            backPressCloseHandler.onBackPressed()
         }
     }
 
@@ -240,6 +254,9 @@ class MainActivity :
 
     ////////////////// Button //////////////////
     fun initBtn(){
+        /////////backpress//////////
+        backPressCloseHandler = BackPressCloseHandler(this)
+
 
         MkPlanBtn.setOnClickListener {
             val intent = Intent(this, MakePlanActivity::class.java)
@@ -295,4 +312,5 @@ class MainActivity :
             SaveSharedPreference.clearUserID(this)
         }
     }
+
 }

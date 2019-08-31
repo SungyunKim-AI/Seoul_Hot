@@ -15,7 +15,7 @@
         android:text="서울의 핫플, 여행, 리뷰를 한번에"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="20dp"
     />
     <ImageView
             android:layout_width="match_parent"

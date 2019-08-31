@@ -33,8 +33,8 @@ public class SplashActivity extends AppCompatActivity {
         DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
         int width = dm.widthPixels;
         int height = dm.heightPixels;
-        //Log.d("size",width + "sdf");
-        //Log.d("size",height + "sdf");
+        //Log.d("size",width + "sdf");   //1080
+        //Log.d("size",height + "sdf");  //1920
 
         TextView textView = (TextView)findViewById(R.id.textView_splash);
         textView.startAnimation(fadeIn);
