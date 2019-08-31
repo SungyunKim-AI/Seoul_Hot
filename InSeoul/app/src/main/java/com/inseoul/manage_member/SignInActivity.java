@@ -2,6 +2,7 @@ package com.inseoul.manage_member;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -85,13 +86,20 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                SharedPreferences id = getSharedPreferences("InSeoul",0);
+                SharedPreferences.Editor editor = id.edit();
                 try{
-                    //System.out.println("response: " + response);
+                    System.out.println("response: " + response);
                     //JSONObject jsonResponse = new JSONObject(response);
                     boolean success = new JSONObject(response).getBoolean("success");
+                    JSONObject object = new JSONObject(response);
                     //System.out.println("success: " + success);
                     if(success)
                     {
+                        editor.putString("UserID", idText.getText().toString());
+//                        editor.putString("UserName", object.getString("name"));
+  //                      editor.putString("UserEmail", object.getString("email"));
+ //                       editor.putInt("IDNum",  object.getInt("idnum"));
                         if(checkBox.isChecked()){
                             SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),true);
                             successLog();
@@ -99,10 +107,15 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
                             SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),false);
                             successLog();
                         }
+                        editor.commit();
                     }
                     else
                     {
-                        Toast.makeText(SignInActivity.this,"회원 정보가 일치하지 않습니다.",Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder= new AlertDialog.Builder(SignInActivity.this);
+                        dialog=builder.setMessage("아이디 또는 비밀번호가 맞지 않습니다")
+                                .setNegativeButton("다시시도",null)
+                                .create();
+                        dialog.show();
 
                     }
                 }
