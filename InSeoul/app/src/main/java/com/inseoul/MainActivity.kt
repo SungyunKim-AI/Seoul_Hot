@@ -5,9 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
@@ -17,20 +14,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.maps.MapFragment
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.appbar.AppBarLayout
 import com.inseoul.home.HomeAdapter
 import com.inseoul.home.HomeItem
 import com.inseoul.make_plan.MakePlanActivity
@@ -42,9 +36,7 @@ import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.nav_header_main.type_mini
-import kotlinx.android.synthetic.main.nav_header_main_login.*
 
 class MainActivity :
     AppCompatActivity(),
@@ -54,6 +46,9 @@ class MainActivity :
 
     lateinit var backPressCloseHandler: BackPressCloseHandler
 
+    var isFabOpen: Boolean = false
+    lateinit var fab_open: Animation
+    lateinit var fab_close: Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +69,73 @@ class MainActivity :
         initBtn()
         initTest()
         initRecyclerView()
+        initFloating()
 
+    }
+
+    ////////////////FloatingButton Setting////////////////////
+    private fun initFloating() {
+
+        fab_open = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
+        fab_close = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
+
+
+        fab.setOnClickListener {
+            anim()
+        }
+        fab1.setOnClickListener {
+            anim()
+            val intent = Intent(this, MakePlanActivity::class.java)
+            startActivity(intent)
+        }
+        fab2.setOnClickListener {
+            anim()
+            if (!loginCheck())
+                loginDialog()
+            else{
+                val intent = Intent(this, my_schedule::class.java)
+                startActivity(intent)
+            }
+        }
+        fab3.setOnClickListener {
+            anim()
+            val intent = Intent(this, TimeLineActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        appbarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+                if (verticalOffset < -linearlayout_size.height) {
+                    //fab.size = SIZE_NORMAL
+                    fab.show()
+                } else {
+                    fab.hide()
+                }
+
+            }
+        })
+    }
+
+    fun anim() {
+
+        if (isFabOpen) {
+            fab1.startAnimation(fab_close)
+            fab2.startAnimation(fab_close)
+            fab3.startAnimation(fab_close)
+            fab1.isClickable = false
+            fab2.isClickable = false
+            fab3.isClickable = false
+            isFabOpen = false
+        } else {
+            fab1.startAnimation(fab_open)
+            fab2.startAnimation(fab_open)
+            fab3.startAnimation(fab_open)
+            fab1.isClickable = true
+            fab2.isClickable = true
+            fab3.isClickable = true
+            isFabOpen = true
+        }
     }
 
 
@@ -151,33 +212,41 @@ class MainActivity :
             //마이 페이지 myPage
             var myPageBtn = header.findViewById<Button>(R.id.myPage)
             myPageBtn.setOnClickListener {
-                val builder = AlertDialog.Builder(this)
-                builder.setMessage("로그인 하시겠습니까?")
-                    .setCancelable(false)
-                    .setPositiveButton("확인", DialogInterface.OnClickListener { dialog, id ->
-                        val intent = Intent(this, SignInActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    })
-                    .setNegativeButton("취소", DialogInterface.OnClickListener { dialog, id ->
-                        dialog.cancel()
-                    })
-
-                val alert = builder.create()
-                alert.setTitle("로그인이 필요한 서비스 입니다.")
-                alert.show()
+                if (!loginCheck())
+                    loginDialog()
             }
-
             //회원가입 텍스트  tv_signUp
             var signUpBtn = header.findViewById<TextView>(R.id.tv_signUp)
             signUpBtn.setOnClickListener {
-                val intent = Intent(this,SignUpActivity::class.java)
+                val intent = Intent(this, SignUpActivity::class.java)
                 startActivity(intent)
                 finish()
             }
         }
 
 
+    }
+
+    fun loginCheck(): Boolean {
+        return (SaveSharedPreference.getUserID(this) != "")
+    }
+
+    fun loginDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("로그인 하시겠습니까?")
+            .setCancelable(false)
+            .setPositiveButton("확인", DialogInterface.OnClickListener { dialog, id ->
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+                finish()
+            })
+            .setNegativeButton("취소", DialogInterface.OnClickListener { dialog, id ->
+                dialog.cancel()
+            })
+
+        val alert = builder.create()
+        alert.setTitle("로그인이 필요한 서비스 입니다.")
+        alert.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -220,8 +289,12 @@ class MainActivity :
     ////////////////// Button //////////////////
     fun initBtn() {
         toolbar.navigationIcon = getDrawable(R.drawable.hamburger)
+
+
         /////////backpress//////////
         backPressCloseHandler = BackPressCloseHandler(this)
+
+
 
 
         MkPlanBtn.setOnClickListener {
@@ -235,29 +308,13 @@ class MainActivity :
                 val intent = Intent(this, my_schedule::class.java)
                 startActivity(intent)
             } else {
-                val builder = AlertDialog.Builder(this)
-                builder.setMessage("로그인 하시겠습니까?")
-                    .setCancelable(false)
-                    .setPositiveButton("확인", DialogInterface.OnClickListener { dialog, id ->
-                        val intent = Intent(this, SignInActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    })
-                    .setNegativeButton("취소", DialogInterface.OnClickListener { dialog, id ->
-                        dialog.cancel()
-                    })
-
-                val alert = builder.create()
-                alert.setTitle("로그인이 필요한 서비스 입니다.")
-                alert.show()
+                if (!loginCheck())
+                    loginDialog()
             }
-
         }
-
         TimeLineBtn.setOnClickListener {
             val intent = Intent(this, TimeLineActivity::class.java)
             startActivity(intent)
-
         }
 
     }
@@ -391,4 +448,6 @@ class MainActivity :
                 SaveSharedPreference.clearUserID(this)
         }
     }
+
+
 }
