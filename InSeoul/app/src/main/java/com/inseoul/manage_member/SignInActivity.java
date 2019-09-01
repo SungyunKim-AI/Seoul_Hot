@@ -87,29 +87,35 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                SharedPreferences id = getSharedPreferences("InSeoul",0);
-                SharedPreferences.Editor editor = id.edit();
+                //SharedPreferences id = getSharedPreferences("InSeoul",0);
+                //SharedPreferences.Editor editor = id.edit();
                 try{
-                    //System.out.println("response: " + response);
+                    System.out.println("response: " + response);
                     //JSONObject jsonResponse = new JSONObject(response);
                     JSONObject jsonResponse = new JSONObject(response.split("\\ ")[1]);
                     JSONObject success= jsonResponse.getJSONObject("response");
-                    //System.out.println("success: " + success);
+                    System.out.println("success: " + success);
                     if(success.getBoolean("success"))
                     {
 
-                        editor.putString("UserID", idText.getText().toString());
-                        editor.putString("UserName", success.getString("NAME"));
-                        editor.putString("UserEmail", success.getString("EMAIL"));
-                        editor.putInt("IDNum",  success.getInt("IDNUM"));
+//                        editor.putString("UserID", idText.getText().toString());
+//                        editor.putString("UserName", success.getString("NAME"));
+//                        editor.putString("UserEmail", success.getString("EMAIL"));
+//                        editor.putInt("IDNum",  success.getInt("IDNUM"));
+
+                        Log.d("alert_name",success.getString("NAME"));
+                        Log.d("alert_name",success.getString("EMAIL"));
+
                         if(checkBox.isChecked()){
-                            SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),true);
+                            SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),success.getInt("IDNUM"),true);
+                            SaveSharedPreference.setUserInfo(SignInActivity.this,success.getString("NAME"),success.getString("EMAIL"));
                             successLog();
                         }else{
-                            SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),false);
+                            SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),success.getInt("IDNUM"),false);
+                            SaveSharedPreference.setUserInfo(SignInActivity.this,success.getString("NAME"),success.getString("EMAIL"));
                             successLog();
                         }
-                        editor.commit();
+                        //editor.commit();
                     }
                     else
                     {

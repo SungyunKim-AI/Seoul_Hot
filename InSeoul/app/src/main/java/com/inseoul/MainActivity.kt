@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
@@ -37,6 +38,8 @@ import com.inseoul.timeline.TimeLineActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.type_mini
+import kotlinx.android.synthetic.main.nav_header_main_login.*
+import org.w3c.dom.Text
 
 class MainActivity :
     AppCompatActivity(),
@@ -92,7 +95,7 @@ class MainActivity :
             anim()
             if (!loginCheck())
                 loginDialog()
-            else{
+            else {
                 val intent = Intent(this, my_schedule::class.java)
                 startActivity(intent)
             }
@@ -169,6 +172,8 @@ class MainActivity :
         //nav_header_main_login
         if (SaveSharedPreference.getUserID(this) != "") {
             //회원 정보 출력
+            var nameText = header.findViewById<TextView>(R.id.tvId)
+            nameText.text = SaveSharedPreference.getUserName(this)
 
             //로그 아웃
             var logoutBtn = header.findViewById<Button>(R.id.login_status_on)
