@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.inseoul.MainActivity;
 import com.inseoul.R;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class SignInActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
@@ -91,15 +92,16 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
                 try{
                     System.out.println("response: " + response);
                     //JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = new JSONObject(response).getBoolean("success");
-                    JSONObject object = new JSONObject(response);
+                    JSONObject jsonResponse = new JSONObject(response.split("\\ ")[1]);
+                    JSONObject success= jsonResponse.getJSONObject("response");
                     //System.out.println("success: " + success);
-                    if(success)
+                    if(success.getBoolean("success"))
                     {
+
                         editor.putString("UserID", idText.getText().toString());
-//                        editor.putString("UserName", object.getString("name"));
-  //                      editor.putString("UserEmail", object.getString("email"));
- //                       editor.putInt("IDNum",  object.getInt("idnum"));
+                        editor.putString("UserName", success.getString("NAME"));
+                        editor.putString("UserEmail", success.getString("EMAIL"));
+                        editor.putInt("IDNum",  success.getInt("IDNUM"));
                         if(checkBox.isChecked()){
                             SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),true);
                             successLog();

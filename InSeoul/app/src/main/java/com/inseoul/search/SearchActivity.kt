@@ -167,7 +167,7 @@ class SearchActivity : AppCompatActivity() {
         Log.d("alert_length",array.length().toString())
 
         if(array.length() == 0){
-            placeList.add(SearchItem("핫플레이스가 아니에요 ㅠㅠ", R.drawable.ic_add_a_photo_black_24dp))
+            placeList.add(SearchItem("핫플레이스가 아니에요 ㅠㅠ", R.drawable.ic_add_a_photo_black_24dp,0))
         }else{
             for (i in 0 until array.length()) {
                 if (upNUM.contains(array.getJSONObject(i).getInt("Id_Num"))) {
@@ -186,7 +186,7 @@ class SearchActivity : AppCompatActivity() {
                             flag = R.drawable.ic_add_a_photo_black_24dp
                         }
                     }
-                    placeList.add(SearchItem(lng, flag!!))
+                    placeList.add(SearchItem(lng, flag!!,array.getJSONObject(i).getInt("Id_Num")))
                     //Log.d("Log", "$lat, $lng")
                 }
             }
@@ -210,6 +210,7 @@ class SearchActivity : AppCompatActivity() {
                 //intent로 SearchItem 전달
                 val detailsIntent = Intent(this@SearchActivity, SearchDetail::class.java)
                 detailsIntent.putExtra("search_title", placeList[position].placeNm)
+                detailsIntent.putExtra("search_id", placeList[position].id)
                 startActivity(detailsIntent)
             }
         }

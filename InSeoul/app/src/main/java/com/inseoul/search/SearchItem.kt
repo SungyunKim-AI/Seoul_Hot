@@ -5,7 +5,8 @@ import com.inseoul.R
 
 data class SearchItem(
     var placeNm:String,
-    var placeIcon:Int
+    var placeIcon:Int,
+    var id:Int
 
 ){
     //placeFlag => 명소:0, 맛집:1, 쇼핑:2
