@@ -22,6 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.rotationMatrix
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,8 +51,14 @@ class MainActivity :
     lateinit var backPressCloseHandler: BackPressCloseHandler
 
     var isFabOpen: Boolean = false
-    lateinit var fab_open: Animation
-    lateinit var fab_close: Animation
+    lateinit var fab_open1: Animation
+    lateinit var fab_open2: Animation
+    lateinit var fab_open3: Animation
+    lateinit var fab_close1: Animation
+    lateinit var fab_close2: Animation
+    lateinit var fab_close3: Animation
+    lateinit var fab_rotate: Animation
+    lateinit var fab_rotate_close: Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,8 +86,20 @@ class MainActivity :
     ////////////////FloatingButton Setting////////////////////
     private fun initFloating() {
 
-        fab_open = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
-        fab_close = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
+        fab_rotate = AnimationUtils.loadAnimation(applicationContext, R.anim.rotate_anim)
+        fab_rotate_close = AnimationUtils.loadAnimation(applicationContext,R.anim.rotate_anim_close)
+        fab_open1 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
+        fab_open2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
+        fab_open2.duration = 500
+        fab_open3 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
+        fab_open3.duration = 750
+
+        fab_close1 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
+        fab_close2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
+        fab_close2.duration = 550
+        fab_close3 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
+        fab_close3.duration = 800
+
 
 
         fab.setOnClickListener {
@@ -110,10 +129,13 @@ class MainActivity :
         appbarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
                 if (verticalOffset < -linearlayout_size.height) {
-                    //fab.size = SIZE_NORMAL
                     fab.show()
-                } else {
+                }
+                else {
                     fab.hide()
+                    if(isFabOpen == true){
+                        anim()
+                    }
                 }
 
             }
@@ -123,17 +145,19 @@ class MainActivity :
     fun anim() {
 
         if (isFabOpen) {
-            fab1.startAnimation(fab_close)
-            fab2.startAnimation(fab_close)
-            fab3.startAnimation(fab_close)
+            fab.startAnimation(fab_rotate_close)
+            fab1.startAnimation(fab_close1)
+            fab2.startAnimation(fab_close2)
+            fab3.startAnimation(fab_close3)
             fab1.isClickable = false
             fab2.isClickable = false
             fab3.isClickable = false
             isFabOpen = false
         } else {
-            fab1.startAnimation(fab_open)
-            fab2.startAnimation(fab_open)
-            fab3.startAnimation(fab_open)
+            fab.startAnimation(fab_rotate)
+            fab1.startAnimation(fab_open1)
+            fab2.startAnimation(fab_open2)
+            fab3.startAnimation(fab_open3)
             fab1.isClickable = true
             fab2.isClickable = true
             fab3.isClickable = true
