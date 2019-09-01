@@ -12,7 +12,7 @@
 
     <TextView
         android:textSize="16dp"
-        android:text="서울의 핫플, 여행, 리뷰를 한번에"
+        android:text="서울의 핫플, 숙박, 맛집을 한 번에"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -66,7 +66,7 @@
             android:id="@+id/signUpBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="간편 회원가입"
+            android:text="간편 회원가입으로 나만의 여행 일지를 만들어 보세요"
             android:layout_marginTop="30dp"
             android:linksClickable="true"
     />

@@ -1,17 +1,15 @@
 package com.inseoul.manage_schedules;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -19,23 +17,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.inseoul.R;
 import com.inseoul.add_place.AddPlaceActivity;
 import com.inseoul.make_plan.MakePlanActivity;
 import com.inseoul.manage_member.SaveSharedPreference;
-import com.inseoul.manage_member.SignUpActivity;
-import com.inseoul.manage_member.ValidateRequest;
 import com.inseoul.register_review.register_review;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,19 +37,24 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class my_schedule extends AppCompatActivity {
+
+    //현재 일정 변수
     private ArrayList<recyclerview_schedule> mArrayList;
     private adapter_schedule mAdapter;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
 
+    //지난 일정 변수
     private ArrayList<recyclerview_schedule_past> mArrayList_past;
     private adapter_schedule_past mAdapter_past;
     private RecyclerView mRecyclerView_past;
     private LinearLayoutManager mLinearLayoutManager_past;
-    private AlertDialog dialog;
+
+
     public ArrayList<Integer> planidarray = new ArrayList<Integer>();
     private  ArrayList<String> planlist = new ArrayList<>();
     private  ArrayList<String> planlist_past = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +76,9 @@ public class my_schedule extends AppCompatActivity {
 
 
         // MainActivity에서 RecyclerView의 데이터에 접근
+        mArrayList_past = new ArrayList<>();
         mArrayList = new ArrayList<>();
-        /////////////수정 중인 일정
 
-
-        //////////////////// Test Code ////////////////////
-        //appData = getSharedPreferences("InSeoul", MODE_PRIVATE);
         String idNUM = SaveSharedPreference.getUserID(this);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -91,35 +86,24 @@ public class my_schedule extends AppCompatActivity {
             public void onResponse(String response) {
                 try
                 {
-                    Log.d("dd", response);
+//                    Log.d("dd", response);
                     JSONObject jsonResponse = new JSONObject(response);
                     JSONArray success= jsonResponse.getJSONArray("response");
                     int count=0;
                     while (count<success.length()){
                         JSONObject object = success.getJSONObject(count);
                         planidarray.add(object.getInt("PLANID"));
-                        Log.d(this.getClass().getName(), planidarray.toString());
-
+//                        Log.d(this.getClass().getName(), planidarray.toString());
 
                         count++;
-
                     }
-                    if(success.length()>=1)
+                    if(success.length()==0)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(my_schedule.this);
-                        dialog = builder.setMessage("아이디 확인되었습니다.")
-                                .setPositiveButton("확인", null)
-                                .create();
-                        dialog.show();
-
-
+                        LinearLayout layout = (LinearLayout)findViewById(R.id.first_layout);
+                        layout.setVisibility(View.VISIBLE);
                     }
                     else{
-                        AlertDialog.Builder builder = new AlertDialog.Builder(my_schedule.this);
-                        dialog = builder.setMessage("사용할 수 없는 아이디 입니다.")
-                                .setNegativeButton("확인", null)
-                                .create();
-                        dialog.show();
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -134,19 +118,16 @@ public class my_schedule extends AppCompatActivity {
         showPlanTask.execute();
 
 
-        ////////////지나간 일정
+        //////////////지나간 일정///////////////
         mRecyclerView_past = (RecyclerView) findViewById(R.id.recyclerview_past_list);
         mLinearLayoutManager_past = new LinearLayoutManager(this);
         mRecyclerView_past.setLayoutManager(mLinearLayoutManager_past);
 
-        // 현재 액티비티에서 에서 RecyclerView의 데이터에 접근
-        mArrayList_past = new ArrayList<>();
-
-
-
-        //////////////////// Test Code ////////////////////
 
     }
+
+
+
 
     //버튼 세팅
     public void initBtn() {

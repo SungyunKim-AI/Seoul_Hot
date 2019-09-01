@@ -5,6 +5,7 @@
     <color name="white">#FFFFFf</color>
     <color name="colorAccent">#FDAFAB</color>
     <color name="black">#000000</color>
+    <color name="layout_back">#CECECE</color>
     <color name="falseBtn">#CECECE</color>
 
     <color name="toolbar_background">#00000000</color>
