@@ -30,6 +30,7 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
 
     /////////////TEST CODE///////////////
     ArrayList<planlist> testlist = new ArrayList<>();
+    private int upsoID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
     public void init(){
         Bundle extras = getIntent().getExtras();
         m_name = extras.getString("search_title");
+        upsoID = extras.getInt("search_id");
 
         /////////////TEST CODE///////////////
         for (int i=0; i<plan_count;i++){

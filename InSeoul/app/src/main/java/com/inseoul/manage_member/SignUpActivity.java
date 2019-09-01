@@ -1,6 +1,7 @@
 package com.inseoul.manage_member;
 
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ public class SignUpActivity extends AppCompatActivity {
     private String userID;
     private String userPW;
     private String userEMAIL;
+    private String userName;
     private AlertDialog dialog;
     private boolean validate = false;
     @Override
@@ -33,6 +35,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void init(){
         final EditText idText =(EditText) findViewById( R.id.id);
         final EditText pwText = (EditText) findViewById(R.id.pw);
+        final EditText nmText = findViewById(R.id.name);
         pwText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         final EditText emailText = (EditText)findViewById(R.id.email);
         final Button validateButton = findViewById(R.id.validateBtn);
@@ -92,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
                 sign_up_submit = (Button)findViewById(R.id.sign_up_submit);
-        sign_up_submit.setOnClickListener(new Button.OnClickListener(){
+                sign_up_submit.setOnClickListener(new Button.OnClickListener(){
 
                 ////////// Connect DB //////////
                 @Override
@@ -100,6 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
                     userID = idText.getText().toString();
                     userPW = pwText.getText().toString();
                     userEMAIL = emailText.getText().toString();
+                    userName = nmText.getText().toString();
 
 
                     if(!validate)
@@ -125,6 +129,7 @@ public class SignUpActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             try
                             {
+                                Log.d("d",response);
                                 JSONObject jsonResponse = new JSONObject(response);
                                 boolean success= jsonResponse.getBoolean("success");
                                 if(success)
@@ -142,7 +147,7 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                         }
                     };
-                    RegisterRequest registerRequest = new RegisterRequest(userID, userPW, userEMAIL, responseListener);
+                    RegisterRequest registerRequest = new RegisterRequest(userID, userPW, userEMAIL, userName, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(SignUpActivity.this);
                     queue.add(registerRequest);
 
