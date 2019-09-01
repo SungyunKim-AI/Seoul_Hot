@@ -84,7 +84,7 @@ public class my_schedule extends AppCompatActivity {
 
         //////////////////// Test Code ////////////////////
         //appData = getSharedPreferences("InSeoul", MODE_PRIVATE);
-        String idNUM = SaveSharedPreference.getUserID_NUM(this).toString();
+        String idNUM = SaveSharedPreference.getUserID(this);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override

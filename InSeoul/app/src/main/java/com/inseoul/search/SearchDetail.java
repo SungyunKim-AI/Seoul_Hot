@@ -59,7 +59,7 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
 
     public void init(){
         //SharedPreferences sf= getSharedPreferences("InSeoul",0);
-        String idNUM = SaveSharedPreference.getUserID_NUM(this).toString();
+        String idNUM = SaveSharedPreference.getUserID(this);
         SearchItem searchItem = getIntent().getParcelableExtra("placeData");
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -193,14 +193,7 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
 
                         testlist.add(new planlist(object.getString("TripName"), object.getString("DPDATE"), object.getInt("H")));
 
-
-
                     }
-
-
-
-
-
 
                     count++;
 
