@@ -55,7 +55,6 @@ class AddPlaceActivity :
         initBottomSheet()
         init()
         initMap()
-//        initTheme()             //여행 테마 세팅
 
     }
 
@@ -121,13 +120,9 @@ class AddPlaceActivity :
             var theme: String
 
             date = extras!!.getString("PlanDate", "NULL")
-            theme = extras!!.getString("PlanTheme", "NULL")
-
-//            textview_theme = this.textview_plantheme
 
             PlanTitle.hint = date + " 여정"
             textview_plandate.text = date
-//            textview_theme!!.setText(theme)
 
         } else if (flag == 1) {
             //flag가 1이라면 SearchDetail에서 넘어옴
@@ -193,33 +188,6 @@ class AddPlaceActivity :
         }
 
     }
-
-
-    fun initTheme() {
-        theme_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (theme_spinner.getItemAtPosition(position)) {
-                    "역사" -> {
-//                        theme = "역사"
-                    }
-                    "맛집" -> {
-//                        theme = "맛집"
-                    }
-                    "힐링" -> {
-//                        theme = "힐링"
-                    }
-                    else -> {
-//                        theme = null
-                    }
-                }
-
-            }
-        }
-    }
-
 
     fun initMap(){
         readFile()
