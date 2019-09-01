@@ -90,7 +90,7 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
                 SharedPreferences id = getSharedPreferences("InSeoul",0);
                 SharedPreferences.Editor editor = id.edit();
                 try{
-                    System.out.println("response: " + response);
+                    //System.out.println("response: " + response);
                     //JSONObject jsonResponse = new JSONObject(response);
                     JSONObject jsonResponse = new JSONObject(response.split("\\ ")[1]);
                     JSONObject success= jsonResponse.getJSONObject("response");

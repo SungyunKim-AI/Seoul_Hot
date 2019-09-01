@@ -1,7 +1,6 @@
 package com.inseoul.search
 
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,13 +9,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.inseoul.R
-import com.inseoul.SearchDetails.SearchDetail
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search.recyclerView
 import org.json.JSONObject
@@ -140,7 +137,7 @@ class SearchActivity : AppCompatActivity() {
                 var queue = Volley.newRequestQueue(this@SearchActivity)
                 queue.add(idnumrequest)
                 queue.start()
-                Log.d("dd", "queue")
+                //Log.d("dd", "queue")
 
 
                 /////////////////////////////////////////////////////////////////////
@@ -163,8 +160,6 @@ class SearchActivity : AppCompatActivity() {
     fun parsingGson(result: String) {
         val json = JSONObject(result)
         val array = json.getJSONArray("data")
-
-        Log.d("alert_length",array.length().toString())
 
         if(array.length() == 0){
             placeList.add(SearchItem("핫플레이스가 아니에요 ㅠㅠ", R.drawable.ic_add_a_photo_black_24dp,0))
@@ -208,10 +203,9 @@ class SearchActivity : AppCompatActivity() {
             override fun onClick(view: View, position: Int) {
 
                 //intent로 SearchItem 전달
-                val detailsIntent = Intent(this@SearchActivity, SearchDetail::class.java)
-                detailsIntent.putExtra("search_title", placeList[position].placeNm)
-                detailsIntent.putExtra("search_id", placeList[position].id)
-                startActivity(detailsIntent)
+                val intent = Intent(this@SearchActivity,SearchDetail::class.java)
+                intent.putExtra("placeData",placeList[position])
+                startActivity(intent)
             }
         }
 

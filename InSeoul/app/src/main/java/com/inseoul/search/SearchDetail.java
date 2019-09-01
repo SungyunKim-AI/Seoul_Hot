@@ -1,4 +1,4 @@
-package com.inseoul.SearchDetails;
+package com.inseoul.search;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,8 +26,6 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
     private Button btnAlert;
 
 
-
-
     /////////////TEST CODE///////////////
     ArrayList<planlist> testlist = new ArrayList<>();
     private int upsoID;
@@ -44,9 +42,8 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
     }
 
     public void init(){
-        Bundle extras = getIntent().getExtras();
-        m_name = extras.getString("search_title");
-        upsoID = extras.getInt("search_id");
+
+        SearchItem searchItem = getIntent().getParcelableExtra("placeData");
 
         /////////////TEST CODE///////////////
         for (int i=0; i<plan_count;i++){
