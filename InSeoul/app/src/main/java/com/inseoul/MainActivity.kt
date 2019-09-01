@@ -146,9 +146,9 @@ class MainActivity :
 
         if (isFabOpen) {
             fab.startAnimation(fab_rotate_close)
-            fab1.startAnimation(fab_close1)
+            fab1.startAnimation(fab_close3)
             fab2.startAnimation(fab_close2)
-            fab3.startAnimation(fab_close3)
+            fab3.startAnimation(fab_close1)
             fab1.isClickable = false
             fab2.isClickable = false
             fab3.isClickable = false

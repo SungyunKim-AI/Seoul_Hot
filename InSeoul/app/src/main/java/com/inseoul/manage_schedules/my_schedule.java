@@ -29,6 +29,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.inseoul.R;
 import com.inseoul.add_place.AddPlaceActivity;
 import com.inseoul.make_plan.MakePlanActivity;
+import com.inseoul.manage_member.SaveSharedPreference;
 import com.inseoul.manage_member.SignUpActivity;
 import com.inseoul.manage_member.ValidateRequest;
 import com.inseoul.register_review.register_review;
@@ -52,7 +53,6 @@ public class my_schedule extends AppCompatActivity {
     private adapter_schedule_past mAdapter_past;
     private RecyclerView mRecyclerView_past;
     private LinearLayoutManager mLinearLayoutManager_past;
-    private SharedPreferences appData;
     private AlertDialog dialog;
     public ArrayList<Integer> planidarray = new ArrayList<Integer>();
     private  ArrayList<String> planlist = new ArrayList<>();
@@ -83,9 +83,8 @@ public class my_schedule extends AppCompatActivity {
 
 
         //////////////////// Test Code ////////////////////
-        appData = getSharedPreferences("InSeoul", MODE_PRIVATE);
-        Boolean saveLoginData = appData.getBoolean("SAVE_LOGIN_DATA", false);
-        String idNUM = appData.getString("UserID", "a");
+        //appData = getSharedPreferences("InSeoul", MODE_PRIVATE);
+        String idNUM = SaveSharedPreference.getUserID_NUM(this).toString();
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
