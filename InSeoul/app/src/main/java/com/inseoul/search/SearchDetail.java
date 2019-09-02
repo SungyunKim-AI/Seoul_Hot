@@ -56,7 +56,8 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
     }
 
     public void init(){
-        String idNUM = SaveSharedPreference.getUserID_NUM(this).toString();
+        String idNUM = SaveSharedPreference.getUserID(this);
+
         SearchItem searchItem = getIntent().getParcelableExtra("placeData");
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -189,7 +190,6 @@ public class SearchDetail extends AppCompatActivity implements View.OnClickListe
                         Log.d("async","ss"+ Integer.toString(planID));
 
                         testlist.add(new planlist(object.getString("TripName"), object.getString("DPDATE"), object.getInt("H")));
-                        
                     }
 
                     count++;
