@@ -216,32 +216,49 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
 
 
-        if (intent.hasExtra("flag")) {
-            //AddPlaceActivity에서 넘어왔을때
+//        if (intent.hasExtra("flag")) {
+//            //AddPlaceActivity에서 넘어왔을때
+//
+//            val listener = object : AddPlaceSearchAdapter.RecyclerViewAdapterEventListener {
+//                override fun onClick(view: View, position: Int) {
+//
+//                }
+//            }
+//            adapter2 = AddPlaceSearchAdapter(this, listener, placeList2)
+//            recyclerView.adapter = adapter2
+//            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+//
+//        } else {
+//
+//            val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
+//                override fun onClick(view: View, position: Int) {
+//                    //intent로 SearchItem 전달
+//                    val intent = Intent(this@SearchActivity, SearchDetail::class.java)
+//                    intent.putExtra("placeData", placeList[position])
+//                    startActivity(intent)
+//                }
+//            }
+//            adapter1 = SearchAdapter(this, listener, placeList)
+//            recyclerView.adapter = adapter1
+//            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+//        }
 
-            val listener = object : AddPlaceSearchAdapter.RecyclerViewAdapterEventListener {
-                override fun onClick(view: View, position: Int) {
-
-                }
-            }
-            adapter2 = AddPlaceSearchAdapter(this, listener, placeList2)
-            recyclerView.adapter = adapter2
-            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
-
-        } else {
-
-            val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
-                override fun onClick(view: View, position: Int) {
-                    //intent로 SearchItem 전달
-                    val intent = Intent(this@SearchActivity, SearchDetail::class.java)
-                    intent.putExtra("placeData", placeList[position])
-                    startActivity(intent)
-                }
-            }
-            adapter1 = SearchAdapter(this, listener, placeList)
-            recyclerView.adapter = adapter1
-            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+        if (intent.hasExtra("flag")){
+            //recyclerview 내부의 아이템에 접근
+            
         }
+
+        val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
+            override fun onClick(view: View, position: Int) {
+                //intent로 SearchItem 전달
+                val intent = Intent(this@SearchActivity, SearchDetail::class.java)
+                intent.putExtra("placeData", placeList[position])
+                startActivity(intent)
+            }
+        }
+        adapter1 = SearchAdapter(this, listener, placeList)
+        recyclerView.adapter = adapter1
+        //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
     }
 
 

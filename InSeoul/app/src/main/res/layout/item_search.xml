@@ -25,4 +25,11 @@
             android:textStyle="bold"
             android:layout_marginLeft="5dp"
     />
+
+    <Button
+            android:text="선택"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:id="@+id/selectBtn"
+            android:visibility="gone"/>
 </LinearLayout>
