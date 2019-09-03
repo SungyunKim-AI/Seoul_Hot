@@ -1,11 +1,13 @@
 package com.inseoul.search
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +18,7 @@ import com.android.volley.toolbox.Volley
 import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search.recyclerView
+import kotlinx.android.synthetic.main.item_search.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -25,11 +28,41 @@ class SearchActivity : AppCompatActivity() {
     var succ = false
     var upNUM: ArrayList<Int> = ArrayList()
 
+    //var actFlag = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         setSupportActionBar(toolbar_search)
 
+        init()
+
+        // Search View EventListener
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            // Text Change
+            override fun onQueryTextChange(p0: String?): Boolean {
+                //Log.d("Text Change",p0)
+                //////////////////////// DB Connect & Query ////////////////////////
+
+                /////////////////////////////////////////////////////////////////////
+                return false
+            }
+
+            // Submit
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                //Log.d("Submit",p0)
+                //////////////////////// DB Connect & Query ////////////////////////
+
+                initData(p0)
+
+                /////////////////////////////////////////////////////////////////////
+                return false
+            }
+        })
+    }
+
+    fun init(){
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search) as Toolbar
         setSupportActionBar(mtoolbar)
@@ -45,106 +78,89 @@ class SearchActivity : AppCompatActivity() {
         searchView.requestFocus()
         searchView.isSubmitButtonEnabled = true
 
-        // Search View EventListener
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
-            // Text Change
-            override fun onQueryTextChange(p0: String?): Boolean {
-                //Log.d("Text Change",p0)
+        //AddPlaceActivity에서 넘어옴
+//        if(intent.hasExtra("flag")){
+//
+//        }
 
-                //////////////////////// DB Connect & Query ////////////////////////
+    }
 
-                /////////////////////////////////////////////////////////////////////
+    //////////////////서버 통신////////////////////
+    fun initData(p0:String?){
+        val responseListener = Response.Listener<String> { response ->
+            try {
+//              Log.d("dd", response)
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+                    val `object` = success.getJSONObject(count)
+                    ////////////////////////
+                    `object`.getInt("H") //Hash값
+                    hNUM.add(`object`.getInt("H"))
 
-                return false
-            }
+                    count++
 
-            // Submit
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-
-                //Log.d("Submit",p0)
-
-                //////////////////////// DB Connect & Query ////////////////////////
-
-                val responseListener = Response.Listener<String> { response ->
-                    try {
-                        Log.d("dd", response)
-                        val jsonResponse = JSONObject(response)
-                        val success = jsonResponse.getJSONArray("response")
-                        var count = 0
-                        while (count < success.length()) {
-                            val `object` = success.getJSONObject(count)
-                            ////////////////////////
-                            `object`.getInt("H") //Hash값
-                            hNUM.add(`object`.getInt("H"))
-
-                            count++
-
-                        }
-                        if (success.length() >= 1) {
-                            succ = true
-                            val responseListener2 = Response.Listener<String> { response ->
-                                Log.d("dd", succ.toString())
-                                if (succ) {
-                                    try {
-                                        Log.d("dd", response)
-                                        val jsonResponse = JSONObject(response)
-                                        val success = jsonResponse.getJSONArray("response")
-                                        var count = 0
-
-                                        while (count < success.length()) {
-                                            val `object` = success.getJSONObject(count)
-
-                                            val s = `object`.getString("H")
-                                                .split(",")// 업소번호의 출력 형태가 int,int,int,... 식이어서 split(',') 필요
-                                            for (i in s) {
-                                                if (i == "") continue
-                                                if (upNUM.contains(i.toInt())) continue
-                                                upNUM.add(i.toInt()) /// 업소 번호를 저장
-                                            }
-                                            count++
-                                        }
-
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-
-                                }
-                            }
-                            if (succ) {
-                                for (j in hNUM.indices) {
-                                    val idnumrequest2 = ConnectRequest(hNUM.get(j).toString(), responseListener2)
-                                    var queue = Volley.newRequestQueue(this@SearchActivity)
-                                    queue.add(idnumrequest2)
-                                }
-                                val responseListener3 = Response.Listener<String> { response ->
-                                    readFile()
-                                    initRecyclerView()
-                                }
-                                val idnumrequest3 = ConnectRequest("oooooo", responseListener3)
-                                var queue = Volley.newRequestQueue(this@SearchActivity)
-                                queue.add(idnumrequest3)
-                            }
-
-                        } else {
-                            Toast.makeText(this@SearchActivity,"핫플레이스가 아니에요 ㅠㅠ",Toast.LENGTH_SHORT).show()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
                 }
-                val idnumrequest = SearchRequest(p0, responseListener)
-                var queue = Volley.newRequestQueue(this@SearchActivity)
-                queue.add(idnumrequest)
-                queue.start()
-                //Log.d("dd", "queue")
+                if (success.length() >= 1) {
+                    succ = true
+                    val responseListener2 = Response.Listener<String> { response ->
+//                        Log.d("dd", succ.toString())
+                        if (succ) {
+                            try {
+//                                Log.d("dd", response)
+                                val jsonResponse = JSONObject(response)
+                                val success = jsonResponse.getJSONArray("response")
+                                var count = 0
 
+                                while (count < success.length()) {
+                                    val `object` = success.getJSONObject(count)
 
-                /////////////////////////////////////////////////////////////////////
+                                    val s = `object`.getString("H")
+                                        .split(",")// 업소번호의 출력 형태가 int,int,int,... 식이어서 split(',') 필요
+                                    for (i in s) {
+                                        if (i == "") continue
+                                        if (upNUM.contains(i.toInt())) continue
+                                        upNUM.add(i.toInt()) /// 업소 번호를 저장
+                                    }
+                                    count++
+                                }
 
-                return false
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    }
+                    if (succ) {
+                        for (j in hNUM.indices) {
+                            val idnumrequest2 = ConnectRequest(hNUM.get(j).toString(), responseListener2)
+                            var queue = Volley.newRequestQueue(this@SearchActivity)
+                            queue.add(idnumrequest2)
+                        }
+                        val responseListener3 = Response.Listener<String> { response ->
+                            readFile()
+                            initRecyclerView()
+                        }
+                        val idnumrequest3 = ConnectRequest("oooooo", responseListener3)
+                        var queue = Volley.newRequestQueue(this@SearchActivity)
+                        queue.add(idnumrequest3)
+                    }
+
+                } else {
+                    Toast.makeText(this@SearchActivity,"핫플레이스가 아니에요 ㅠㅠ",Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        })
+        }
+        val idnumrequest = SearchRequest(p0, responseListener)
+        var queue = Volley.newRequestQueue(this@SearchActivity)
+        queue.add(idnumrequest)
+        queue.start()
+        //Log.d("dd", "queue")
+
     }
 
     fun readFile() {
@@ -202,10 +218,26 @@ class SearchActivity : AppCompatActivity() {
         val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
             override fun onClick(view: View, position: Int) {
 
-                //intent로 SearchItem 전달
-                val intent = Intent(this@SearchActivity,SearchDetail::class.java)
-                intent.putExtra("placeData",placeList[position])
-                startActivity(intent)
+
+                if(intent.hasExtra("flag")){
+                    //AddPlaceActivity에서 넘어왔을때
+
+                    val btnView = findViewById<RecyclerView>(R.id.recyclerView)
+                    var mSelectBtn = btnView.getChildViewHolder(selectBtn)
+                    mSelectBtn.is
+
+                    val intent = Intent()
+                    intent.putExtra("result", 1)    // TEST CODE
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+
+                }else{
+                    //intent로 SearchItem 전달
+                    val intent = Intent(this@SearchActivity,SearchDetail::class.java)
+                    intent.putExtra("placeData",placeList[position])
+                    startActivity(intent)
+                }
+
             }
         }
 
