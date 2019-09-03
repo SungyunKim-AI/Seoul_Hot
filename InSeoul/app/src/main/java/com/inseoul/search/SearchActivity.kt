@@ -1,13 +1,10 @@
 package com.inseoul.search
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -16,9 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.inseoul.R
+import com.inseoul.add_place.AddPlaceSearchAdapter
+import com.inseoul.add_place.AddPlaceSearchItem
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search.recyclerView
-import kotlinx.android.synthetic.main.item_search.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,8 +25,6 @@ class SearchActivity : AppCompatActivity() {
     var hNUM: ArrayList<Int> = ArrayList()
     var succ = false
     var upNUM: ArrayList<Int> = ArrayList()
-
-    //var actFlag = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
-    fun init(){
+    fun init() {
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search) as Toolbar
         setSupportActionBar(mtoolbar)
@@ -87,7 +83,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     //////////////////서버 통신////////////////////
-    fun initData(p0:String?){
+    fun initData(p0: String?) {
         val responseListener = Response.Listener<String> { response ->
             try {
 //              Log.d("dd", response)
@@ -106,7 +102,7 @@ class SearchActivity : AppCompatActivity() {
                 if (success.length() >= 1) {
                     succ = true
                     val responseListener2 = Response.Listener<String> { response ->
-//                        Log.d("dd", succ.toString())
+                        //                        Log.d("dd", succ.toString())
                         if (succ) {
                             try {
 //                                Log.d("dd", response)
@@ -149,7 +145,7 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                 } else {
-                    Toast.makeText(this@SearchActivity,"핫플레이스가 아니에요 ㅠㅠ",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SearchActivity, "핫플레이스가 아니에요 ㅠㅠ", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -177,9 +173,9 @@ class SearchActivity : AppCompatActivity() {
         val json = JSONObject(result)
         val array = json.getJSONArray("data")
 
-        if(array.length() == 0){
-            placeList.add(SearchItem("핫플레이스가 아니에요 ㅠㅠ", R.drawable.ic_add_a_photo_black_24dp,0))
-        }else{
+        if (array.length() == 0) {
+            placeList.add(SearchItem("핫플레이스가 아니에요 ㅠㅠ", R.drawable.ic_add_a_photo_black_24dp, 0))
+        } else {
             for (i in 0 until array.length()) {
                 if (upNUM.contains(array.getJSONObject(i).getInt("Id_Num"))) {
                     val lng = array.getJSONObject(i).getString("Upso_nm")
@@ -197,7 +193,7 @@ class SearchActivity : AppCompatActivity() {
                             flag = R.drawable.ic_add_a_photo_black_24dp
                         }
                     }
-                    placeList.add(SearchItem(lng, flag!!,array.getJSONObject(i).getInt("Id_Num")))
+                    placeList.add(SearchItem(lng, flag!!, array.getJSONObject(i).getInt("Id_Num")))
                     //Log.d("Log", "$lat, $lng")
                 }
             }
@@ -208,42 +204,44 @@ class SearchActivity : AppCompatActivity() {
 
     ////////////////// Recycler View //////////////////
     private val placeList = ArrayList<SearchItem>()
+    private val placeList2 = ArrayList<AddPlaceSearchItem>()
     var layoutManager: RecyclerView.LayoutManager? = null
-    var adapter: SearchAdapter? = null
+    var adapter1: SearchAdapter? = null
+    var adapter2 : AddPlaceSearchAdapter ?= null
+
 
 
     fun initRecyclerView() {
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick(view: View, position: Int) {
 
 
-                if(intent.hasExtra("flag")){
-                    //AddPlaceActivity에서 넘어왔을때
+        if (intent.hasExtra("flag")) {
+            //AddPlaceActivity에서 넘어왔을때
 
-                    val btnView = findViewById<RecyclerView>(R.id.recyclerView)
-                    var mSelectBtn = btnView.getChildViewHolder(selectBtn)
-                    mSelectBtn.is
+            val listener = object : AddPlaceSearchAdapter.RecyclerViewAdapterEventListener {
+                override fun onClick(view: View, position: Int) {
 
-                    val intent = Intent()
-                    intent.putExtra("result", 1)    // TEST CODE
-                    setResult(Activity.RESULT_OK, intent)
-                    finish()
+                }
+            }
+            adapter2 = AddPlaceSearchAdapter(this, listener, placeList2)
+            recyclerView.adapter = adapter2
+            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
 
-                }else{
+        } else {
+
+            val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
+                override fun onClick(view: View, position: Int) {
                     //intent로 SearchItem 전달
-                    val intent = Intent(this@SearchActivity,SearchDetail::class.java)
-                    intent.putExtra("placeData",placeList[position])
+                    val intent = Intent(this@SearchActivity, SearchDetail::class.java)
+                    intent.putExtra("placeData", placeList[position])
                     startActivity(intent)
                 }
-
             }
+            adapter1 = SearchAdapter(this, listener, placeList)
+            recyclerView.adapter = adapter1
+            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
         }
-
-        adapter = SearchAdapter(this, listener, placeList)
-        recyclerView.adapter = adapter
-        //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
     }
 
 
