@@ -9,15 +9,19 @@ import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.android.volley.Response
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
 import com.inseoul.make_plan.MarkerItem
+import com.inseoul.manage_member.RegisterRequest
 import com.inseoul.search.SearchActivity
 
 import kotlinx.android.synthetic.main.activity_add_place.*
@@ -46,6 +50,11 @@ class AddPlaceActivity :
     private val DOT = Dot()
     private val GAP = Gap(PATTERN_GAP_LENGTH_PX)
     private val PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT)
+    private var PlanName =""
+    private  var PLAN =""
+    private var DPDATE =""
+    private var ADDATE =""
+    private var THEME = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,7 +162,27 @@ class AddPlaceActivity :
 
         /////////////완료 버튼//////////
         finishBtn.setOnClickListener {
+            val responseListener = Response.Listener<String> { response ->
+                try {
+                    Log.d("d", response)
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getBoolean("success")
+                    if (success) {
+                        Toast.makeText(this@AddPlaceActivity, "회원가입이 완료 되었습니다", Toast.LENGTH_SHORT).show()
+                        finish()
 
+                    } else {
+                        Toast.makeText(this@AddPlaceActivity, "회원가입이 실패 하였습니다.", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            val registerRequest = AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME,PLAN, responseListener)
+            val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(registerRequest)
             val intent = Intent()
             intent.putExtra("result", 1)    // TEST CODE
             setResult(Activity.RESULT_OK, intent)
