@@ -14,6 +14,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
+import com.inseoul.manage_schedules.idnumRequest
 import com.inseoul.search.SearchActivity
 import com.inseoul.search.SearchItem
 
@@ -195,7 +196,55 @@ class AddPlaceActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
-            val placeID = data?.getParcelableExtra<SearchItem>("placeData")?.placeID
+            val placeID = data!!.getParcelableExtra<SearchItem>("placeData").placeID
+            val responseListener = Response.Listener<String> { response ->
+                try {
+                    //                    Log.d("dd", response);
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getJSONObject("response")
+                    var count = 0
+                    if (success.getBoolean("success")) {
+                        // success.getString("UPSONM") -> 업소명
+                        // success.getString("PHNUM")-> 업소 전화번호
+                        Log.d("usp",success.getString("UPSONM")+success.getString("PHNUM"))
+
+                        count++
+                    }
+
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            var idnumrequest = PlaceRequest( placeID, responseListener)
+            var queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(idnumrequest)
+            var HashList : ArrayList<Int> = ArrayList()
+            val responseListener2 = Response.Listener<String> { response ->
+                try {
+                    //                    Log.d("dd", response);
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getJSONArray("response")
+                    var count = 0
+                    while (count < success.length()) {
+                        val `object` = success.getJSONObject(count)
+                        //`object`.getString("Hash") 해쉬태그 열
+                        Log.d("hash",`object`.getString("Hash"))
+                        count++
+                    }
+                    if (success.length() == 0) {
+                        val layout = findViewById<View>(R.id.first_layout) as LinearLayout
+                        layout.visibility = View.VISIBLE
+                    } else {
+
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            idnumrequest = PlaceRequest(placeID, responseListener2)
+            queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(idnumrequest)
             //Log.d("alert_data",placeID.toString())
 
 //            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
@@ -365,10 +414,11 @@ class AddPlaceActivity :
         marker: Marker,
         isSelectedMarker: Boolean
     ): Marker {
+        var idnum = null
         var title = marker.title
         var preview = marker.title
         var latlng = marker.position
-        var temp: AddPlaceItem = AddPlaceItem(title, preview, latlng)
+        var temp: AddPlaceItem = AddPlaceItem(idnum, title, preview, latlng)
 
         return addMarker(temp, isSelectedMarker)
     }
