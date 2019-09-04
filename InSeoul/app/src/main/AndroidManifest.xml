@@ -23,6 +23,14 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
         <activity android:name=".review.ReviewActivity">
+        <activity
+                android:name=".SplashActivity"
+                android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
         <provider
@@ -57,14 +65,9 @@
         </activity>
         <activity android:name=".manage_member.SignInActivity">
         </activity>
-        <activity android:name=".SearchDetails.SearchDetail">
+        <activity android:name=".search.SearchDetail">
         </activity>
         <activity android:name=".register_review.RegisterReviewActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".manage_schedules.my_schedule">
         </activity>
@@ -79,15 +82,11 @@
         <activity android:name=".make_plan.MakePlanActivity">
         </activity>
         <activity
-                android:name=".SplashActivity"
-                android:theme="@style/SplashTheme">
-        </activity>
-        <activity
                 android:name=".MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
+        <activity android:name=".search.SearchActivity"></activity>
     </application>
 
 </manifest>

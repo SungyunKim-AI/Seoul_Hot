@@ -6,7 +6,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 public class ValidateRequest extends StringRequest {
-    final static private String URL= "http://ksun1234.cafe24.com/UserValidate.php";
+    final static private String URL= "http://ksun1234.cafe24.com/User_Validate.php";
     private Map<String, String> parameters;
 
     public ValidateRequest(String userID, Response.Listener<String> listener){

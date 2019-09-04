@@ -1,8 +1,11 @@
 package com.inseoul.manage_member;
 
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ public class SignUpActivity extends AppCompatActivity {
     private String userID;
     private String userPW;
     private String userEMAIL;
+    private String userName;
     private AlertDialog dialog;
     private boolean validate = false;
     @Override
@@ -31,6 +35,8 @@ public class SignUpActivity extends AppCompatActivity {
     public void init(){
         final EditText idText =(EditText) findViewById( R.id.id);
         final EditText pwText = (EditText) findViewById(R.id.pw);
+        final EditText nmText = findViewById(R.id.name);
+        pwText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         final EditText emailText = (EditText)findViewById(R.id.email);
         final Button validateButton = findViewById(R.id.validateBtn);
         validateButton.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
                 sign_up_submit = (Button)findViewById(R.id.sign_up_submit);
-        sign_up_submit.setOnClickListener(new Button.OnClickListener(){
+                sign_up_submit.setOnClickListener(new Button.OnClickListener(){
 
                 ////////// Connect DB //////////
                 @Override
@@ -97,6 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
                     userID = idText.getText().toString();
                     userPW = pwText.getText().toString();
                     userEMAIL = emailText.getText().toString();
+                    userName = nmText.getText().toString();
 
 
                     if(!validate)
@@ -122,39 +129,27 @@ public class SignUpActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             try
                             {
+                                Log.d("d",response);
                                 JSONObject jsonResponse = new JSONObject(response);
                                 boolean success= jsonResponse.getBoolean("success");
                                 if(success)
                                 {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
-                                    dialog = builder.setMessage("회원가입에 성공하였습니다.")
-                                            .setPositiveButton("확인", null)
-                                            .create();
-                                    dialog.show();
+                                    Toast.makeText(SignUpActivity.this,"회원가입이 완료 되었습니다",Toast.LENGTH_SHORT).show();
                                     finish();
 
                                 }
                                 else{
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
-                                    dialog = builder.setMessage("회원가입에 실패하였습니다.")
-                                            .setNegativeButton("확인", null)
-                                            .create();
-                                    dialog.show();
+                                    Toast.makeText(SignUpActivity.this,"회원가입이 실패 하였습니다.",Toast.LENGTH_SHORT).show();
+                                    finish();
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     };
-                    RegisterRequest registerRequest = new RegisterRequest(userID, userPW, userEMAIL, responseListener);
+                    RegisterRequest registerRequest = new RegisterRequest(userID, userPW, userEMAIL, userName, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(SignUpActivity.this);
                     queue.add(registerRequest);
-
-
-
-
-
-
 
 
                 ////////////////////////////////

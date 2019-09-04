@@ -9,14 +9,21 @@ import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.android.volley.Response
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
+import com.inseoul.make_plan.MarkerItem
+import com.inseoul.manage_member.RegisterRequest
+import com.inseoul.search.SearchActivity
+
 import kotlinx.android.synthetic.main.activity_add_place.*
 import kotlinx.android.synthetic.main.activity_add_place_2.*
 import kotlinx.android.synthetic.main.activity_add_place_main.*
@@ -43,6 +50,11 @@ class AddPlaceActivity :
     private val DOT = Dot()
     private val GAP = Gap(PATTERN_GAP_LENGTH_PX)
     private val PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT)
+    private var PlanName =""
+    private  var PLAN =""
+    private var DPDATE =""
+    private var ADDATE =""
+    private var THEME = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +64,6 @@ class AddPlaceActivity :
         initBottomSheet()
         init()
         initMap()
-//        initTheme()             //여행 테마 세팅
 
     }
 
@@ -112,111 +123,104 @@ class AddPlaceActivity :
         var flag: Int
         flag = extras!!.getInt("flag_key", -1)
         Log.d("alert", flag.toString())
-        if (flag == 2) {
-            //flag가 2이라면 MakePlanActivity에서 넘어옴
-            var date: String
-            var theme: String
+        when(flag){
+            1->{
+                //flag가 1이라면 SearchDetail에서 넘어옴
 
-            date = extras!!.getString("PlanDate", "NULL")
-            theme = extras!!.getString("PlanTheme", "NULL")
+                var title_add: String
+                var date_add: String
+                var theme_add: String
+
+                title_add = extras!!.getString("PlanTitle_add", "NULL")
+
+//            textview_theme = this.textview_plantheme
+                textview_plandate.text = ""
+            }
+            2->{
+                // MakePlanActivity에서 넘어옴
+                var date: String
+                var theme: String
+
+                date = extras!!.getString("PlanDate", "NULL")
+
+                PlanTitle.hint = date + " 여정"
+                textview_plandate.text = date
+            }
+            3->{
+                //flag가 3이라면 my_schedule에서 넘어옴
+                var title_edit: String
+
+                title_edit = extras!!.getString("textview_title", "NULL")
 
 //            textview_theme = this.textview_plantheme
 
-            PlanTitle.hint = date + " 여정"
-            textview_plandate.text = date
-//            textview_theme!!.setText(theme)
-
-        } else if (flag == 1) {
-            //flag가 1이라면 SearchDetail에서 넘어옴
-
-            var title_add: String
-            var date_add: String
-            var theme_add: String
-
-            title_add = extras!!.getString("PlanTitle_add", "NULL")
-
-//            textview_theme = this.textview_plantheme
-            textview_plandate.text = ""
-
-//            textview_theme!!.setText(null)
-        } else if (flag == 3) {
-            //flag가 3이라면 my_schedule에서 넘어옴
-            var title_edit: String
-
-            title_edit = extras!!.getString("textview_title", "NULL")
-
-//            textview_theme = this.textview_plantheme
-
-            textview_plandate.text = ""
-        } else if (flag == 4) {
-            //flag가 4이라면 AddPlaceSearch에서 넘어옴
+                textview_plandate.text = ""
+            }
+            4->{
+                //Search에서 다시 넘어옴
+            }
         }
+
 
 
         /////////////완료 버튼//////////
         finishBtn.setOnClickListener {
+            val responseListener = Response.Listener<String> { response ->
+                try {
+                    Log.d("d", response)
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getBoolean("success")
+                    if (success) {
+                        Toast.makeText(this@AddPlaceActivity, "정상적 등록 완료", Toast.LENGTH_SHORT).show()
+                        //finish()
 
+                    } else {
+                        Toast.makeText(this@AddPlaceActivity, "등록 실패", Toast.LENGTH_SHORT).show()
+                        //finish()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            val registerRequest = AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME,PLAN, responseListener)
+            val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(registerRequest)
             val intent = Intent()
             intent.putExtra("result", 1)    // TEST CODE
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
         addBtn.setOnClickListener {
-            val intent = Intent(this, AddPlaceSearch::class.java)
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.putExtra("flag",true)
             startActivityForResult(intent, 0)
         }
     }
 
 
     /////////////////AddPlaceSearch에서 넘어왔을때 호출//////////////////////////////
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == 1) {
-            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
-            markerList.add(placeData!!)
-            lineList.add(markerList[markerList.size-1].latLng!!)
-        }
-        for (i in 0 until markerList.size) {
-            markerList[i].count = i
-            //Log.d("alert_대입",markerList[i].count.toString())
-            addMarker(markerList[i], false)
-
-        }
-        getMarkerItems()
-        if(markerList.size != 0){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
-        }else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
-        }
-
-    }
-
-
-    fun initTheme() {
-        theme_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (theme_spinner.getItemAtPosition(position)) {
-                    "역사" -> {
-//                        theme = "역사"
-                    }
-                    "맛집" -> {
-//                        theme = "맛집"
-                    }
-                    "힐링" -> {
-//                        theme = "힐링"
-                    }
-                    else -> {
-//                        theme = null
-                    }
-                }
-
-            }
-        }
-    }
-
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode == 1) {
+//            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
+//            markerList.add(placeData!!)
+//            lineList.add(markerList[markerList.size-1].latLng!!)
+//        }
+//        for (i in 0 until markerList.size) {
+//            markerList[i].count = i
+//            //Log.d("alert_대입",markerList[i].count.toString())
+//            addMarker(markerList[i], false)
+//
+//        }
+//        getMarkerItems()
+//        if(markerList.size != 0){
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
+//        }else {
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
+//        }
+//
+//    }
 
     fun initMap(){
         readFile()

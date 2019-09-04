@@ -15,6 +15,7 @@ import java.util.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.add_place.AddPlaceActivity
+import com.inseoul.search.SearchActivity
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -90,19 +91,6 @@ class MakePlanActivity : AppCompatActivity() {
 
     fun initBtn() {
         continueBtn.setOnClickListener {
-
-            //미입력 부분이 있을시 toast 출력 및 버튼 비활성화
-//            if (str_start == null || str_end == null || textview_plan_title == null || theme == null) {
-//                Toast.makeText(this, "미입력", Toast.LENGTH_LONG).show()
-//            } else {
-//                val intent = Intent(this, AddPlaceActivity::class.java)
-//                intent.putExtra("PlanTitle", textview_plan_title!!.text.toString())
-//                intent.putExtra("PlanDate", str_start + " ~ " + str_end)
-//                intent.putExtra("PlanTheme", theme.toString())
-//                intent.putExtra("flag_key",2)
-//
-//                startActivityForResult(intent, REQ_CODE)
-//            }
 
             val intent = Intent(this, AddPlaceActivity::class.java)
 

@@ -7,18 +7,19 @@
         android:layout_height="match_parent"
         tools:context=".manage_member.SignInActivity"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="center_horizontal"
 >
 
     <TextView
         android:textSize="16dp"
-        android:text="서울의 핫플, 여행, 리뷰를 한번에"
+        android:text="서울의 핫플, 숙박, 맛집을 한 번에"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
     />
     <ImageView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:src="@drawable/logo"
     />
 
@@ -28,29 +29,52 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:hint="ID"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:inputType="text"
     />
     <EditText
             android:id="@+id/input_pw"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:hint="Password"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:inputType="text"
+            android:layout_marginTop="15dp"
     />
 
     <Button
             android:id="@+id/signInBtn"
-            android:layout_width="150dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_style"
             android:textColor="@color/white"
             android:text="시작하기"
+            android:layout_marginTop="15dp"
     />
 
+
+    <CheckBox
+            android:text="자동 로그인 하기"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/autoLogin"
+            android:layout_marginTop="13dp"
+            />
     <TextView
             android:id="@+id/signUpBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="간편 회원가입"
+            android:text="간편 회원가입으로 나만의 여행 일지를 만들어 보세요"
+            android:layout_marginTop="30dp"
             android:linksClickable="true"
     />
+    <TextView
+            android:text="비회원으로 시작하기"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/notMember"
+            android:layout_marginTop="12dp"
+            android:linksClickable="true"/>
 
 </LinearLayout>

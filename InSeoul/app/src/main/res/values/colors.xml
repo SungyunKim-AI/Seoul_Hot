@@ -6,6 +6,7 @@
     <color name="colorAccent">#B6E3E9</color>
 
     <color name="black">#000000</color>
+    <color name="layout_back">#CECECE</color>
     <color name="falseBtn">#CECECE</color>
 
     <color name="toolbar_background">#00000000</color>
@@ -17,4 +18,5 @@
     <color name="c4">#FADEE1</color>
     <color name="c5">#D9F1F1</color>
     <color name="c6">#B6E3E9</color>
+    <color name="c7">#ced4da</color>
 </resources>
