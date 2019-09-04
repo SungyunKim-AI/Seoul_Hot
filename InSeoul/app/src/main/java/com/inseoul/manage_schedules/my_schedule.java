@@ -31,7 +31,7 @@ import com.inseoul.add_place.AddPlaceActivity;
 import com.inseoul.make_plan.MakePlanActivity;
 import com.inseoul.manage_member.SignUpActivity;
 import com.inseoul.manage_member.ValidateRequest;
-import com.inseoul.register_review.register_review;
+import com.inseoul.register_review.RegisterReviewActivity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -192,7 +192,7 @@ public class my_schedule extends AppCompatActivity {
                 recyclerview_schedule_past pastSchedules = mArrayList_past.get(position);
 
                 //intent 전달
-                Intent intent2 = new Intent(getBaseContext(), register_review.class);
+                Intent intent2 = new Intent(getBaseContext(), RegisterReviewActivity.class);
                 intent2.putExtra("textview_title_past", pastSchedules.getSchedule_title_past());
                 intent2.putExtra("textview_date_past", pastSchedules.getSchedule_date_past());
                 intent2.putExtra("PLANLIST",planlist_past.get(position));

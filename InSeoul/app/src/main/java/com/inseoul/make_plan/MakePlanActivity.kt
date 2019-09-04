@@ -215,7 +215,6 @@ class MakePlanActivity : AppCompatActivity() {
                 //println("Success to execute request! : $body")
                 val jsonObject = JSONObject(body)
 
-
                 val movieArray = jsonObject.getJSONArray("response")
 
                 for (i in 0 until movieArray.length()) {
@@ -239,7 +238,6 @@ class MakePlanActivity : AppCompatActivity() {
                     for(j in 0..n){
                         val index = rnd.nextInt(5) + 1
                         val str = "sample$index"
-                        Log.v("TestImg", str)
                         planList[i].imgList.add(baseContext.getDrawable(baseContext.resources.getIdentifier(str, "drawable",  baseContext.packageName)))
                     }
 //                img.add(ImgItem(temp))

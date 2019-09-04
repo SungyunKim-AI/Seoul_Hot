@@ -1,0 +1,260 @@
+package com.inseoul.register_review
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageFormat
+import android.graphics.drawable.Drawable
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraDevice
+import android.hardware.camera2.CameraManager
+import android.net.Uri
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media.getBitmap
+import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.inseoul.R
+import com.inseoul.review.ReviewItem
+import kotlinx.android.synthetic.main.activity_add_place_main.*
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_register_review.*
+import kotlinx.android.synthetic.main.activity_register_review_page.*
+import org.json.JSONObject
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.logging.Handler
+
+class RegisterReviewActivity : AppCompatActivity()  {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_register_review)
+
+        initToolbar()
+//        initIntent()
+//        initView()
+//        initBtn()
+//        initRecyclerView()
+//        readFile()
+        initViewPager()
+    }
+
+    lateinit var testArray:ArrayList<ReviewItem>
+    lateinit var  testImg:ArrayList<Drawable?>
+    fun initTest(){
+        var testhash = ArrayList<String>()
+        testImg = ArrayList()
+        testhash.add("존맛")
+        testhash.add("JMT")
+
+        testArray = ArrayList()
+        for(i in 0..10){
+            testArray.add(ReviewItem(null,null,1,i,"존맛탱$i", testhash, null, null, 123.33,123.22,"xxxx", "xxx", 0, 0))
+        }
+    }
+
+
+    lateinit var imgList:ArrayList<File>
+    lateinit var adpater: RegisterReviewViewPagerAdapter
+    private fun initViewPager() {
+        imgList = ArrayList()
+
+        initTest()
+
+        val listener = object: RegisterReviewViewPagerAdapter.EventListener{
+            override fun addPhotoOnClick(view: View, position: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                camera(position)
+            }
+
+            override fun addGalleryOnClick(view: View, positon: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                storage(positon)
+            }
+        }
+        adpater = RegisterReviewViewPagerAdapter(this, listener, testArray)
+        viewpager.adapter = adpater
+        TabLayoutMediator(tabLayout, viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
+            override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+                // Styling each tab here
+            }
+        }).attach()
+    }
+
+    lateinit var review_title:String
+    lateinit var review_date:String
+    var planID = -1
+    lateinit var tripList:ArrayList<String>
+
+    fun initIntent(){
+        tripList = ArrayList()
+
+        val extras = intent.extras
+        review_title = extras!!.getString("textview_title_past", "null")
+        review_date = extras!!.getString("textview_date_past", "null")
+        val plan_LIST = extras.getString("PLANLIST", "null")
+        planID = extras.getInt("PLANID",  -1)
+
+        val planist = plan_LIST!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val o = planist.size - 1
+        Log.d("json", Integer.toString(o))
+        Log.d("json", plan_LIST.toString())
+        for (p in 0 until tripList.size) {
+            Log.d("json", plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
+            tripList!!.add(plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
+        }
+    }
+
+    /////////////////// Photo ///////////////////
+    val REQUEST_IMAGE_CAPTURE = 1111
+    val REQUEST_IMAGE_STORAGE = 1112
+
+    var photoUri: Uri? = null
+
+    var index = -1
+    fun camera(position:Int){
+
+        index = position
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePictureIntent.resolveActivity(packageManager) != null) {
+            var photoFile: File? = null
+            try {
+                photoFile = createImageFile()
+            } catch (ex: IOException) {
+                // Error occurred while creating the File
+            }
+
+            if (photoFile != null) {
+                photoUri = FileProvider.getUriForFile(this, packageName, photoFile)
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }
+    }
+    fun storage(position:Int){
+        index = position
+
+        val intent = Intent(Intent.ACTION_PICK)
+        if (intent.resolveActivity(packageManager) != null) {
+            var photoFile: File? = null
+            try {
+                photoFile = createImageFile()
+            } catch (ex: IOException) {
+                // Error occurred while creating the File
+            }
+
+            if (photoFile != null) {
+                photoUri = FileProvider.getUriForFile(this, packageName, photoFile)
+
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*")
+                startActivityForResult(intent, REQUEST_IMAGE_STORAGE)
+            }
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val file = File(imageFilePath)
+            imgList.add(file)
+            testImg.add(Drawable.createFromPath(imageFilePath))
+            testArray[index].imageList = testImg
+            adpater.notifyItemChanged(index)
+
+            Log.v("img", file.toString())
+//            HTTpfileUpload()
+        }
+        if (requestCode == REQUEST_IMAGE_STORAGE && resultCode == Activity.RESULT_OK) {
+//            imageView.setImageURI(data!!.data)
+            var uri = data!!.data
+            var file = File(uri!!.path)
+            Log.v("file", file.toString())
+
+            imgList.add(file)
+            testArray[index].imageList = testImg
+            adpater.notifyItemChanged(index)
+
+
+        }
+
+    }
+
+//    lateinit var imageFilePath: String
+//    lateinit var imageFileName: String
+    var imageFilePath = ""
+    fun createImageFile(): File{
+        var imageFileName = ""
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        imageFileName = "TEST_" + timeStamp + "_"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(
+            imageFileName,
+            ".jpg",
+            storageDir
+        )
+        imageFilePath = image.absolutePath
+        imageFileName += ".jpg"
+        return image
+    }
+    /////////////////////////////////////////////////////////
+    fun initView(){
+//        text_review_date.text = review_date
+    }
+
+    fun readFile(){
+        val scan = Scanner(resources.openRawResource(R.raw.inseoul_upso_data))
+        var result = ""
+        while(scan.hasNextLine()){
+            val line = scan.nextLine()
+            result += line
+        }
+        parsingJson(result)
+    }
+
+    fun parsingJson(result:String){
+        val json = JSONObject(result)
+        val array = json.getJSONArray("data")
+        for(i in 0 until array.length()){
+            val u_class = array.getJSONObject(i).getString("class")
+            val u_Id_Num = array.getJSONObject(i).getString("Id_Num")
+            val u_Upso_nm = array.getJSONObject(i).getString("Upso_nm")
+            val u_Ph_Num = array.getJSONObject(i).getString("Ph_Num")
+        }
+    }
+    ////////////////Toolbar//////////////
+    fun initToolbar() {
+        //toolbar 커스텀 코드
+        setSupportActionBar(toolbar_register_review)
+        // Get the ActionBar here to configure the way it behaves.
+        val actionBar = supportActionBar
+        actionBar!!.setDisplayShowCustomEnabled(true) //커스터마이징 하기 위해 필요
+        actionBar.setDisplayShowTitleEnabled(false)
+
+        actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
+        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+}

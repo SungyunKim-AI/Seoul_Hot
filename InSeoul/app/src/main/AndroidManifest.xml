@@ -8,6 +8,9 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!-- CAMERA || GALLERY PERMISSION -->
     <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.camera2.full"/>
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
@@ -19,6 +22,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".review.ReviewActivity">
+        </activity>
 
         <provider
                 android:name="androidx.core.content.FileProvider"
@@ -45,6 +50,7 @@
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="@string/google_maps_key"/>
+
         <activity android:name=".TestActivity">
         </activity>
         <activity android:name=".manage_member.SignUpActivity">
@@ -53,15 +59,18 @@
         </activity>
         <activity android:name=".SearchDetails.SearchDetail">
         </activity>
-        <activity android:name=".register_review.register_review">
+        <activity android:name=".register_review.RegisterReviewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".manage_schedules.my_schedule">
         </activity>
         <activity android:name=".timeline.TimeLineActivity">
         </activity>
         <activity android:name=".add_place.AddPlaceActivity">
-        </activity>
-        <activity android:name=".add_place.AddPlaceAdapter">
         </activity>
         <activity android:name=".add_place.AddPlaceSearch">
         </activity>
@@ -77,11 +86,7 @@
                 android:name=".MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
     </application>
 
