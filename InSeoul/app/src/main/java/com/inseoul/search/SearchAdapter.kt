@@ -1,24 +1,27 @@
 package com.inseoul.search
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
-import kotlinx.android.synthetic.main.item_add_place_search.view.*
+import kotlinx.android.synthetic.main.item_search.view.*
+
 
 class SearchAdapter(val context: Context,
                     var listener:RecyclerViewAdapterEventListener,
-                    var items:ArrayList<SearchItem>
+                    var items:ArrayList<SearchItem>,
+                    var flag:Boolean
 ): RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
-        fun onClick(view: View, position: Int)
+        fun onClick1(view: View, position: Int)
+        fun onClick2(view:View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,12 +49,17 @@ class SearchAdapter(val context: Context,
         holder.thumbnail.setImageResource(data.placeIcon)
         holder.item_title.text = data.placeNm
 
+
+        if(flag){
+            holder.itemView.selectBtn.visibility = VISIBLE
+            holder.itemView.selectBtn.setOnClickListener{
+                listener!!.onClick1(it, position)
+            }
+        }
         holder.itemView.setOnClickListener {
-            listener!!.onClick(it, position)
+            listener!!.onClick2(it, position)
         }
-        holder.itemView.selectBtn.setOnClickListener{
-            listener!!.onClick(it,position)
-        }
+
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -1,5 +1,6 @@
 package com.inseoul.search
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.inseoul.R
-import com.inseoul.add_place.AddPlaceSearchAdapter
-import com.inseoul.add_place.AddPlaceSearchItem
+import com.inseoul.add_place.AddPlaceActivity
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search.recyclerView
 import org.json.JSONObject
@@ -204,11 +204,8 @@ class SearchActivity : AppCompatActivity() {
 
     ////////////////// Recycler View //////////////////
     private val placeList = ArrayList<SearchItem>()
-    private val placeList2 = ArrayList<AddPlaceSearchItem>()
     var layoutManager: RecyclerView.LayoutManager? = null
     var adapter1: SearchAdapter? = null
-    var adapter2 : AddPlaceSearchAdapter ?= null
-
 
 
     fun initRecyclerView() {
@@ -248,17 +245,36 @@ class SearchActivity : AppCompatActivity() {
 
         }
 
+
         val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick(view: View, position: Int) {
+            override fun onClick1(view: View, position: Int) {
+                val intent = Intent(this@SearchActivity,AddPlaceActivity::class.java)
+                intent.putExtra("placeData", placeList[position])
+                setResult(Activity.RESULT_OK,intent)
+                finish()
+            }
+            override fun onClick2(view: View, position: Int) {
                 //intent로 SearchItem 전달
                 val intent = Intent(this@SearchActivity, SearchDetail::class.java)
                 intent.putExtra("placeData", placeList[position])
                 startActivity(intent)
             }
         }
-        adapter1 = SearchAdapter(this, listener, placeList)
-        recyclerView.adapter = adapter1
-        //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+
+        if (intent.hasExtra("flag")){
+
+            //recyclerview 내부의 아이템에 접근
+            adapter1 = SearchAdapter(this, listener, placeList,true)
+            recyclerView.adapter = adapter1
+            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+
+        }else{
+
+            //recyclerview 내부의 아이템에 접근
+            adapter1 = SearchAdapter(this, listener, placeList,false)
+            recyclerView.adapter = adapter1
+        }
+
     }
 
 
