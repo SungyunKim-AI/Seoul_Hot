@@ -245,7 +245,7 @@ class SearchActivity : AppCompatActivity() {
 
         if (intent.hasExtra("flag")){
             //recyclerview 내부의 아이템에 접근
-            
+
         }
 
         val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
