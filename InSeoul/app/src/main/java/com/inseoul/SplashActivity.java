@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
         ImageView imageView = (ImageView) findViewById(R.id.splashGif);
-        Glide.with(this).load(R.raw.splashgif1).override(width,height).into(imageView);
+        Glide.with(this).load(R.raw.splashgif1).into(imageView);
 
         splashThread = new Thread() {
             @Override

@@ -49,9 +49,9 @@ class MakePlanActivity : AppCompatActivity() {
         setContentView(R.layout.activity_make_plan)
 
         initToolbar()           //툴바 세팅
-//        fetchJson()             //서버 파일 다운로드
+//      fetchJson()             //서버 파일 다운로드
         initBtn()               //새로운 일정 버튼 클릭 리스너
-//        initRecyclerView()
+//      initRecyclerView()
         calendar()
 
     }

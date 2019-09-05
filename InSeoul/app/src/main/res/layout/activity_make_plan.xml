@@ -16,32 +16,54 @@
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
             android:id="@+id/toolbar_make_plan"/>
-    <TextView
-            android:text="언제 가나요?"
-            android:textSize="28dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="30dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-    />
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="3">
+        <TextView
+                android:text="언제 가나요?"
+                android:textSize="28dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="30dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+        />
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right">
+            <TextView
+                    android:text="일정 만들기"
+                    android:layout_margin="20dp"
+                    android:padding="10dp"
+                    android:layout_gravity="right"
+                    android:id="@+id/continueBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/radius_btn"
+                    android:textColor="@color/white"
+            />
+            <TextView
+                    android:text="친구일정 불러오기"
+                    android:layout_margin="20dp"
+                    android:padding="10dp"
+                    android:layout_gravity="right"
+                    android:id="@+id/addFriendBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/radius_btn"
+                    android:textColor="@color/white"
+            />
+        </LinearLayout>
+    </LinearLayout>
     <com.applikeysolutions.cosmocalendar.view.CalendarView
             android:layout_marginVertical="20dp"
             android:id="@+id/calendar_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-    />
-    <TextView
-            android:text="일정 만들기"
-            android:layout_margin="20dp"
-            android:padding="10dp"
-            android:layout_gravity="right"
-            android:id="@+id/continueBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/radius_btn"
-            android:textColor="@color/white"
-    />
+            android:layout_height="0dp"
+            android:layout_weight="9"/>
 
 </LinearLayout>
