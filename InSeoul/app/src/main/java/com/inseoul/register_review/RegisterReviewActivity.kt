@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.google.android.material.tabs.TabLayout
@@ -52,24 +53,19 @@ class RegisterReviewActivity : AppCompatActivity()  {
     }
 
     lateinit var testArray:ArrayList<ReviewItem>
-    lateinit var  testImg:ArrayList<Drawable?>
     fun initTest(){
         var testhash = ArrayList<String>()
-        testImg = ArrayList()
         testhash.add("존맛")
         testhash.add("JMT")
 
         testArray = ArrayList()
         for(i in 0..10){
-            testArray.add(ReviewItem(null,null,1,i,"존맛탱$i", testhash, null, null, 123.33,123.22,"xxxx", "xxx", 0, 0))
+            testArray.add(ReviewItem(null,null,1,0, null, null, i,"존맛탱$i", testhash, ArrayList<Drawable?>(), null, 123.33,123.22,"xxxx", "xxx", 0, 0))
         }
     }
 
-
-    lateinit var imgList:ArrayList<File>
     lateinit var adpater: RegisterReviewViewPagerAdapter
     private fun initViewPager() {
-        imgList = ArrayList()
 
         initTest()
 
@@ -148,45 +144,49 @@ class RegisterReviewActivity : AppCompatActivity()  {
         index = position
 
         val intent = Intent(Intent.ACTION_PICK)
-        if (intent.resolveActivity(packageManager) != null) {
-            var photoFile: File? = null
-            try {
-                photoFile = createImageFile()
-            } catch (ex: IOException) {
-                // Error occurred while creating the File
-            }
-
-            if (photoFile != null) {
-                photoUri = FileProvider.getUriForFile(this, packageName, photoFile)
-
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*")
-                startActivityForResult(intent, REQUEST_IMAGE_STORAGE)
-            }
-        }
+        intent.setType("image/*")
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.setType(MediaStore.Images.Media.CONTENT_TYPE)
+        startActivityForResult(Intent.createChooser(intent, "사진 선택하기"), REQUEST_IMAGE_STORAGE)
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val file = File(imageFilePath)
-            imgList.add(file)
-            testImg.add(Drawable.createFromPath(imageFilePath))
-            testArray[index].imageList = testImg
+            testArray[index].imageList!!.add(Drawable.createFromPath(imageFilePath))
             adpater.notifyItemChanged(index)
 
             Log.v("img", file.toString())
 //            HTTpfileUpload()
         }
         if (requestCode == REQUEST_IMAGE_STORAGE && resultCode == Activity.RESULT_OK) {
-//            imageView.setImageURI(data!!.data)
-            var uri = data!!.data
-            var file = File(uri!!.path)
-            Log.v("file", file.toString())
+            if(data!!.clipData == null){
+//                list.add(data.toString())
+            } else{
+                var clipData = data.clipData
+                if(clipData!!.itemCount > 10){
+                    Toast.makeText(this, "사진은 10개까지 선택가능합니다", Toast.LENGTH_SHORT).show()
+                    return
+                } else if(clipData.itemCount == 1){
+                    var dataStr = clipData.getItemAt(0).uri
+                    val inputStream = contentResolver.openInputStream(clipData.getItemAt(0).uri)
 
-            imgList.add(file)
-            testArray[index].imageList = testImg
-            adpater.notifyItemChanged(index)
+                    testArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(0).uri.path))
+                } else if(clipData.itemCount > 1 && clipData.itemCount < 10){
+                    for(i in 0 until clipData.itemCount){
+                        val inputStream = contentResolver.openInputStream(clipData.getItemAt(i).uri)
+
+                        testArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(i).uri.path))
+                    }
+                }
+            }
+
+            Log.v("index", index.toString())
+            adpater.notifyDataSetChanged()
 
 
         }

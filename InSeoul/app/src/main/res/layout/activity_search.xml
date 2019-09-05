@@ -34,10 +34,16 @@
                 app:goIcon="@drawable/search"
         />
     </androidx.appcompat.widget.Toolbar>
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+    <com.google.android.material.tabs.TabLayout
+            android:id="@+id/search_tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    />
+    <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
     />
+
 </LinearLayout>

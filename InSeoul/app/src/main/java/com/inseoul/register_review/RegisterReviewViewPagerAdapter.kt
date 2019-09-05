@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.marginTop
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
 import com.inseoul.review.ReviewItem
@@ -45,18 +47,17 @@ class RegisterReviewViewPagerAdapter(
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         val data = itemlist[position]
 //        var image = data.imageList!![0]!!
+//        holder.setIsRecyclable(false)
         holder.place.text = data.upso_name
-        var iList = data.imageList
-        if(iList != null){
-            for(i in 0 until iList!!.size){
-                var img = ImageView(c)
-//                var size = 40 * (c.resources.displayMetrics.densityDpi / 16)
-                var layoutParam = LinearLayout.LayoutParams(80, 80)
-                img.layoutParams = layoutParam
-                img.setImageDrawable(iList[i])
-                holder.imgList.addView(img)
-            }
+        if(data.imageList != null){
+            var iList = data.imageList
+            Log.e("image", iList!!.toString())
+            val adapter = RegisterReviewRecyclerViewAdapter(iList!!)
+            holder.imgList.layoutManager = LinearLayoutManager(c, LinearLayout.HORIZONTAL, false)
+            holder.imgList.adapter = adapter
         }
+
+
         holder.addPhoto.setOnClickListener {
             listener.addPhotoOnClick(it,position)
         }
@@ -70,13 +71,13 @@ class RegisterReviewViewPagerAdapter(
         var trip_comment: EditText
         var addPhoto: ImageButton
         var addGallery: ImageButton
-        var imgList:LinearLayout
+        var imgList:RecyclerView
         init{
             place = itemView.findViewById(R.id.place)
             trip_comment = itemView.findViewById(R.id.trip_comment)
             addPhoto = itemView.findViewById(R.id.addPhoto)
             addGallery = itemView.findViewById(R.id.addGallery)
-            imgList = itemView.findViewById(R.id.imgList)
+            imgList = itemView.findViewById(R.id.recyclerView)
         }
     }
 }

@@ -22,7 +22,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".review.ReviewActivity">
+        <activity android:name=".review.ReviewActivity"
+        />
         <activity
                 android:name=".SplashActivity"
                 android:theme="@style/SplashTheme">
@@ -86,7 +87,9 @@
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".search.SearchActivity"></activity>
+        <activity android:name=".search.SearchActivity">
+
+        </activity>
     </application>
 
 </manifest>

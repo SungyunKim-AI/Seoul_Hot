@@ -34,6 +34,7 @@ import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_member.SignInActivity
 import com.inseoul.manage_member.SignUpActivity
 import com.inseoul.manage_schedules.my_schedule
+import com.inseoul.review.ReviewActivity
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
 import kotlinx.android.synthetic.main.activity_home.*
@@ -366,6 +367,8 @@ class MainActivity :
         val listener = object : HomeAdapter.RecyclerViewAdapterEventListener {
             override fun onClick(view: View) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                val intent = Intent(applicationContext, ReviewActivity::class.java)
+                startActivity(intent)
             }
         }
 

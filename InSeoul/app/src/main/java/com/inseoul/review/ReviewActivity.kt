@@ -132,9 +132,9 @@ class ReviewActivity : AppCompatActivity() {
         testLatLng.add(LatLng(37.562516281, 126.985138659))
         val testS = reviewSummary(testLatLng)
 
-        val testItem_cover = ReviewItem(reviewInfo, testS, 0,  num, upso_name, hashTag, imageList, review_content, posX, posY, location, call, like, dislike)
-        val testItem = ReviewItem(reviewInfo, testS, 1,  num, upso_name, hashTag, imageList, review_content, posX, posY, location, call, like, dislike)
-        val testItem_Summary = ReviewItem(reviewInfo, testS, 2,  num, upso_name, hashTag, imageList, review_content, posX, posY, location, call, like, dislike)
+        val testItem_cover = ReviewItem(reviewInfo, testS, 0, 0, null, null,  num, upso_name, hashTag, imageList, review_content, posX, posY, location, call, like, dislike)
+        val testItem = ReviewItem(reviewInfo, testS, 1, 0, null, null,  num, upso_name, hashTag, imageList, review_content, posX, posY, location, call, like, dislike)
+        val testItem_Summary = ReviewItem(reviewInfo, testS, 2, 0, null, null,  num, upso_name, hashTag, imageList, review_content, posX, posY, location, call, like, dislike)
 
         testList.add(testItem_cover)
         testList.add(testItem)

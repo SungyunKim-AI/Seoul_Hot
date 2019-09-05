@@ -16,6 +16,11 @@ data class ReviewItem(      // 내용
     val info:reviewInfo?,
     val summary:reviewSummary?,
     val type:Int,
+
+    val id:Int,
+    val reviewHash:ArrayList<String>?,
+    var write:ArrayList<String>?,
+
     val num:Int,
     val upso_name:String,
     val upso_hashTag:ArrayList<String>,
@@ -27,7 +32,6 @@ data class ReviewItem(      // 내용
     val call:String,
     var like:Int,
     var dislike:Int
-
 ){
 
 }

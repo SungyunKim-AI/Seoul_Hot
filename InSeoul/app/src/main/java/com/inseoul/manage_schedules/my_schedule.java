@@ -29,7 +29,6 @@ import com.inseoul.manage_member.SignUpActivity;
 import com.inseoul.manage_member.ValidateRequest;
 import com.inseoul.register_review.RegisterReviewActivity;
 import com.inseoul.manage_member.SaveSharedPreference;
-import com.inseoul.register_review.register_review;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
