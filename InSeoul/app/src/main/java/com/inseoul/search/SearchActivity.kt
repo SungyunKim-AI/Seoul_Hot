@@ -3,6 +3,7 @@ package com.inseoul.search
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -15,9 +16,18 @@ import com.android.volley.toolbox.Volley
 import com.inseoul.R
 import com.inseoul.add_place.AddPlaceSearchAdapter
 import com.inseoul.add_place.AddPlaceSearchItem
+import com.inseoul.api_manager.RetrofitService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search.recyclerView
+import kotlinx.android.synthetic.main.activity_test.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -50,6 +60,7 @@ class SearchActivity : AppCompatActivity() {
                 //Log.d("Submit",p0)
                 //////////////////////// DB Connect & Query ////////////////////////
 
+                searchKeyword(p0!!)
                 initData(p0)
 
                 /////////////////////////////////////////////////////////////////////
@@ -58,6 +69,54 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
+    fun searchKeyword(keyword:String){
+        val MobileOS = "AND"
+        val MobileApp = "InSeuol"
+        val contentType = 12
+        val areaCode = 1
+        val _type = "json"
+        // ContentType
+        // 관광지 12
+
+        // 문화시설 14
+        // 행사/공연/축제 15
+        // 레포츠 28
+
+        // 숙박 32
+
+        // 음식점 39
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(createOkHttpClient())
+            .baseUrl("http://api.visitkorea.or.kr/openapi/service/rest/KorService/")
+            .build()
+            .create(RetrofitService::class.java)
+            .test2(keyword, contentType, areaCode, MobileOS, MobileApp, _type)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.v("tlqkf",it.toString())
+                var str = ""
+                for(i in 0..it.response.body.items.item.size - 1){
+
+                    str += it.response.body.items.item[i].title
+                    str += "\n"
+
+                }
+//                test_text.text = str
+
+            },{
+                Log.v("Fail","")
+            })
+    }
+    fun createOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        builder.addInterceptor(interceptor)
+        return builder.build()
+    }
     fun init() {
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search) as Toolbar

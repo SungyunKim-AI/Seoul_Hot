@@ -3,65 +3,76 @@ package com.inseoul
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.common.api.ApiException
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.inseoul.api_manager.RetrofitService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_test.*
-import java.util.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class TestActivity :
     AppCompatActivity()
 {
 
-    val apiKey = "AIzaSyArBMJ-s5uzGsRCNNyon9LeQsXDgCDmcTI"
-
+    val apiKey = "V3TPLc8KikVyK235xNyOorabnl1eDnekQJSTWtpl4eQXyE3MWxAUjlZXJo6PIxrmLZGlixdOVWTSs8PmCfb4nQ%3D%3D"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-        // Initialize the SDK
-        Places.initialize(applicationContext, apiKey)
-
-        // Create a new Places client instance
-        val placesClient = Places.createClient(this)
-
-        // Define a Place ID.
-        val placeId = "ChIJYxd6fL6ifDURy7wm894BUcQ"
-
-        // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
-        val fields = Arrays.asList(Place.Field.PHOTO_METADATAS)
-
-        // Get a Place object (this example uses fetchPlace(), but you can also use findCurrentPlace())
-        val placeRequest = FetchPlaceRequest.newInstance(placeId, fields)
-
-        placesClient.fetchPlace(placeRequest).addOnSuccessListener { response ->
-            val place = response.place
-
-            // Get the photo metadata.
-            val photoMetadata = place.photoMetadatas!![0]
-            Log.v("Image Size", place!!.photoMetadatas!!.size.toString())
-            // Get the attribution text.
-            val attributions = photoMetadata.attributions
-
-            // Create a FetchPhotoRequest.
-            val photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                .setMaxWidth(500) // Optional.
-                .setMaxHeight(300) // Optional.
-                .build()
-            placesClient.fetchPhoto(photoRequest).addOnSuccessListener { fetchPhotoResponse ->
-                val bitmap = fetchPhotoResponse.bitmap
-                test_img.setImageBitmap(bitmap)
-                test_text.text = attributions
-
-            }.addOnFailureListener { exception ->
-                if (exception is ApiException) {
-                    val statusCode = exception.statusCode
-                    // Handle error with given status code.
-//                    Log.e(FragmentActivity.TAG, "Place not found: " + exception.getMessage())
-                }
-            }
-        }
+        test3()
     }
+    fun test3(){
+        val KEY = "48734b694668736f36356d6a676775"
+        val MobileOS = "AND"
+        val MobileApp = "InSeuol"
+        val contentType = 12
+        val areaCode = 1
+        val _type = "json"
+        val keyword = "잠실"
+        // ContentType
+        // 관광지 12
+
+        // 문화시설 14
+        // 행사/공연/축제 15
+        // 레포츠 28
+
+        // 숙박 32
+
+        // 음식점 39
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(createOkHttpClient())
+            .baseUrl("http://api.visitkorea.or.kr/openapi/service/rest/KorService/")
+            .build()
+            .create(RetrofitService::class.java)
+            .test2(keyword, contentType, areaCode, MobileOS, MobileApp, _type)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.v("tlqkf",it.toString())
+                var str = ""
+                for(i in 0..it.response.body.items.item.size - 1){
+
+                    str += it.response.body.items.item[i].title
+                    str += "\n"
+
+                }
+                test_text.text = str
+
+            },{
+                Log.v("Fail","")
+            })
+    }
+    fun createOkHttpClient(): OkHttpClient{
+        val builder = OkHttpClient.Builder()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        builder.addInterceptor(interceptor)
+        return builder.build()
+    }
+
 }
