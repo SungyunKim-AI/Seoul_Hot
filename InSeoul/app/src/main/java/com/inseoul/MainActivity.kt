@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.rotationMatrix
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -172,6 +173,12 @@ class MainActivity :
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
+        license_btn.setOnClickListener {
+            licenseDialog()
+        }
+
+
+
         if (SaveSharedPreference.getUserID(this) != "") {
             nav_view.removeHeaderView(nav_view.getHeaderView(0))
             nav_view.inflateHeaderView(R.layout.nav_header_main_login)
@@ -227,6 +234,7 @@ class MainActivity :
             //FAQ
 
             //일정 관리 tv_plan_count
+
         } else {
             //nav_header_main
             //로그인  login_status
@@ -252,9 +260,22 @@ class MainActivity :
                 startActivity(intent)
                 finish()
             }
+
         }
 
 
+    }
+
+    fun licenseDialog(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("라이센스 정보")
+        builder.setMessage("내용")
+
+        builder.setNeutralButton("닫기") { _, _ ->
+
+        }
+        val dialog:AlertDialog = builder.create()
+        dialog.show()
     }
 
     fun loginCheck(): Boolean {

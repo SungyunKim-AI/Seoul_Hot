@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         //Log.d("size",width + "sdf");   //1080
         //Log.d("size",height + "sdf");  //1920
 
+
         TextView textView = (TextView)findViewById(R.id.textView_splash);
         textView.startAnimation(fadeIn);
         fadeIn.setDuration(1000);
@@ -43,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
         ImageView imageView = (ImageView) findViewById(R.id.splashGif);
-        Glide.with(this).load(R.raw.splashgif1).override(width,height).into(imageView);
+        Glide.with(this).load(R.raw.splashgif1).into(imageView);
 
         splashThread = new Thread() {
             @Override

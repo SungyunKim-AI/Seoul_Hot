@@ -26,4 +26,9 @@
 
     </string-array>
     <string name="title_activity_maps">Map</string>
+    
+
+    <string name="license"><u>라이센스 정보 확인</u></string>
+    <string name="start_non"><u>비회원으로 시작하기</u></string>
+    <string name="signUp"><u>간편 회원가입으로 나만의 여행 일지를 만들어 보세요</u></string>
 </resources>
