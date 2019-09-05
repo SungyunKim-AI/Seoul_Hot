@@ -146,6 +146,9 @@ class MakePlanActivity : AppCompatActivity() {
 
 
         }
+        addFriendBtn.setOnClickListener{
+            Toast.makeText(this,"친구일정 불러오기",Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

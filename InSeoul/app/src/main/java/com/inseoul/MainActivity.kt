@@ -173,6 +173,12 @@ class MainActivity :
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
+        license_btn.setOnClickListener {
+            licenseDialog()
+        }
+
+
+
         if (SaveSharedPreference.getUserID(this) != "") {
             nav_view.removeHeaderView(nav_view.getHeaderView(0))
             nav_view.inflateHeaderView(R.layout.nav_header_main_login)
@@ -229,11 +235,6 @@ class MainActivity :
 
             //일정 관리 tv_plan_count
 
-            //라이센스 확인
-            var licenseBtn = header.findViewById<TextView>(R.id.license_btn_on)
-            licenseBtn.setOnClickListener{
-                licenseDialog()
-            }
         } else {
             //nav_header_main
             //로그인  login_status
@@ -259,11 +260,7 @@ class MainActivity :
                 startActivity(intent)
                 finish()
             }
-            //라이센스
-            var licenseBtn = header.findViewById<TextView>(R.id.license_btn)
-            licenseBtn.setOnClickListener{
-                licenseDialog()
-            }
+
         }
 
 
