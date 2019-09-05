@@ -2,8 +2,6 @@ package com.inseoul.search
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.android.gms.maps.model.LatLng
-import com.inseoul.R
 
 data class SearchItem(
     var placeNm:String,

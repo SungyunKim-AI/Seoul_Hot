@@ -2,30 +2,23 @@ package com.inseoul.add_place
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Point
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
-import com.inseoul.make_plan.MarkerItem
-import com.inseoul.manage_member.RegisterRequest
+import com.inseoul.manage_schedules.idnumRequest
 import com.inseoul.search.SearchActivity
+import com.inseoul.search.SearchItem
 
 import kotlinx.android.synthetic.main.activity_add_place.*
-import kotlinx.android.synthetic.main.activity_add_place_2.*
 import kotlinx.android.synthetic.main.activity_add_place_main.*
 import org.json.JSONObject
 import java.util.*
@@ -194,33 +187,84 @@ class AddPlaceActivity :
         addBtn.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             intent.putExtra("flag",true)
-            startActivityForResult(intent, 0)
+            startActivityForResult(intent, 3000)
         }
     }
 
 
-    /////////////////AddPlaceSearch에서 넘어왔을때 호출//////////////////////////////
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (resultCode == 1) {
+    /////////////////Search에서 넘어왔을때 호출//////////////////////////////
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK){
+            val placeID = data!!.getParcelableExtra<SearchItem>("placeData").placeID
+            val responseListener = Response.Listener<String> { response ->
+                try {
+                    //                    Log.d("dd", response);
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getJSONObject("response")
+                    var count = 0
+                    if (success.getBoolean("success")) {
+                        // success.getString("UPSONM") -> 업소명
+                        // success.getString("PHNUM")-> 업소 전화번호
+                        Log.d("usp",success.getString("UPSONM")+success.getString("PHNUM"))
+
+                        count++
+                    }
+
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            var idnumrequest = PlaceRequest( placeID, responseListener)
+            var queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(idnumrequest)
+            var HashList : ArrayList<Int> = ArrayList()
+            val responseListener2 = Response.Listener<String> { response ->
+                try {
+                    //                    Log.d("dd", response);
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getJSONArray("response")
+                    var count = 0
+                    while (count < success.length()) {
+                        val `object` = success.getJSONObject(count)
+                        //`object`.getString("Hash") 해쉬태그 열
+                        Log.d("hash",`object`.getString("Hash"))
+                        count++
+                    }
+                    if (success.length() == 0) {
+                        val layout = findViewById<View>(R.id.first_layout) as LinearLayout
+                        layout.visibility = View.VISIBLE
+                    } else {
+
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            idnumrequest = PlaceRequest(placeID, responseListener2)
+            queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(idnumrequest)
+            //Log.d("alert_data",placeID.toString())
+
 //            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
 //            markerList.add(placeData!!)
 //            lineList.add(markerList[markerList.size-1].latLng!!)
-//        }
-//        for (i in 0 until markerList.size) {
-//            markerList[i].count = i
-//            //Log.d("alert_대입",markerList[i].count.toString())
-//            addMarker(markerList[i], false)
-//
-//        }
-//        getMarkerItems()
-//        if(markerList.size != 0){
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
-//        }else {
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
-//        }
-//
-//    }
+        }
+        for (i in 0 until markerList.size) {
+            markerList[i].count = i
+            //Log.d("alert_대입",markerList[i].count.toString())
+            addMarker(markerList[i], false)
+
+        }
+        getMarkerItems()
+        if(markerList.size != 0){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
+        }else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
+        }
+
+    }
 
     fun initMap(){
         readFile()
@@ -370,10 +414,11 @@ class AddPlaceActivity :
         marker: Marker,
         isSelectedMarker: Boolean
     ): Marker {
+        var idnum = null
         var title = marker.title
         var preview = marker.title
         var latlng = marker.position
-        var temp: AddPlaceItem = AddPlaceItem(title, preview, latlng)
+        var temp: AddPlaceItem = AddPlaceItem(idnum, title, preview, latlng)
 
         return addMarker(temp, isSelectedMarker)
     }
