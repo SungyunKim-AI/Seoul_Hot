@@ -1,23 +1,35 @@
 package com.inseoul.search
 
+
 import android.app.Activity
 import android.content.Intent
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
+
 import com.inseoul.add_place.AddPlaceActivity
+
+import com.inseoul.add_place.AddPlaceSearchAdapter
+import com.inseoul.add_place.AddPlaceSearchItem
+import com.inseoul.api_manager.RetrofitService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.android.synthetic.main.activity_search.recyclerView
 import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -50,14 +62,63 @@ class SearchActivity : AppCompatActivity() {
                 //Log.d("Submit",p0)
                 //////////////////////// DB Connect & Query ////////////////////////
 
+                searchKeyword(p0!!)
                 initData(p0)
-
+                initViewPager()
                 /////////////////////////////////////////////////////////////////////
                 return false
             }
         })
     }
 
+    fun searchKeyword(keyword:String){
+        val MobileOS = "AND"
+        val MobileApp = "InSeuol"
+        val contentType = 12
+        val areaCode = 1
+        val _type = "json"
+        // ContentType
+        // 관광지 12
+
+        // 문화시설 14
+        // 행사/공연/축제 15
+        // 레포츠 28
+
+        // 숙박 32
+
+        // 음식점 39
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(createOkHttpClient())
+            .baseUrl("http://api.visitkorea.or.kr/openapi/service/rest/KorService/")
+            .build()
+            .create(RetrofitService::class.java)
+            .test2(keyword, contentType, areaCode, MobileOS, MobileApp, _type)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.v("tlqkf",it.toString())
+                var str = ""
+                for(i in 0..it.response.body.items.item.size - 1){
+
+                    str += it.response.body.items.item[i].title
+                    str += "\n"
+
+                }
+//                test_text.text = str
+
+            },{
+                Log.v("Fail","")
+            })
+    }
+    fun createOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        builder.addInterceptor(interceptor)
+        return builder.build()
+    }
     fun init() {
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search) as Toolbar
@@ -137,7 +198,7 @@ class SearchActivity : AppCompatActivity() {
                         }
                         val responseListener3 = Response.Listener<String> { response ->
                             readFile()
-                            initRecyclerView()
+//                            initRecyclerView()
                         }
                         val idnumrequest3 = ConnectRequest("oooooo", responseListener3)
                         var queue = Volley.newRequestQueue(this@SearchActivity)
@@ -202,49 +263,41 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
+    fun initViewPager(){
+        val adapter =  SearchViewPagerAdpater(this, placeList)
+        view_pager2.adapter = adapter
+        TabLayoutMediator(search_tabLayout, view_pager2, object : TabLayoutMediator.OnConfigureTabCallback {
+            override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+                // Styling each tab here
+                when(position){
+                    0 -> {
+                        tab.setText("관광")
+                    }
+                    1 -> {
+                        tab.setText("문화")
+                    }
+                    2 -> {
+                        tab.setText("맛집")
+                    }
+                    3 -> {
+                        tab.setText("숙박")
+                    }
+                }
+            }
+        }).attach()
+    }
+    
+
     ////////////////// Recycler View //////////////////
     private val placeList = ArrayList<SearchItem>()
     var layoutManager: RecyclerView.LayoutManager? = null
     var adapter1: SearchAdapter? = null
 
 
+
     fun initRecyclerView() {
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-
-
-//        if (intent.hasExtra("flag")) {
-//            //AddPlaceActivity에서 넘어왔을때
-//
-//            val listener = object : AddPlaceSearchAdapter.RecyclerViewAdapterEventListener {
-//                override fun onClick(view: View, position: Int) {
-//
-//                }
-//            }
-//            adapter2 = AddPlaceSearchAdapter(this, listener, placeList2)
-//            recyclerView.adapter = adapter2
-//            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
-//
-//        } else {
-//
-//            val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
-//                override fun onClick(view: View, position: Int) {
-//                    //intent로 SearchItem 전달
-//                    val intent = Intent(this@SearchActivity, SearchDetail::class.java)
-//                    intent.putExtra("placeData", placeList[position])
-//                    startActivity(intent)
-//                }
-//            }
-//            adapter1 = SearchAdapter(this, listener, placeList)
-//            recyclerView.adapter = adapter1
-//            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
-//        }
-
-        if (intent.hasExtra("flag")){
-            //recyclerview 내부의 아이템에 접근
-
-        }
-
 
         val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
             override fun onClick1(view: View, position: Int) {
@@ -276,6 +329,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
     }
+}
 
 
     //toolbar에서 back 버튼
