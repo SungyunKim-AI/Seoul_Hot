@@ -3,17 +3,21 @@ package com.inseoul.make_plan
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_make_plan.*
 import java.util.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.applikeysolutions.cosmocalendar.utils.SelectionType
 import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.search.SearchActivity
 import okhttp3.*
@@ -45,9 +49,10 @@ class MakePlanActivity : AppCompatActivity() {
         setContentView(R.layout.activity_make_plan)
 
         initToolbar()           //툴바 세팅
-        fetchJson()             //서버 파일 다운로드
+//        fetchJson()             //서버 파일 다운로드
         initBtn()               //새로운 일정 버튼 클릭 리스너
-        initRecyclerView()
+//        initRecyclerView()
+        calendar()
 
     }
 
@@ -81,68 +86,65 @@ class MakePlanActivity : AppCompatActivity() {
 
 
     //////////DatePicker Dialog
-    inline fun Activity.showAlertDialog(func: RangePickerActivity.() -> Unit): AlertDialog =
-        RangePickerActivity(this).apply {
-            func()
-        }.create()
 
     //////////////다음 액티비티로 넘어가는 부분
     val REQ_CODE: Int = 10000
 
+    fun calendar(){
+        // Setting
+        calendar_view.weekendDayTextColor = Color.parseColor("#FF0000")
+
+        calendar_view.calendarOrientation = LinearLayout.HORIZONTAL
+        calendar_view.selectionType = SelectionType.RANGE
+
+        calendar_view.currentDayIconRes = R.drawable.ic_down_arrow
+
+        calendar_view.selectedDayBackgroundStartColor = Color.parseColor("#B6E3E9")
+        calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#B6E3E9")
+        calendar_view.selectedDayBackgroundColor = Color.parseColor("#D9F1F1")
+
+    }
+
     fun initBtn() {
         continueBtn.setOnClickListener {
 
-            val intent = Intent(this, AddPlaceActivity::class.java)
 
-            intent.putExtra("PlanDate", resultStr)
-            intent.putExtra("PlanRange", range)
-            intent.putExtra("flag_key",2)
+            // Range Picker
+            var days = calendar_view.selectedDates
+            var r = days.size
+            range = r.toString() + "일"
 
-            startActivityForResult(intent, REQ_CODE)
-        }
+            if(r != 0){
+                val start_calendar = days.get(0)
+                startDay = start_calendar.get(Calendar.DAY_OF_MONTH).toString()
+                startMonth = (start_calendar.get(Calendar.MONTH) + 1).toString()
+                startYear = start_calendar.get(Calendar.YEAR).toString()
 
-        select_date.setOnClickListener {
+                val end_calendar = days.get(r - 1)
+                endDay = end_calendar.get(Calendar.DAY_OF_MONTH).toString()
+                endMonth = (end_calendar.get(Calendar.MONTH) + 1).toString()
+                endYear = end_calendar.get(Calendar.YEAR).toString()
 
-            val dialog:AlertDialog = showAlertDialog {
-                cancelable = false
-                selectBtnClickListener {
-                    Log.v("Dialog", "submit")
-                    var days = calendar_view.selectedDates
-                    var r = days.size
-                    range = r.toString() + "일"
-
-                    if(r != 0){
-                        val start_calendar = days.get(0)
-                        startDay = start_calendar.get(Calendar.DAY_OF_MONTH).toString()
-                        startMonth = (start_calendar.get(Calendar.MONTH) + 1).toString()
-                        startYear = start_calendar.get(Calendar.YEAR).toString()
-
-                        val end_calendar = days.get(r - 1)
-                        endDay = end_calendar.get(Calendar.DAY_OF_MONTH).toString()
-                        endMonth = (end_calendar.get(Calendar.MONTH) + 1).toString()
-                        endYear = end_calendar.get(Calendar.YEAR).toString()
-
-                        if(startYear == endYear){
-                            resultStr = startYear + "." + startMonth + "." + startDay + " - " + endMonth + "." + endDay
-                        }
-                        if(startYear == endYear && startMonth == endMonth && startDay == endDay){
-                            resultStr = startYear + "." + startMonth + "." + startDay
-                        }
-                        rangeDay.text = range
-                        select_date.text = resultStr
-//                        date_text_start.text = startDate
-//                        date_text_end.text = endDate
-                        Log.v("Dialog", startDay + endDay)
-                        continueBtn.isEnabled = true
-                    } else{
-                        Log.v("Dialog", "null")
-                    }
+                if(startYear == endYear){
+                    resultStr = startYear + "." + startMonth + "." + startDay + " - " + endMonth + "." + endDay
                 }
-                cancelBtnClickListener {
-                    Log.v("Dialog", "cancel")
+                if(startYear == endYear && startMonth == endMonth && startDay == endDay){
+                    resultStr = startYear + "." + startMonth + "." + startDay
                 }
+
+                val intent = Intent(this, AddPlaceActivity::class.java)
+
+                intent.putExtra("PlanDate", resultStr)
+                intent.putExtra("PlanRange", range)
+                intent.putExtra("flag_key",2)
+
+                startActivityForResult(intent, REQ_CODE)
+
+            } else{
+                Toast.makeText(this,"날짜를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
-            dialog.show()
+
+
         }
     }
 
@@ -152,105 +154,8 @@ class MakePlanActivity : AppCompatActivity() {
             finish()
         }
     }
-
-
-
-    ////////////////// Recycler View //////////////////
-    //private val planData = ArrayList<MakePlanItem>()
-
-    var layoutManager: RecyclerView.LayoutManager? = null
-    var adapter: MakePlanAdapter? = null
-
-    fun initRecyclerView(){
-
-//        initTest()
-
-        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-        val listener = object: MakePlanAdapter.RecyclerViewAdapterEventListener{
-
-            override fun onClick(view: View, position: Int) {
-                // ViewPager Touch Listener
-                //intent로 장소 이름 전달
-                val recommendIntent = Intent(this@MakePlanActivity, RecommendPlan::class.java)
-                recommendIntent.putExtra("planData",planList[position])
-                recommendIntent.putExtra("plan_array",planList[position].PLAN)
-                startActivity(recommendIntent)
-            }
-        }
-        val vListener = object: ViewPagerAdpater_recommand.ViewPagerAdapterEventListener{
-            override fun onClick(view: View, position:Int) {
-                val recommendIntent = Intent(this@MakePlanActivity, RecommendPlan::class.java)
-                recommendIntent.putExtra("planData",planList[position])
-                recommendIntent.putExtra("plan_array",planList[position].PLAN)
-                Log.d("alert_sdf",planList[position].PLAN.toString())
-                startActivity(recommendIntent)
-            }
-        }
-        adapter = MakePlanAdapter(this, listener, vListener, planList)
-        recyclerView.adapter = adapter
-    }
-
-
-    fun fetchJson() {
-
-        val url = URL("http://ksun1234.cafe24.com/PlanList.php")
-        val request = Request.Builder().url(url).build()
-        val client = OkHttpClient()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call?, response: Response?) {
-                val body = response?.body()?.string()
-                //println("Success to execute request! : $body")
-                val jsonObject = JSONObject(body)
-
-
-                val movieArray = jsonObject.getJSONArray("response")
-
-                for (i in 0 until movieArray.length()) {
-                    val movieObject = movieArray.getJSONObject(i)
-                    val cache_nm = movieObject.getString("TRIP_NAME")
-                    planList.add(MakePlanItem(cache_nm))
-                    val cache_theme = movieObject.getString("THEME")
-                    planList[i].THEME = cache_theme
-                    val cache_likes = movieObject.getString("LIKES")
-                    planList[i].LIKES = cache_likes.toInt()
-                    val cache_plan = movieObject.getString("PLAN").split(",")
-                    for (j in 0 until cache_plan.size) {
-                        planList[i].PLAN.add(j,cache_plan[j].toInt())
-                    }
-                    /////////////preview 작성 필요///////////////
-                    planList[i].preview = "This is preview   $i"
-                    var rnd = Random()
-                    var n = rnd.nextInt(5) + 1
-
-//                val temp = ArrayList<Drawable?>()
-                    for(j in 0..n){
-                        val index = rnd.nextInt(5) + 1
-                        val str = "sample$index"
-                        Log.v("TestImg", str)
-                        planList[i].imgList.add(baseContext.getDrawable(baseContext.resources.getIdentifier(str, "drawable",  baseContext.packageName)))
-                    }
-//                img.add(ImgItem(temp))
-
-                }
-                // UI update Thread
-                runOnUiThread {
-                    adapter!!.notifyDataSetChanged()
-
-                }
-//                updateView()
-            }
-
-            override fun onFailure(call: Call?, e: IOException?) {
-                println("Failed to execute request!")
-            }
-        })
-
-
-    }
-
-
 }
+
 
 
 

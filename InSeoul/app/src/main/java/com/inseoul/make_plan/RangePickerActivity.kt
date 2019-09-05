@@ -84,7 +84,7 @@ class RangePickerActivity(
         calendar_view.calendarOrientation = HORIZONTAL
         calendar_view.selectionType = SelectionType.RANGE
 
-        calendar_view.currentDayIconRes = R.drawable.ic_down__arrow
+        calendar_view.currentDayIconRes = R.drawable.ic_down_arrow
 
         calendar_view.selectedDayBackgroundStartColor = Color.parseColor("#B6E3E9")
         calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#B6E3E9")

@@ -14,59 +14,47 @@
             android:background="@color/toolbar_background"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
-            android:id="@+id/toolbar_search_details"
-    />
-    <ScrollView
+            android:id="@+id/toolbar_search_details">
+        <ImageButton
+                android:id="@+id/add_my_list"
+                android:layout_marginVertical="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_bookmark_black"
+                android:background="@color/invisible"
+                android:layout_gravity="right"
+        />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical">
-            <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp" app:srcCompat="@drawable/ic_menu_gallery"
-                    android:id="@+id/imageView2"/>
-            <TextView
-                    android:text="해쉬태그"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView4"/>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <Button
-                        android:text="일정에 추가"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/add_my_list" android:layout_weight="1"/>
-                <Button
-                        android:text="사진 올리기"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/button3" android:layout_weight="1"/>
-                <TextView
-                        android:text="별점"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView5" android:layout_weight="1"/>
-            </LinearLayout>
-            <TextView
-                    android:text="주소"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView2"/>
-            <FrameLayout
-                    android:id="@+id/map"
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"/>
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <TextView
-                        android:text="정보"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:id="@+id/textView3"/>
-            </LinearLayout>
-        </LinearLayout>
-
-    </ScrollView>
-
-
+            android:layout_height="250dp"
+            app:srcCompat="@drawable/ic_menu_gallery"
+            android:id="@+id/imageView2"
+    />
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/bottom_sheet_map"
+              android:layout_height="200dp"
+              android:name="com.google.android.gms.maps.SupportMapFragment"
+              android:layout_width="match_parent"
+    />
+    <TextView
+            android:text="주소"
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            android:textColor="@color/black"
+    />
+    <TextView
+            android:text="정보"
+            android:layout_margin="20dp"
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3"
+    />
 
 </LinearLayout>
