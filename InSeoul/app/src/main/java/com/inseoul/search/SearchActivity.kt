@@ -8,24 +8,26 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
-
 import com.inseoul.add_place.AddPlaceActivity
-
-import com.inseoul.add_place.AddPlaceSearchAdapter
-import com.inseoul.add_place.AddPlaceSearchItem
 import com.inseoul.api_manager.RetrofitService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_add_place.*
+import kotlinx.android.synthetic.main.activity_review.*
 import kotlinx.android.synthetic.main.activity_search.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -63,7 +65,7 @@ class SearchActivity : AppCompatActivity() {
                 //////////////////////// DB Connect & Query ////////////////////////
 
                 searchKeyword(p0!!)
-                initData(p0)
+                //initData(p0)
                 initViewPager()
                 /////////////////////////////////////////////////////////////////////
                 return false
@@ -135,12 +137,6 @@ class SearchActivity : AppCompatActivity() {
         searchView.requestFocus()
         searchView.isSubmitButtonEnabled = true
 
-
-        //AddPlaceActivity에서 넘어옴
-//        if(intent.hasExtra("flag")){
-//
-//        }
-
     }
 
     //////////////////서버 통신////////////////////
@@ -198,7 +194,7 @@ class SearchActivity : AppCompatActivity() {
                         }
                         val responseListener3 = Response.Listener<String> { response ->
                             readFile()
-//                            initRecyclerView()
+                            initRecyclerView()
                         }
                         val idnumrequest3 = ConnectRequest("oooooo", responseListener3)
                         var queue = Volley.newRequestQueue(this@SearchActivity)
@@ -243,17 +239,17 @@ class SearchActivity : AppCompatActivity() {
                     val lat = array.getJSONObject(i).getString("class")
 
                     var flag: Int? = null
-                    when (lat) {
-                        "명소" -> {
-                            flag = R.drawable.ic_add_a_photo_black_24dp
-                        }
-                        "맛집" -> {
-                            flag = R.drawable.ic_add_a_photo_black_24dp
-                        }
-                        "쇼핑" -> {
-                            flag = R.drawable.ic_add_a_photo_black_24dp
-                        }
-                    }
+//                    when (lat) {
+//                        "명소" -> {
+//                            flag = R.drawable.ic_add_a_photo_black_24dp
+//                        }
+//                        "맛집" -> {
+//                            flag = R.drawable.ic_add_a_photo_black_24dp
+//                        }
+//                        "쇼핑" -> {
+//                            flag = R.drawable.ic_add_a_photo_black_24dp
+//                        }
+//                    }
                     placeList.add(SearchItem(lng, flag!!, array.getJSONObject(i).getInt("Id_Num")))
                     //Log.d("Log", "$lat, $lng")
                 }
@@ -329,7 +325,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
     }
-}
 
 
     //toolbar에서 back 버튼
