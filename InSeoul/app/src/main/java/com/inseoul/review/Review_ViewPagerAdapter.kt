@@ -91,8 +91,8 @@ class Review_ViewPagerAdapter(
                     ObjectAnimator.ofInt(
                         holder.horizontal_scroll_view,
                         "scrollX",
-                        100
-                    ).setDuration(1000).start()
+                        300
+                    ).setDuration(2000).start()
 //                    holder.horizontal_scroll_view.smoothScrollTo(800,0)
                 }
 

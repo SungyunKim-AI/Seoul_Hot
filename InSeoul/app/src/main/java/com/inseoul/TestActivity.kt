@@ -22,57 +22,57 @@ class TestActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-        test3()
+//        test3()
     }
-    fun test3(){
-        val KEY = "48734b694668736f36356d6a676775"
-        val MobileOS = "AND"
-        val MobileApp = "InSeuol"
-        val contentType = 12
-        val areaCode = 1
-        val _type = "json"
-        val keyword = "잠실"
-        // ContentType
-        // 관광지 12
-
-        // 문화시설 14
-        // 행사/공연/축제 15
-        // 레포츠 28
-
-        // 숙박 32
-
-        // 음식점 39
-        val retrofit = Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(createOkHttpClient())
-            .baseUrl("http://api.visitkorea.or.kr/openapi/service/rest/KorService/")
-            .build()
-            .create(RetrofitService::class.java)
-            .test2(keyword, contentType, areaCode, MobileOS, MobileApp, _type)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.v("tlqkf",it.toString())
-                var str = ""
-                for(i in 0..it.response.body.items.item.size - 1){
-
-                    str += it.response.body.items.item[i].title
-                    str += "\n"
-
-                }
-                test_text.text = str
-
-            },{
-                Log.v("Fail","")
-            })
-    }
-    fun createOkHttpClient(): OkHttpClient{
-        val builder = OkHttpClient.Builder()
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        builder.addInterceptor(interceptor)
-        return builder.build()
-    }
+//    fun test3(){
+//        val KEY = "48734b694668736f36356d6a676775"
+//        val MobileOS = "AND"
+//        val MobileApp = "InSeuol"
+//        val contentType = 12
+//        val areaCode = 1
+//        val _type = "json"
+//        val keyword = "잠실"
+//        // ContentType
+//        // 관광지 12
+//
+//        // 문화시설 14
+//        // 행사/공연/축제 15
+//        // 레포츠 28
+//
+//        // 숙박 32
+//
+//        // 음식점 39
+//        val retrofit = Retrofit.Builder()
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .client(createOkHttpClient())
+//            .baseUrl("http://api.visitkorea.or.kr/openapi/service/rest/KorService/")
+//            .build()
+//            .create(RetrofitService::class.java)
+//            .test2(keyword, contentType, areaCode, MobileOS, MobileApp, _type)
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                Log.v("tlqkf",it.toString())
+//                var str = ""
+//                for(i in 0..it.response.body.items.item.size - 1){
+//
+//                    str += it.response.body.items.item[i].title
+//                    str += "\n"
+//
+//                }
+//                test_text.text = str
+//
+//            },{
+//                Log.v("Fail","")
+//            })
+//    }
+//    fun createOkHttpClient(): OkHttpClient{
+//        val builder = OkHttpClient.Builder()
+//        val interceptor = HttpLoggingInterceptor()
+//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+//        builder.addInterceptor(interceptor)
+//        return builder.build()
+//    }
 
 }

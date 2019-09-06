@@ -13,7 +13,7 @@ import com.inseoul.R
 
 class SearchViewPagerAdpater (
     val c: Context,
-    val itemlist:ArrayList<SearchItem>
+    val itemlist:ArrayList<ArrayList<Search_Item>>
 )
     : RecyclerView.Adapter<SearchViewPagerAdpater.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewPagerAdpater.ViewHolder {
@@ -45,9 +45,10 @@ class SearchViewPagerAdpater (
 //                    startActivity(intent)
                 }
             }
-        adapter = SearchAdapter(c, listener, itemlist)
+        var list = ArrayList<Search_Item>()
+        list = itemlist[position]
+        adapter = SearchAdapter(c, listener, list)
         holder.recyclerView.adapter = adapter
-        holder.recyclerView.addItemDecoration(DividerItemDecoration(c, 1))
     }
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var recyclerView: RecyclerView

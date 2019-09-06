@@ -1,18 +1,23 @@
 package com.inseoul.search
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.inseoul.R
+import com.makeramen.roundedimageview.RoundedImageView
+
 
 class SearchAdapter(val context: Context,
                     var listener:RecyclerViewAdapterEventListener,
-                    var items:ArrayList<SearchItem>
+                    var items:ArrayList<Search_Item>
 ): RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
@@ -25,7 +30,7 @@ class SearchAdapter(val context: Context,
         return ViewHolder(v)
     }
 
-    fun getData(position: Int): SearchItem? {
+    fun getData(position: Int): Search_Item? {
         return if (items == null || items.size < position) {
             null
         } else items[position]
@@ -41,16 +46,32 @@ class SearchAdapter(val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = items!!.get(position)
 
-        holder.thumbnail.setImageResource(data.placeIcon)
-        holder.item_title.text = data.placeNm
+
+        if(data != null){
+            if(data.url != null){
+                val url = data.url!!.replace("\\","")
+                Log.v("Thumbnail", url)
+                Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.thumbnail)
+            } else {
+                Glide.with(context).load(R.drawable.logo).into(holder.thumbnail)
+                Log.v("Thumbnail2", "null")
+            }
+
+        }
+        holder.item_title.text = data.title
 
         holder.itemView.setOnClickListener {
             listener!!.onClick(it, position)
+            val intent = Intent(context, SearchDetail::class.java)
+            intent.putExtra("data", data)
+            Log.v("Before intent", data.posX.toString() +  ", " + data.posY.toString())
+
+            startActivity(context, intent, null)
         }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var thumbnail: ImageView
+        var thumbnail: RoundedImageView
         var item_title: TextView
         init {
             item_title = itemView.findViewById(R.id.search_title)

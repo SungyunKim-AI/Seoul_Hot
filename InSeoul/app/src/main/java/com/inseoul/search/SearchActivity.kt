@@ -7,18 +7,17 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
-import com.inseoul.add_place.AddPlaceSearchAdapter
-import com.inseoul.add_place.AddPlaceSearchItem
 import com.inseoul.api_manager.RetrofitService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_search.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -31,12 +30,15 @@ class SearchActivity : AppCompatActivity() {
     var succ = false
     var upNUM: ArrayList<Int> = ArrayList()
 
+    lateinit var category: ArrayList<ArrayList<Search_Item>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         setSupportActionBar(toolbar_search)
 
         init()
+        initViewPager()
 
         // Search View EventListener
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -56,18 +58,18 @@ class SearchActivity : AppCompatActivity() {
                 //////////////////////// DB Connect & Query ////////////////////////
 
                 searchKeyword(p0!!)
-                initData(p0)
-                initViewPager()
+//                initData(p0)
                 /////////////////////////////////////////////////////////////////////
                 return false
             }
         })
     }
 
+    ////////////////////// Tour API //////////////////////
     fun searchKeyword(keyword:String){
         val MobileOS = "AND"
         val MobileApp = "InSeuol"
-        val contentType = 12
+//        val contentType = 12
         val areaCode = 1
         val _type = "json"
         // ContentType
@@ -83,22 +85,59 @@ class SearchActivity : AppCompatActivity() {
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .client(createOkHttpClient())
+//            .client(createOkHttpClient())
             .baseUrl("http://api.visitkorea.or.kr/openapi/service/rest/KorService/")
             .build()
             .create(RetrofitService::class.java)
-            .test2(keyword, contentType, areaCode, MobileOS, MobileApp, _type)
+            .searchKeyWord(keyword, areaCode, MobileOS, MobileApp, _type)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                var d =
                 Log.v("tlqkf",it.toString())
                 var str = ""
-                for(i in 0..it.response.body.items.item.size - 1){
 
-                    str += it.response.body.items.item[i].title
-                    str += "\n"
+                var tour = ArrayList<Search_Item>()
+                var culture = ArrayList<Search_Item>()
+                var food = ArrayList<Search_Item>()
+                var hotel = ArrayList<Search_Item>()
+                for(i in 0..it.response.body.items.item.size - 1){
+                    val data = it.response.body.items.item[i]
+                    Log.v("tlqkf",data.firstimage2.toString())
+
+                    var searchitem = Search_Item(
+                        data.contentid,
+                        data.title,
+                        data.firstimage2.toString(),
+                        data.contenttypeid,
+                        data.mapx,
+                        data.mapy,
+                        data.addr1,
+                        data.addr2,
+                        data.tel
+                    )
+                    when(data.contenttypeid){
+                        12, 38->{
+                            tour.add(searchitem)
+                        }
+                        14, 15, 28->{
+                            culture.add(searchitem)
+                        }
+                        39->{
+                            food.add(searchitem)
+                        }
+                        32->{
+                            hotel.add(searchitem)
+                        }
+                    }
 
                 }
+                adapter.itemlist[0] = tour
+                adapter.itemlist[1] = culture
+                adapter.itemlist[2] = food
+                adapter.itemlist[3] = hotel
+
+                adapter.notifyDataSetChanged()
 //                test_text.text = str
 
             },{
@@ -112,6 +151,7 @@ class SearchActivity : AppCompatActivity() {
         builder.addInterceptor(interceptor)
         return builder.build()
     }
+    //////////////////////////////////////////////////////
     fun init() {
         //toolbar 커스텀 코드
         val mtoolbar = findViewById(R.id.toolbar_search) as Toolbar
@@ -220,46 +260,52 @@ class SearchActivity : AppCompatActivity() {
             val line = scan.nextLine()
             result += line
         }
-        parsingGson(result)
+//        parsingGson(result)
     }
 
-    fun parsingGson(result: String) {
-        val json = JSONObject(result)
-        val array = json.getJSONArray("data")
+//    fun parsingGson(result: String) {
+//        val json = JSONObject(result)
+//        val array = json.getJSONArray("data")
+//
+//        if (array.length() == 0) {
+//            placeList.add(SearchItem("핫플레이스가 아니에요 ㅠㅠ", R.drawable.ic_add_a_photo_black_24dp, 0))
+//        } else {
+//            for (i in 0 until array.length()) {
+//                if (upNUM.contains(array.getJSONObject(i).getInt("Id_Num"))) {
+//                    val lng = array.getJSONObject(i).getString("Upso_nm")
+//                    val lat = array.getJSONObject(i).getString("class")
+//
+//                    var flag: Int? = null
+//                    when (lat) {
+//                        "명소" -> {
+//                            flag = R.drawable.ic_add_a_photo_black_24dp
+//                        }
+//                        "맛집" -> {
+//                            flag = R.drawable.ic_add_a_photo_black_24dp
+//                        }
+//                        "쇼핑" -> {
+//                            flag = R.drawable.ic_add_a_photo_black_24dp
+//                        }
+//                    }
+//                    placeList.add(SearchItem(lng, flag!!, array.getJSONObject(i).getInt("Id_Num")))
+//                    //Log.d("Log", "$lat, $lng")
+//                }
+//            }
+//        }
+//
+//    }
 
-        if (array.length() == 0) {
-            placeList.add(SearchItem("핫플레이스가 아니에요 ㅠㅠ", R.drawable.ic_add_a_photo_black_24dp, 0))
-        } else {
-            for (i in 0 until array.length()) {
-                if (upNUM.contains(array.getJSONObject(i).getInt("Id_Num"))) {
-                    val lng = array.getJSONObject(i).getString("Upso_nm")
-                    val lat = array.getJSONObject(i).getString("class")
 
-                    var flag: Int? = null
-                    when (lat) {
-                        "명소" -> {
-                            flag = R.drawable.ic_add_a_photo_black_24dp
-                        }
-                        "맛집" -> {
-                            flag = R.drawable.ic_add_a_photo_black_24dp
-                        }
-                        "쇼핑" -> {
-                            flag = R.drawable.ic_add_a_photo_black_24dp
-                        }
-                    }
-                    placeList.add(SearchItem(lng, flag!!, array.getJSONObject(i).getInt("Id_Num")))
-                    //Log.d("Log", "$lat, $lng")
-                }
-            }
+    lateinit var adapter:SearchViewPagerAdpater
+    fun initViewPager(){
+        category = ArrayList()
+        for(i in 0..3){
+            category.add(ArrayList<Search_Item>())
         }
 
-    }
-
-
-    fun initViewPager(){
-        val adapter =  SearchViewPagerAdpater(this, placeList)
-        view_pager2.adapter = adapter
-        TabLayoutMediator(search_tabLayout, view_pager2, object : TabLayoutMediator.OnConfigureTabCallback {
+        adapter =  SearchViewPagerAdpater(this, category)
+        search_viewpager.adapter = adapter
+        TabLayoutMediator(search_tabLayout, search_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
                 // Styling each tab here
                 when(position){
@@ -281,11 +327,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     ////////////////// Recycler View //////////////////
-    private val placeList = ArrayList<SearchItem>()
-    private val placeList2 = ArrayList<AddPlaceSearchItem>()
-    var layoutManager: RecyclerView.LayoutManager? = null
-    var adapter1: SearchAdapter? = null
-    var adapter2 : AddPlaceSearchAdapter ?= null
+//    private val placeList = ArrayList<SearchItem>()
+//    private val placeList2 = ArrayList<AddPlaceSearchItem>()
+//    var layoutManager: RecyclerView.LayoutManager? = null
+//    var adapter1: SearchAdapter? = null
+//    var adapter2 : AddPlaceSearchAdapter ?= null
 
 
 

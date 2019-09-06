@@ -31,24 +31,12 @@ class ReviewActivity : AppCompatActivity() {
 
     /////////// Init View Pager ///////////
     var Y = -1f
-
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        Y = event!!.getY()
-        Log.e("px", Y.toString())
-        Y = px2dp(Y)
-        Log.e("dp", Y.toString())
-        return super.onTouchEvent(event)
-    }
-
-    fun px2dp(px:Float):Float{
-        return px / (resources.displayMetrics.densityDpi / 160f)
-    }
-
     // Intercept Touch by activity with Y Position
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         Y = ev!!.getY()
         Log.e("px", Y.toString())
-        Y = px2dp(Y)
+        // px2dp
+        Y /= (resources.displayMetrics.densityDpi / 160f)
         view_pager2.isUserInputEnabled = (view_pager2.currentItem == 0 || (view_pager2.currentItem != 0 && Y > 400) || (view_pager2.currentItem == adapter.itemCount - 1 && Y > 650))
         return super.dispatchTouchEvent(ev)
     }
