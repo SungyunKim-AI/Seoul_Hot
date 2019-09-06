@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#B6E3E9</color>
     <color name="white">#FFFFFf</color>
     <color name="colorAccent">#B6E3E9</color>
+    <color name="colorBtn">#000000</color>
 
     <color name="black">#000000</color>
     <color name="layout_back">#CECECE</color>

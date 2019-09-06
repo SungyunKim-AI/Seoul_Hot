@@ -94,7 +94,6 @@ class MakePlanActivity : AppCompatActivity() {
         // Setting
         calendar_view.weekendDayTextColor = Color.parseColor("#FF0000")
 
-        calendar_view.calendarOrientation = LinearLayout.HORIZONTAL
         calendar_view.selectionType = SelectionType.RANGE
 
         calendar_view.currentDayIconRes = R.drawable.ic_down_arrow
