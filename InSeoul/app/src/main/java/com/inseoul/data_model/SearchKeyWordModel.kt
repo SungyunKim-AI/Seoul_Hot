@@ -1,26 +1,24 @@
 package com.inseoul.data_model
 
-import com.inseoul.testdata
-
 class SearchKeyWordModel(
     val response:Response
 ) {
     data class Response(
-        val header: testdata.header,
-        val body: testdata.body
+        val header: header,
+        val body: body
     )
     data class header(
         val resultCode:String,
         val resultMsg:String
     )
     data class body(
-        val items: testdata.items,
+        val items: items,
         val numOfRows:Int,
         val pageNo:Int,
         val totalCount:Int
     )
     data class items(
-        val item:ArrayList<testdata.item>
+        val item:ArrayList<item>
     )
     data class item(
         val addr1:String?,
@@ -33,8 +31,8 @@ class SearchKeyWordModel(
         val contentid:Int,
         val contenttypeid:Int,
         val createdtime:Long,
-        val firstImage:String?,
-        val firstImage2:String?,
+        val firstimage:String?,
+        val firstimage2:String?,
         val mapx:Double?,
         val mapy:Double?,
         val mlevel:Int?,
