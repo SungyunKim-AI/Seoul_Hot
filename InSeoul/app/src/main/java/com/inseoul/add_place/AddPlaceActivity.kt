@@ -196,6 +196,7 @@ class AddPlaceActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
+            /////////////////////////////////////////////////////////////////
             val placeID = data!!.getParcelableExtra<SearchItem>("placeData").placeID
             val responseListener = Response.Listener<String> { response ->
                 try {

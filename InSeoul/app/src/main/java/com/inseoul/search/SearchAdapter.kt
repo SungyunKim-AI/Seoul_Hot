@@ -20,13 +20,13 @@ import kotlinx.android.synthetic.main.item_search.view.*
 
 class SearchAdapter(val context: Context,
                     var listener:RecyclerViewAdapterEventListener,
-                    var items:ArrayList<Search_Item>
-                    var flag:Boolean
+                    var items:ArrayList<Search_Item>,
+                    var flag:Boolean,
+                    var category: Int
 ): RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
-        fun onClick1(view: View, position: Int)
-        fun onClick2(view:View, position: Int)
+        fun onClick(view: View, position: Int, categoryIndex:Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -69,17 +69,17 @@ class SearchAdapter(val context: Context,
         if(flag){
             holder.itemView.selectBtn.visibility = VISIBLE
             holder.itemView.selectBtn.setOnClickListener{
-                listener!!.onClick1(it, position)
+                listener!!.onClick(it, position, category)
             }
         }
         holder.itemView.setOnClickListener {
-            listener!!.onClick(it, position)
+//            listener!!.onClick(it, position)
             val intent = Intent(context, SearchDetail::class.java)
             intent.putExtra("data", data)
             Log.v("Before intent", data.posX.toString() +  ", " + data.posY.toString())
 
             startActivity(context, intent, null)
-            listener!!.onClick2(it, position)
+//            listener!!.onClick2(it, position)
         }
 
     }

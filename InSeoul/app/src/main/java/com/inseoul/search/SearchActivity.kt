@@ -24,6 +24,8 @@ import com.inseoul.api_manager.RetrofitService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_add_place.*
+import kotlinx.android.synthetic.main.activity_add_place.recyclerView
+import kotlinx.android.synthetic.main.activity_register_review_page.*
 import kotlinx.android.synthetic.main.activity_review.*
 import kotlinx.android.synthetic.main.activity_search.*
 import okhttp3.OkHttpClient
@@ -308,8 +310,18 @@ class SearchActivity : AppCompatActivity() {
         for(i in 0..3){
             category.add(ArrayList<Search_Item>())
         }
+        val flag = intent.hasExtra("flag")
 
-        adapter =  SearchViewPagerAdpater(this, category)
+
+        val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
+            override fun onClick(view: View, position: Int, categoryIndex:Int) {
+                val intent = Intent(this@SearchActivity,AddPlaceActivity::class.java)
+                intent.putExtra("placeData", category[categoryIndex][position])
+                setResult(Activity.RESULT_OK,intent)
+                finish()
+            }
+        }
+        adapter =  SearchViewPagerAdpater(this, category, listener, flag)
         search_viewpager.adapter = adapter
         TabLayoutMediator(search_tabLayout, search_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
@@ -384,33 +396,18 @@ class SearchActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
 
-        val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick1(view: View, position: Int) {
-                val intent = Intent(this@SearchActivity,AddPlaceActivity::class.java)
-                intent.putExtra("placeData", placeList[position])
-                setResult(Activity.RESULT_OK,intent)
-                finish()
-            }
-            override fun onClick2(view: View, position: Int) {
-                //intent로 SearchItem 전달
-                val intent = Intent(this@SearchActivity, SearchDetail::class.java)
-                intent.putExtra("placeData", placeList[position])
-                startActivity(intent)
-            }
-        }
-
         if (intent.hasExtra("flag")){
 
             //recyclerview 내부의 아이템에 접근
-            adapter1 = SearchAdapter(this, listener, placeList,true)
-            recyclerView.adapter = adapter1
+//            adapter1 = SearchAdapter(this, category,true)
+//            recyclerView.adapter = adapter1
             //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
 
         }else{
 
             //recyclerview 내부의 아이템에 접근
-            adapter1 = SearchAdapter(this, listener, placeList,false)
-            recyclerView.adapter = adapter1
+ //           adapter1 = SearchAdapter(this, category,false)
+            //          recyclerView.adapter = adapter1
         }
 
     }
