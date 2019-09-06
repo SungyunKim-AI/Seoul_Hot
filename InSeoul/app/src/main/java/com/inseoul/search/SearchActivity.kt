@@ -1,20 +1,30 @@
 package com.inseoul.search
 
+
+import android.app.Activity
+import android.content.Intent
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
+import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.api_manager.RetrofitService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_add_place.*
+import kotlinx.android.synthetic.main.activity_review.*
 import kotlinx.android.synthetic.main.activity_search.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -59,6 +69,7 @@ class SearchActivity : AppCompatActivity() {
 
                 searchKeyword(p0!!)
 //                initData(p0)
+                initViewPager()
                 /////////////////////////////////////////////////////////////////////
                 return false
             }
@@ -168,12 +179,6 @@ class SearchActivity : AppCompatActivity() {
         searchView.requestFocus()
         searchView.isSubmitButtonEnabled = true
 
-
-        //AddPlaceActivity에서 넘어옴
-//        if(intent.hasExtra("flag")){
-//
-//        }
-
     }
 
     //////////////////서버 통신////////////////////
@@ -231,7 +236,7 @@ class SearchActivity : AppCompatActivity() {
                         }
                         val responseListener3 = Response.Listener<String> { response ->
                             readFile()
-//                            initRecyclerView()
+                            initRecyclerView()
                         }
                         val idnumrequest3 = ConnectRequest("oooooo", responseListener3)
                         var queue = Volley.newRequestQueue(this@SearchActivity)
@@ -276,6 +281,7 @@ class SearchActivity : AppCompatActivity() {
 //                    val lat = array.getJSONObject(i).getString("class")
 //
 //                    var flag: Int? = null
+
 //                    when (lat) {
 //                        "명소" -> {
 //                            flag = R.drawable.ic_add_a_photo_black_24dp
@@ -325,6 +331,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }).attach()
     }
+    
 
     ////////////////// Recycler View //////////////////
 //    private val placeList = ArrayList<SearchItem>()
@@ -367,6 +374,46 @@ class SearchActivity : AppCompatActivity() {
 //            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
 //        }
 //    }
+    private val placeList = ArrayList<SearchItem>()
+    var layoutManager: RecyclerView.LayoutManager? = null
+    var adapter1: SearchAdapter? = null
+
+
+
+    fun initRecyclerView() {
+        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+
+        val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
+            override fun onClick1(view: View, position: Int) {
+                val intent = Intent(this@SearchActivity,AddPlaceActivity::class.java)
+                intent.putExtra("placeData", placeList[position])
+                setResult(Activity.RESULT_OK,intent)
+                finish()
+            }
+            override fun onClick2(view: View, position: Int) {
+                //intent로 SearchItem 전달
+                val intent = Intent(this@SearchActivity, SearchDetail::class.java)
+                intent.putExtra("placeData", placeList[position])
+                startActivity(intent)
+            }
+        }
+
+        if (intent.hasExtra("flag")){
+
+            //recyclerview 내부의 아이템에 접근
+            adapter1 = SearchAdapter(this, listener, placeList,true)
+            recyclerView.adapter = adapter1
+            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+
+        }else{
+
+            //recyclerview 내부의 아이템에 접근
+            adapter1 = SearchAdapter(this, listener, placeList,false)
+            recyclerView.adapter = adapter1
+        }
+
+    }
 
 
     //toolbar에서 back 버튼

@@ -8,6 +8,7 @@
         tools:context=".manage_member.SignInActivity"
         android:orientation="vertical"
         android:gravity="center_horizontal"
+        android:background="@color/white"
 >
 
     <TextView
@@ -66,15 +67,20 @@
             android:id="@+id/signUpBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="간편 회원가입으로 나만의 여행 일지를 만들어 보세요"
+            android:text="@string/signUp"
+            android:textColor="@color/layout_back"
             android:layout_marginTop="30dp"
-            android:linksClickable="true"
+            android:clickable="true"
+            android:background="@drawable/ripple_effect"
     />
     <TextView
-            android:text="비회원으로 시작하기"
+            android:text="@string/start_non"
             android:layout_width="wrap_content"
+            android:textColor="@color/layout_back"
             android:layout_height="wrap_content" android:id="@+id/notMember"
             android:layout_marginTop="12dp"
-            android:linksClickable="true"/>
+            android:clickable="true"
+            android:background="@drawable/ripple_effect"
+            />
 
 </LinearLayout>

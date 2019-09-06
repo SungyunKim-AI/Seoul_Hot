@@ -5,12 +5,14 @@ import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 
 data class AddPlaceItem(
+    var idnum:Int ? = null,
     var title:String ?= null,
     var preview:String ?= null,
     var latLng: LatLng ?= null,
     var count: Int ?= null
 ): Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readInt(),
         parcel.readString(),
         parcel.readString(),
         parcel.readParcelable(LatLng::class.java.classLoader),
