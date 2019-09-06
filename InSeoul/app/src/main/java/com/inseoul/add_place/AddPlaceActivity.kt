@@ -17,6 +17,7 @@ import com.inseoul.R
 import com.inseoul.manage_schedules.idnumRequest
 import com.inseoul.search.SearchActivity
 import com.inseoul.search.SearchItem
+import com.inseoul.search.Search_Item
 
 import kotlinx.android.synthetic.main.activity_add_place.*
 import kotlinx.android.synthetic.main.activity_add_place_main.*
@@ -197,7 +198,9 @@ class AddPlaceActivity :
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
             /////////////////////////////////////////////////////////////////
-            val placeID = data!!.getParcelableExtra<SearchItem>("placeData").placeID
+            val item = data!!.getParcelableExtra<Search_Item>("placeData")
+            val placeID = item.id
+
             val responseListener = Response.Listener<String> { response ->
                 try {
                     //                    Log.d("dd", response);
