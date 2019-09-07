@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,11 +17,8 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
-import com.inseoul.manage_schedules.idnumRequest
 import com.inseoul.search.SearchActivity
-import com.inseoul.search.SearchItem
 import com.inseoul.search.Search_Item
-
 import kotlinx.android.synthetic.main.activity_add_place.*
 import kotlinx.android.synthetic.main.activity_add_place_main.*
 import org.json.JSONObject
@@ -28,6 +28,9 @@ import kotlin.math.PI
 import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
+
 
 class AddPlaceActivity :
     AppCompatActivity(),
@@ -189,6 +192,36 @@ class AddPlaceActivity :
             val intent = Intent(this, SearchActivity::class.java)
             intent.putExtra("flag",true)
             startActivityForResult(intent, 3000)
+        }
+
+
+        PlanTitle.setOnEditorActionListener { textView, i, keyEvent ->
+            if(i == EditorInfo.IME_ACTION_DONE){
+                PlanTitle.isFocusableInTouchMode = false
+                PlanTitle.isFocusable = false
+                editPlanTitleComplete.visibility = GONE
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
+                true
+            }else{
+                false
+            }
+        }
+
+        editPlanTitleBtn.setOnClickListener{
+            PlanTitle.isFocusableInTouchMode = true
+            PlanTitle.requestFocus()
+            editPlanTitleComplete.visibility = VISIBLE
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(PlanTitle, 0)
+        }
+
+        editPlanTitleComplete.setOnClickListener{
+            PlanTitle.isFocusableInTouchMode = false
+            PlanTitle.isFocusable = false
+            editPlanTitleComplete.visibility = GONE
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
         }
     }
 

@@ -2,9 +2,9 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".add_place.AddPlaceActivity"
         android:background="@color/white"
         android:id="@+id/root_layout"
@@ -52,18 +52,57 @@
                             android:id="@+id/textview_plandate"
                             android:textColor="@color/black"
                     />
+                    <ImageView
+                            android:id="@+id/editPlanDateBtn"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="bottom"
+                            android:src="@drawable/ic_mode_edit_black_24dp"/>
                 </LinearLayout>
-                <EditText
-                        android:id="@+id/PlanTitle"
-                        android:layout_width="wrap_content"
+                <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:textSize="20dp"
-                />
+                        android:orientation="horizontal">
+                    <EditText
+                            android:id="@+id/PlanTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="20dp"
+                            android:textSize="20dp"
+                            android:inputType="text"
+                            android:imeOptions="actionDone"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:maxLines="1"
+                            android:maxLength="15"
+                    />
+                    <TextView
+                            android:id="@+id/editPlanTitleComplete"
+                            android:text="완료"
+                            android:layout_margin="5dp"
+                            android:padding="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/radius_btn"
+                            android:textColor="@color/white"
+                            android:visibility="gone"
+                    />
+                    <ImageView
+                            android:id="@+id/editPlanTitleBtn"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_mode_edit_black_24dp"/>
+
+                </LinearLayout>
+
                 <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="right|center_vertical"
                 >
                     <TextView
                             android:id="@+id/addBtn"
@@ -86,6 +125,7 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/radius_btn"
                             android:textColor="@color/white"
+                            android:layout_marginRight="15dp"
                     />
                 </LinearLayout>
             </LinearLayout>
@@ -129,6 +169,6 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/activity_add_place_2" />
-    <include layout="@layout/activity_add_place" />
+    <include layout="@layout/activity_add_place_2"/>
+    <include layout="@layout/activity_add_place"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
