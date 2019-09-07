@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -30,6 +28,12 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
+import android.content.DialogInterface
+import android.view.View.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AlertDialog
+import com.inseoul.make_plan.MakePlanActivity
 
 
 class AddPlaceActivity :
@@ -47,11 +51,18 @@ class AddPlaceActivity :
     private val DOT = Dot()
     private val GAP = Gap(PATTERN_GAP_LENGTH_PX)
     private val PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT)
-    private var PlanName =""
-    private  var PLAN =""
-    private var DPDATE =""
-    private var ADDATE =""
+    private var PlanName = ""
+    private var PLAN = ""
+    private var DPDATE = ""
+    private var ADDATE = ""
     private var THEME = ""
+
+
+    lateinit var fade_out: Animation
+    lateinit var fade_in: Animation
+    lateinit var rotate_open: Animation
+    lateinit var rotate_close: Animation
+    var isBtnOpen: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,16 +76,16 @@ class AddPlaceActivity :
     }
 
     ////////////////////// Bottom Sheet //////////////////////
-    lateinit var sheetBehavior:BottomSheetBehavior<LinearLayout>
+    lateinit var sheetBehavior: BottomSheetBehavior<LinearLayout>
     var STATEFLAG = 0;     // STATE_HALF_EXPANDED = 0
-                            // STATE_EXPANDED = 1
-                            // STATE_COLLAPSED = 2
-    fun initBottomSheet(){
+    // STATE_EXPANDED = 1
+    // STATE_COLLAPSED = 2
+    fun initBottomSheet() {
         app_bar.isActivated = true
         sheetBehavior = BottomSheetBehavior.from(add_place_bottom_sheet)
         sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
-        sheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+        sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
@@ -82,9 +93,9 @@ class AddPlaceActivity :
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow))
-                } else{
+                } else {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
                 }
                 if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
@@ -96,13 +107,13 @@ class AddPlaceActivity :
         )
 
         bottomSheet_btn.setOnClickListener {
-            if(sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED){
+            if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 STATEFLAG = 0
                 sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            } else if(sheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED){
+            } else if (sheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED) {
                 STATEFLAG = 1
                 sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            } else{
+            } else {
                 STATEFLAG = 0
                 sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 app_bar.setExpanded(true, true)
@@ -120,8 +131,8 @@ class AddPlaceActivity :
         var flag: Int
         flag = extras!!.getInt("flag_key", -1)
         Log.d("alert", flag.toString())
-        when(flag){
-            1->{
+        when (flag) {
+            1 -> {
                 //flag가 1이라면 SearchDetail에서 넘어옴
 
                 var title_add: String
@@ -133,7 +144,7 @@ class AddPlaceActivity :
 //            textview_theme = this.textview_plantheme
                 textview_plandate.text = ""
             }
-            2->{
+            2 -> {
                 // MakePlanActivity에서 넘어옴
                 var date: String
                 var theme: String
@@ -143,7 +154,7 @@ class AddPlaceActivity :
                 PlanTitle.hint = date + " 여정"
                 textview_plandate.text = date
             }
-            3->{
+            3 -> {
                 //flag가 3이라면 my_schedule에서 넘어옴
                 var title_edit: String
 
@@ -153,11 +164,10 @@ class AddPlaceActivity :
 
                 textview_plandate.text = ""
             }
-            4->{
+            4 -> {
                 //Search에서 다시 넘어옴
             }
         }
-
 
 
         /////////////완료 버튼//////////
@@ -180,7 +190,7 @@ class AddPlaceActivity :
                 }
             }
 
-            val registerRequest = AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME,PLAN, responseListener)
+            val registerRequest = AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME, PLAN, responseListener)
             val queue = Volley.newRequestQueue(this@AddPlaceActivity)
             queue.add(registerRequest)
             val intent = Intent()
@@ -190,25 +200,54 @@ class AddPlaceActivity :
         }
         addBtn.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
-            intent.putExtra("flag",true)
+            intent.putExtra("flag", true)
             startActivityForResult(intent, 3000)
         }
 
+        fade_out = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_morebtn_anim)
+        rotate_open = AnimationUtils.loadAnimation(applicationContext, R.anim.rotate_anim)
+        rotate_close = AnimationUtils.loadAnimation(applicationContext, R.anim.rotate_anim_close)
+        fade_in = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in_btn_anim)
+
+        edit_more.setOnClickListener {
+            anim()
+        }
+        editPlanDateBtn.setOnClickListener {
+            anim()
+        }
+        deleteBtn.setOnClickListener {
+            val builder = AlertDialog.Builder(this@AddPlaceActivity)
+            builder.setMessage("등록 된 장소들이 삭제됩니다.\n일정을 삭제하시겠습니까?")
+
+            builder.setPositiveButton("확인") { dialog, id ->
+                anim()
+                val intent = Intent()
+                intent.putExtra("result", 1)    // TEST CODE
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
+            builder.setNegativeButton("취소") { dialog, id ->
+                anim()
+                dialog.cancel()
+            }
+            val dialog:AlertDialog = builder.create()
+            dialog.show()
+        }
 
         PlanTitle.setOnEditorActionListener { textView, i, keyEvent ->
-            if(i == EditorInfo.IME_ACTION_DONE){
+            if (i == EditorInfo.IME_ACTION_DONE) {
                 PlanTitle.isFocusableInTouchMode = false
                 PlanTitle.isFocusable = false
                 editPlanTitleComplete.visibility = GONE
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
                 true
-            }else{
+            } else {
                 false
             }
         }
 
-        editPlanTitleBtn.setOnClickListener{
+        editPlanTitleBtn.setOnClickListener {
             PlanTitle.isFocusableInTouchMode = true
             PlanTitle.requestFocus()
             editPlanTitleComplete.visibility = VISIBLE
@@ -216,7 +255,7 @@ class AddPlaceActivity :
             imm.showSoftInput(PlanTitle, 0)
         }
 
-        editPlanTitleComplete.setOnClickListener{
+        editPlanTitleComplete.setOnClickListener {
             PlanTitle.isFocusableInTouchMode = false
             PlanTitle.isFocusable = false
             editPlanTitleComplete.visibility = GONE
@@ -225,13 +264,33 @@ class AddPlaceActivity :
         }
     }
 
+    fun anim() {
+
+        if (isBtnOpen) {
+            edit_more.startAnimation(rotate_close)
+            editPlanDateBtn.startAnimation(fade_out)
+            deleteBtn.startAnimation(fade_out)
+            editPlanDateBtn.isClickable = false
+            deleteBtn.isClickable = false
+            isBtnOpen = false
+        } else {
+            edit_more.startAnimation(rotate_open)
+            editPlanDateBtn.startAnimation(fade_in)
+            deleteBtn.startAnimation(fade_in)
+            editPlanDateBtn.isClickable = true
+            deleteBtn.isClickable = true
+            isBtnOpen = true
+        }
+    }
+
 
     /////////////////Search에서 넘어왔을때 호출//////////////////////////////
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             /////////////////////////////////////////////////////////////////
             val item = data!!.getParcelableExtra<Search_Item>("placeData")
+            //Log.d("alert_back",item.toString())
             val placeID = item.id
 
             val responseListener = Response.Listener<String> { response ->
@@ -243,7 +302,7 @@ class AddPlaceActivity :
                     if (success.getBoolean("success")) {
                         // success.getString("UPSONM") -> 업소명
                         // success.getString("PHNUM")-> 업소 전화번호
-                        Log.d("usp",success.getString("UPSONM")+success.getString("PHNUM"))
+                        Log.d("usp", success.getString("UPSONM") + success.getString("PHNUM"))
 
                         count++
                     }
@@ -253,10 +312,10 @@ class AddPlaceActivity :
                     e.printStackTrace()
                 }
             }
-            var idnumrequest = PlaceRequest( placeID, responseListener)
+            var idnumrequest = PlaceRequest(placeID, responseListener)
             var queue = Volley.newRequestQueue(this@AddPlaceActivity)
             queue.add(idnumrequest)
-            var HashList : ArrayList<Int> = ArrayList()
+            var HashList: ArrayList<Int> = ArrayList()
             val responseListener2 = Response.Listener<String> { response ->
                 try {
                     //                    Log.d("dd", response);
@@ -266,7 +325,7 @@ class AddPlaceActivity :
                     while (count < success.length()) {
                         val `object` = success.getJSONObject(count)
                         //`object`.getString("Hash") 해쉬태그 열
-                        Log.d("hash",`object`.getString("Hash"))
+                        Log.d("hash", `object`.getString("Hash"))
                         count++
                     }
                     if (success.length() == 0) {
@@ -295,36 +354,37 @@ class AddPlaceActivity :
 
         }
         getMarkerItems()
-        if(markerList.size != 0){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size-1], 12f))
-        }else {
+        if (markerList.size != 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size - 1], 12f))
+        } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
         }
 
     }
 
-    fun initMap(){
+    fun initMap() {
         readFile()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
     }
+
     var positionArray = ArrayList<ArrayList<Double>>()
 
-    fun readFile(){
+    fun readFile() {
         val scan = Scanner(resources.openRawResource(R.raw.is_map))
         var result = ""
-        while(scan.hasNextLine()){
+        while (scan.hasNextLine()) {
             val line = scan.nextLine()
             result += line
         }
         parsingGson(result)
     }
 
-    fun parsingGson(result:String){
+    fun parsingGson(result: String) {
         val json = JSONObject(result)
         val array = json.getJSONArray("data")
-        for(i in 0 until array.length()){
+        for (i in 0 until array.length()) {
             val lat = array.getJSONObject(i).getString("Yd")
             val lng = array.getJSONObject(i).getString("Xd")
             val pos = ArrayList<Double>()
@@ -334,10 +394,12 @@ class AddPlaceActivity :
             Log.d("LatLng", "$lat, $lng")
         }
     }
+
     ////////////////// Compute Distance //////////////////
-    fun distance(lat1:Double, lat2:Double, lng1:Double, lng2:Double):Double{
+    fun distance(lat1: Double, lat2: Double, lng1: Double, lng2: Double): Double {
         val theta = lng1 - lng2;
-        var dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1))*cos(deg2rad(lat2))*cos(deg2rad(theta))
+        var dist =
+            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta))
         dist = acos(dist)
         dist = rad2deg(dist)
         dist = dist * 60 * 1.1515
@@ -346,11 +408,12 @@ class AddPlaceActivity :
         return dist
     }
 
-    fun deg2rad(deg:Double):Double{     // Degree to Radian
-        return (deg * PI/ 180.0)
+    fun deg2rad(deg: Double): Double {     // Degree to Radian
+        return (deg * PI / 180.0)
     }
-    fun rad2deg(rad:Double):Double{     // Radian to Degree
-        return (rad * 180/ PI)
+
+    fun rad2deg(rad: Double): Double {     // Radian to Degree
+        return (rad * 180 / PI)
     }
     //////////////////////////////////////////////////////
 
@@ -373,12 +436,12 @@ class AddPlaceActivity :
 
         mMap.setOnMapClickListener {
 
-            if(sheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED){
+            if (sheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
                 STATEFLAG = 2
                 sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 app_bar.setExpanded(false, true)
                 add_place_title.text = textview_plandate.text.toString() + "여정"
-            } else{
+            } else {
                 mMap.clear()                    // 수정 필요
                 /////////////// 클릭한 지점의 위치 ///////////////
                 val mk = MarkerOptions();
@@ -396,8 +459,8 @@ class AddPlaceActivity :
                 //////////////////////////////////////////////////
 
                 /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
-                for(i in 0 until positionArray.size){
-                    if(distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1])< DISTANCE){
+                for (i in 0 until positionArray.size) {
+                    if (distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1]) < DISTANCE) {
                         var marker = MarkerOptions()
                         marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
                         marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
@@ -431,7 +494,7 @@ class AddPlaceActivity :
 
         var position = markerItem.latLng
         var order = markerItem.count
-       //Log.d("alert_출력",markerItem.count.toString())
+        //Log.d("alert_출력",markerItem.count.toString())
 
         var markerOptions = MarkerOptions()
         markerOptions.position(position!!)

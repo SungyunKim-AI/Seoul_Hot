@@ -51,14 +51,7 @@
                             android:id="@+id/textview_plandate"
                             android:textColor="@color/black"
                     />
-                    <Button
-                            android:id="@+id/editPlanDateBtn"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_gravity="bottom"
-                            android:layout_marginBottom="10dp"
-                            android:src="@drawable/ic_mode_edit_black_24dp"
-                            android:background="@drawable/edit_selector"/>
+
                 </LinearLayout>
                 <LinearLayout
                         android:layout_width="match_parent"
@@ -157,6 +150,30 @@
                             android:layout_weight="1"
                             android:gravity="center_vertical"
                     />
+                    <Button
+                            android:id="@+id/editPlanDateBtn"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_date_range_primary_24dp"
+                            android:background="@drawable/edit_date_selector"
+                            android:visibility="invisible"/>
+                    <Button
+                            android:id="@+id/deleteBtn"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_delete_forever_primary_24dp"
+                            android:background="@drawable/delete_selector"
+                            android:visibility="invisible"/>
+
+                    <ImageView
+                            android:id="@+id/edit_more"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_more_horiz_black_24dp"/>
+
                     <ImageButton
                             android:id="@+id/finishBtn"
                             android:layout_marginVertical="10dp"

@@ -73,13 +73,10 @@ class SearchAdapter(val context: Context,
             }
         }
         holder.itemView.setOnClickListener {
-//            listener!!.onClick(it, position)
             val intent = Intent(context, SearchDetail::class.java)
             intent.putExtra("data", data)
-            Log.v("Before intent", data.posX.toString() +  ", " + data.posY.toString())
-
+            //Log.v("Before intent", data.posX.toString() +  ", " + data.posY.toString())
             startActivity(context, intent, null)
-//            listener!!.onClick2(it, position)
         }
 
     }
