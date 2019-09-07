@@ -130,10 +130,10 @@ class SearchActivity : AppCompatActivity() {
                         data.tel
                     )
                     when(data.contenttypeid){
-                        12, 38->{
+                        12 ->{
                             tour.add(searchitem)
                         }
-                        14, 15, 28->{
+                        14, 15, 28, 38 ->{
                             culture.add(searchitem)
                         }
                         39->{
@@ -238,7 +238,7 @@ class SearchActivity : AppCompatActivity() {
                         }
                         val responseListener3 = Response.Listener<String> { response ->
                             readFile()
-                            initRecyclerView()
+                            //initRecyclerView()
                         }
                         val idnumrequest3 = ConnectRequest("oooooo", responseListener3)
                         var queue = Volley.newRequestQueue(this@SearchActivity)
@@ -331,7 +331,7 @@ class SearchActivity : AppCompatActivity() {
                         tab.setText("관광")
                     }
                     1 -> {
-                        tab.setText("문화")
+                        tab.setText("문화/쇼핑")
                     }
                     2 -> {
                         tab.setText("맛집")
@@ -343,74 +343,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }).attach()
     }
-    
 
-    ////////////////// Recycler View //////////////////
-//    private val placeList = ArrayList<SearchItem>()
-//    private val placeList2 = ArrayList<AddPlaceSearchItem>()
-//    var layoutManager: RecyclerView.LayoutManager? = null
-//    var adapter1: SearchAdapter? = null
-//    var adapter2 : AddPlaceSearchAdapter ?= null
-
-
-
-//    fun initRecyclerView() {
-//        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-//        recyclerView.layoutManager = layoutManager
-//
-//
-//        if (intent.hasExtra("flag")) {
-//            //AddPlaceActivity에서 넘어왔을때
-//
-//            val listener = object : AddPlaceSearchAdapter.RecyclerViewAdapterEventListener {
-//                override fun onClick(view: View, position: Int) {
-//
-//                }
-//            }
-//            adapter2 = AddPlaceSearchAdapter(this, listener, placeList2)
-//            recyclerView.adapter = adapter2
-//            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
-//
-//        } else {
-//
-//            val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
-//                override fun onClick(view: View, position: Int) {
-//                    //intent로 SearchItem 전달
-//                    val intent = Intent(this@SearchActivity, SearchDetail::class.java)
-//                    intent.putExtra("placeData", placeList[position])
-//                    startActivity(intent)
-//                }
-//            }
-//            adapter1 = SearchAdapter(this, listener, placeList)
-//            recyclerView.adapter = adapter1
-//            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
-//        }
-//    }
-    private val placeList = ArrayList<SearchItem>()
-    var layoutManager: RecyclerView.LayoutManager? = null
-    var adapter1: SearchAdapter? = null
-
-
-
-    fun initRecyclerView() {
-        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-
-        if (intent.hasExtra("flag")){
-
-            //recyclerview 내부의 아이템에 접근
-//            adapter1 = SearchAdapter(this, category,true)
-//            recyclerView.adapter = adapter1
-            //recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
-
-        }else{
-
-            //recyclerview 내부의 아이템에 접근
- //           adapter1 = SearchAdapter(this, category,false)
-            //          recyclerView.adapter = adapter1
-        }
-
-    }
 
 
     //toolbar에서 back 버튼

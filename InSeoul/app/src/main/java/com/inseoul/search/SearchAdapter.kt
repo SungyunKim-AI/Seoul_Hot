@@ -87,7 +87,7 @@ class SearchAdapter(val context: Context,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var thumbnail: RoundedImageView
         var item_title: TextView
-        var selectBtn: Button
+        var selectBtn: TextView
         init {
             item_title = itemView.findViewById(R.id.search_title)
             thumbnail = itemView.findViewById(R.id.search_thumbnail)
