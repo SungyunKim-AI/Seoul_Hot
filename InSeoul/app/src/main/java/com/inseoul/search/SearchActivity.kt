@@ -46,7 +46,10 @@ class SearchActivity : AppCompatActivity() {
     var upNUM: ArrayList<Int> = ArrayList()
 
     lateinit var category: ArrayList<ArrayList<Search_Item>>
-
+    var tour = ArrayList<Search_Item>()
+    var culture = ArrayList<Search_Item>()
+    var food = ArrayList<Search_Item>()
+    var hotel = ArrayList<Search_Item>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -73,7 +76,7 @@ class SearchActivity : AppCompatActivity() {
                 //////////////////////// DB Connect & Query ////////////////////////
 
                 searchKeyword(p0!!)
-//                initData(p0)
+                initData(p0)
                 initViewPager()
                 /////////////////////////////////////////////////////////////////////
                 return false
@@ -113,10 +116,7 @@ class SearchActivity : AppCompatActivity() {
                     Log.v("tlqkf", it.toString())
                 var str = ""
 
-                var tour = ArrayList<Search_Item>()
-                var culture = ArrayList<Search_Item>()
-                var food = ArrayList<Search_Item>()
-                var hotel = ArrayList<Search_Item>()
+
                 for (i in 0..it.response.body.items.item.size - 1) {
                     val data = it.response.body.items.item[i]
 //                    Log.v("tlqkf",data.firstimage2.toString())
@@ -130,7 +130,9 @@ class SearchActivity : AppCompatActivity() {
                         data.mapy,
                         data.addr1,
                         data.addr2,
-                        data.tel
+                        data.tel,
+                        0
+
                     )
                     when (data.contenttypeid) {
                         12 -> {
@@ -198,14 +200,59 @@ class SearchActivity : AppCompatActivity() {
                 var count = 0
                 while (count < success.length()) {
                     val `object` = success.getJSONObject(count)
+                    Log.d("d",`object`.toString())
                     //////////////////////////////////////////////////////////////////////
                     //var searchItm = Search_Item(`object`.getInt("IDNUM"),`object`.getString("NAME"), )
-                    //"class"=>분류,"IDNUM"=>$번호,"NAME"=>업소명 ,"PH"=>전화번호,"Lat"=>lat,"Lng"=>lng,"Spot_new"=>도로명 주소,"INFO"=>세부정보,"HashTag"=>해시태그."IMGURL" => 이미지 주소
-                        //`object`.getInt("IDNUM") 와 같이 정보 긁어오면됨.
+                    // "class"=>분류,"IDNUM"=>$번호,"NAME"=>업소명 ,"PH"=>전화번호,"Lat"=>lat,"Lng"=>lng,"Spot_new"=>도로명 주소,"INFO"=>세부정보,"HashTag"=>해시태그."IMGURL" => 이미지 주소
+                    //`object`.getInt("IDNUM") 와 같이 정보 긁어오면됨.
+                    var d= 0
+                    when (`object`.getString("class")) {
+                        "맛집" -> {
+                            d=39
+                        }
+                        "쇼핑"-> {
+                            d=12
+                        }
+                        "명소" -> {
+                            d=14
+                        }
+
+                    }
+                    var searchitm = Search_Item(
+                        `object`.getInt("IDNUM"),
+                        `object`.getString("NAME"),
+                        `object`.getString("IMGURL"),
+                        d,
+                        `object`.getDouble("Lat"),
+                        `object`.getDouble("Lng"),
+                        `object`.getString("Spot_new"),
+                        null,
+                        `object`.getString("PH"),
+                        1
+                    )
+                    when (`object`.getString("class")) {
+                        "맛집" -> {
+                            food.add(searchitm)
+                        }
+                        "쇼핑"-> {
+                            tour.add(searchitm)
+                        }
+                        "명소" -> {
+                            culture.add(searchitm)
+                        }
+
+                    }
+
                     ///////////////////////////////////////////////////////////////////////
 
                     count++
                 }
+                adapter.itemlist[0] = tour
+                adapter.itemlist[1] = culture
+                adapter.itemlist[2] = food
+                adapter.itemlist[3] = hotel
+
+                adapter.notifyDataSetChanged()
                 if (success.length() == 0) {
                     val layout = findViewById(R.id.first_layout) as LinearLayout
                     layout.visibility = View.VISIBLE
