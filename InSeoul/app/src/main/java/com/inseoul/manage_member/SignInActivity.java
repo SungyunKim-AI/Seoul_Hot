@@ -102,8 +102,8 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
 //                        editor.putString("UserEmail", success.getString("EMAIL"));
 //                        editor.putInt("IDNum",  success.getInt("IDNUM"));
 
-                        Log.d("alert_name",success.getString("NAME"));
-                        Log.d("alert_name",success.getString("EMAIL"));
+//                        Log.d("alert_name",success.getString("NAME"));
+//                        Log.d("alert_name",success.getString("EMAIL"));
 
                         if(checkBox.isChecked()){
                             SaveSharedPreference.setUserID(SignInActivity.this, idText.getText().toString(),success.getInt("IDNUM"),true);

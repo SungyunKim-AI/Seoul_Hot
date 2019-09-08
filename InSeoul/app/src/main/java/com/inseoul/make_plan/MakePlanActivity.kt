@@ -119,7 +119,7 @@ class MakePlanActivity : AppCompatActivity() {
 
                 intent.putExtra("PlanDate", resultStr)
                 intent.putExtra("PlanRange", range)
-                intent.putExtra("flag_key",2)
+                intent.putExtra("flag_key",1)
 
                 startActivityForResult(intent, REQ_CODE)
 

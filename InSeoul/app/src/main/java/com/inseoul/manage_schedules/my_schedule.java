@@ -52,7 +52,7 @@ public class my_schedule extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager_past;
 
 
-    public ArrayList<Integer> planidarray = new ArrayList<Integer>();
+    public ArrayList<Integer> planidarray = new ArrayList<>();
     private  ArrayList<String> planlist = new ArrayList<>();
     private  ArrayList<String> planlist_past = new ArrayList<>();
 
@@ -151,10 +151,12 @@ public class my_schedule extends AppCompatActivity {
 
                 //intent 전달
                 Intent intent_addPlace = new Intent(getBaseContext(), AddPlaceActivity.class);
+                intent_addPlace.putExtra("PlanID", planidarray.get(position));
                 intent_addPlace.putExtra("textview_title", Schedules.getSchedule_title());
                 intent_addPlace.putExtra("textview_date", Schedules.getSchedule_date());
-                intent_addPlace.putExtra("flag_key",3);
+                intent_addPlace.putExtra("flag_key",2);
                 startActivity(intent_addPlace);
+                finish();
             }
 
             @Override
