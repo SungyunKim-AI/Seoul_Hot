@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.inseoul.R;
+import com.inseoul.Server.RegisterRequest;
 import org.json.JSONObject;
 
 public class SignUpActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.inseoul.add_place;
+package com.inseoul.Server;
 
 import androidx.annotation.Nullable;
 import com.android.volley.Request;

@@ -1,20 +1,21 @@
-package com.inseoul.add_place;
+package com.inseoul.Server;
 
+import androidx.annotation.Nullable;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlaceRequest extends StringRequest {
-    final static private String URL= "http://ksun1234.cafe24.com/Upso_Profile.php";
+public class idnumRequest extends StringRequest {
+    final static private String URL= "http://ksun1234.cafe24.com/UserReview.php";
     private Map<String, String> parameters;
 
-    public PlaceRequest(int planID,  Response.Listener<String> listener){
+    public idnumRequest(String userID,  Response.Listener<String> listener){
 
         super(Method.POST, URL, listener, null);
         parameters=new HashMap<>();
-        parameters.put("planid", Integer.toString(planID));
+        parameters.put("userNum", userID);
 
 
 
