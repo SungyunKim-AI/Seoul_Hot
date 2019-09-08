@@ -31,7 +31,7 @@ import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_member.SignInActivity
 import com.inseoul.manage_member.SignUpActivity
-import com.inseoul.manage_schedules.MySchedulesActivity
+import com.inseoul.manage_schedules.my_schedule
 import com.inseoul.review.ReviewActivity
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
@@ -112,7 +112,7 @@ class MainActivity :
             if (!loginCheck())
                 loginDialog()
             else {
-                val intent = Intent(this, MySchedulesActivity::class.java)
+                val intent = Intent(this, my_schedule::class.java)
                 startActivity(intent)
             }
         }
@@ -222,7 +222,7 @@ class MainActivity :
             //마이 페이지
             var myPageBtn = header.findViewById<Button>(R.id.myPage_on)
             myPageBtn.setOnClickListener {
-                val intent = Intent(this, MySchedulesActivity::class.java)
+                val intent = Intent(this, my_schedule::class.java)
                 startActivity(intent)
             }
 
@@ -351,7 +351,7 @@ class MainActivity :
 
         HistoryBtn.setOnClickListener {
             if (SaveSharedPreference.getUserID(this) != "") {
-                val intent = Intent(this, MySchedulesActivity::class.java)
+                val intent = Intent(this, my_schedule::class.java)
                 startActivity(intent)
             } else {
                 if (!loginCheck())

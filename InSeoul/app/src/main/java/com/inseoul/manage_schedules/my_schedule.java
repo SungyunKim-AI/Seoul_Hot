@@ -37,7 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MySchedulesActivity extends AppCompatActivity {
+public class my_schedule extends AppCompatActivity {
 
     //현재 일정 변수
     private ArrayList<recyclerview_schedule> mArrayList;
@@ -72,7 +72,7 @@ public class MySchedulesActivity extends AppCompatActivity {
     public void init() {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
-        mLinearLayoutManager = new LinearLayoutManager(MySchedulesActivity.this);
+        mLinearLayoutManager = new LinearLayoutManager(my_schedule.this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
 
@@ -112,7 +112,7 @@ public class MySchedulesActivity extends AppCompatActivity {
             }
         };
         idnumRequest idnumrequest = new idnumRequest(idNUM, responseListener);
-        RequestQueue queue = Volley.newRequestQueue(MySchedulesActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(my_schedule.this);
         queue.add(idnumrequest);
 
         ShowPlanTask showPlanTask = new ShowPlanTask();
@@ -137,7 +137,7 @@ public class MySchedulesActivity extends AppCompatActivity {
         add_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MySchedulesActivity.this, MakePlanActivity.class);
+                Intent intent = new Intent(my_schedule.this, MakePlanActivity.class);
                 startActivity(intent);
             }
         });
@@ -201,10 +201,10 @@ public class MySchedulesActivity extends AppCompatActivity {
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
-        private MySchedulesActivity.ClickListener clickListener;
+        private my_schedule.ClickListener clickListener;
 
 
-        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final MySchedulesActivity.ClickListener clickListener) {
+        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final my_schedule.ClickListener clickListener) {
             this.clickListener = clickListener;
             gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -270,7 +270,7 @@ public class MySchedulesActivity extends AppCompatActivity {
 
         String target;
         int PlanID;
-        ProgressDialog asyncDialog = new ProgressDialog(MySchedulesActivity.this);
+        ProgressDialog asyncDialog = new ProgressDialog(my_schedule.this);
 
 
 
