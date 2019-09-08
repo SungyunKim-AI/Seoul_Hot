@@ -1,6 +1,7 @@
 package com.inseoul.add_place
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -30,12 +31,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
-import android.content.DialogInterface
+import android.graphics.Color
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AlertDialog
-import com.inseoul.make_plan.MakePlanActivity
+import com.applikeysolutions.cosmocalendar.dialog.CalendarDialog
+import com.applikeysolutions.cosmocalendar.dialog.OnDaysSelectionListener
+import com.applikeysolutions.cosmocalendar.model.Day
+import com.applikeysolutions.cosmocalendar.utils.SelectionType
 
 
 class AddPlaceActivity :
@@ -96,7 +99,7 @@ class AddPlaceActivity :
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow))
+                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow_white))
                 } else {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
                 }
@@ -217,9 +220,14 @@ class AddPlaceActivity :
         edit_more.setOnClickListener {
             anim()
         }
+
         editPlanDateBtn.setOnClickListener {
             anim()
+            val intent = Intent(this@AddPlaceActivity, EditPlanDate::class.java)
+            startActivityForResult(intent, 2000)
         }
+
+
         deleteBtn.setOnClickListener {
             val builder = AlertDialog.Builder(this@AddPlaceActivity)
             builder.setMessage("등록 된 장소들이 삭제됩니다.\n일정을 삭제하시겠습니까?")
@@ -235,7 +243,7 @@ class AddPlaceActivity :
                 anim()
                 dialog.cancel()
             }
-            val dialog:AlertDialog = builder.create()
+            val dialog: AlertDialog = builder.create()
             dialog.show()
         }
 
@@ -272,6 +280,8 @@ class AddPlaceActivity :
     fun anim() {
 
         if (isBtnOpen) {
+            editPlanDateBtn.visibility = INVISIBLE
+            deleteBtn.visibility = INVISIBLE
             edit_more.startAnimation(rotate_close)
             editPlanDateBtn.startAnimation(fade_out)
             deleteBtn.startAnimation(fade_out)
@@ -293,65 +303,80 @@ class AddPlaceActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            /////////////////////////////////////////////////////////////////
-            val item = data!!.getParcelableExtra<Search_Item>("placeData")
-            //Log.d("alert_back",item.toString())
-            val placeID = item.id
+            when (requestCode) {
+                2000 -> {
+                    //EditPlanDate에서 넘어왔을때
+                    var edit_resultStr = data?.getStringExtra("edit_resultStr")
 
-            val responseListener = Response.Listener<String> { response ->
-                try {
-                    //                    Log.d("dd", response);
-                    val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getJSONObject("response")
-                    var count = 0
-                    if (success.getBoolean("success")) {
-                        // success.getString("UPSONM") -> 업소명
-                        // success.getString("PHNUM")-> 업소 전화번호
-                        Log.d("usp", success.getString("UPSONM") + success.getString("PHNUM"))
+                    PlanTitle.hint = edit_resultStr.toString() + " 여정"
+                    textview_plandate.text = edit_resultStr.toString()
 
-                        count++
-                    }
-
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                    Toast.makeText(this, "일정 변경 완료", Toast.LENGTH_SHORT).show()
                 }
-            }
-            var idnumrequest = PlaceRequest(placeID, responseListener)
-            var queue = Volley.newRequestQueue(this@AddPlaceActivity)
-            queue.add(idnumrequest)
-            var HashList: ArrayList<Int> = ArrayList()
-            val responseListener2 = Response.Listener<String> { response ->
-                try {
-                    //                    Log.d("dd", response);
-                    val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getJSONArray("response")
-                    var count = 0
-                    while (count < success.length()) {
-                        val `object` = success.getJSONObject(count)
-                        //`object`.getString("Hash") 해쉬태그 열
-                        Log.d("hash", `object`.getString("Hash"))
-                        count++
-                    }
-                    if (success.length() == 0) {
-                        val layout = findViewById<View>(R.id.first_layout) as LinearLayout
-                        layout.visibility = View.VISIBLE
-                    } else {
+                3000 -> {
+                    //Search에서 넘어왔을 때
+                    val item = data!!.getParcelableExtra<Search_Item>("placeData")
+                    //Log.d("alert_back",item.toString())
+                    val placeID = item.id
 
+                    val responseListener = Response.Listener<String> { response ->
+                        try {
+                            //                    Log.d("dd", response);
+                            val jsonResponse = JSONObject(response)
+                            val success = jsonResponse.getJSONObject("response")
+                            var count = 0
+                            if (success.getBoolean("success")) {
+                                // success.getString("UPSONM") -> 업소명
+                                // success.getString("PHNUM")-> 업소 전화번호
+                                Log.d("usp", success.getString("UPSONM") + success.getString("PHNUM"))
+
+                                count++
+                            }
+
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            idnumrequest = PlaceRequest(placeID, responseListener2)
-            queue = Volley.newRequestQueue(this@AddPlaceActivity)
-            queue.add(idnumrequest)
-            //Log.d("alert_data",placeID.toString())
+                    var idnumrequest = PlaceRequest(placeID, responseListener)
+                    var queue = Volley.newRequestQueue(this@AddPlaceActivity)
+                    queue.add(idnumrequest)
+                    var HashList: ArrayList<Int> = ArrayList()
+                    val responseListener2 = Response.Listener<String> { response ->
+                        try {
+                            //                    Log.d("dd", response);
+                            val jsonResponse = JSONObject(response)
+                            val success = jsonResponse.getJSONArray("response")
+                            var count = 0
+                            while (count < success.length()) {
+                                val `object` = success.getJSONObject(count)
+                                //`object`.getString("Hash") 해쉬태그 열
+                                Log.d("hash", `object`.getString("Hash"))
+                                count++
+                            }
+                            if (success.length() == 0) {
+                                val layout = findViewById<View>(R.id.first_layout) as LinearLayout
+                                layout.visibility = View.VISIBLE
+                            } else {
+
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    idnumrequest = PlaceRequest(placeID, responseListener2)
+                    queue = Volley.newRequestQueue(this@AddPlaceActivity)
+                    queue.add(idnumrequest)
+                    //Log.d("alert_data",placeID.toString())
 
 //            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
 //            markerList.add(placeData!!)
 //            lineList.add(markerList[markerList.size-1].latLng!!)
+
+                }
+            }
         }
+
         for (i in 0 until markerList.size) {
             markerList[i].count = i
             //Log.d("alert_대입",markerList[i].count.toString())
