@@ -79,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     ////////////////////// Tour API //////////////////////
-    fun searchKeyword(keyword:String){
+    fun searchKeyword(keyword: String) {
         val MobileOS = "AND"
         val MobileApp = "InSeuol"
 //        val contentType = 12
@@ -107,16 +107,16 @@ class SearchActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 var d =
-                Log.v("tlqkf",it.toString())
+                    Log.v("tlqkf", it.toString())
                 var str = ""
 
                 var tour = ArrayList<Search_Item>()
                 var culture = ArrayList<Search_Item>()
                 var food = ArrayList<Search_Item>()
                 var hotel = ArrayList<Search_Item>()
-                for(i in 0..it.response.body.items.item.size - 1){
+                for (i in 0..it.response.body.items.item.size - 1) {
                     val data = it.response.body.items.item[i]
-                    Log.v("tlqkf",data.firstimage2.toString())
+//                    Log.v("tlqkf",data.firstimage2.toString())
 
                     var searchitem = Search_Item(
                         data.contentid,
@@ -129,17 +129,17 @@ class SearchActivity : AppCompatActivity() {
                         data.addr2,
                         data.tel
                     )
-                    when(data.contenttypeid){
-                        12 ->{
+                    when (data.contenttypeid) {
+                        12 -> {
                             tour.add(searchitem)
                         }
-                        14, 15, 28, 38 ->{
+                        14, 15, 28, 38 -> {
                             culture.add(searchitem)
                         }
-                        39->{
+                        39 -> {
                             food.add(searchitem)
                         }
-                        32->{
+                        32 -> {
                             hotel.add(searchitem)
                         }
                     }
@@ -153,10 +153,11 @@ class SearchActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
 //                test_text.text = str
 
-            },{
-                Log.v("Fail","")
+            }, {
+                //                Log.v("Fail","")
             })
     }
+
     fun createOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
         val interceptor = HttpLoggingInterceptor()
@@ -164,6 +165,7 @@ class SearchActivity : AppCompatActivity() {
         builder.addInterceptor(interceptor)
         return builder.build()
     }
+
     //////////////////////////////////////////////////////
     fun init() {
         //toolbar 커스텀 코드
@@ -189,31 +191,29 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-
-
-    lateinit var adapter:SearchViewPagerAdpater
-    fun initViewPager(){
+    lateinit var adapter: SearchViewPagerAdpater
+    fun initViewPager() {
         category = ArrayList()
-        for(i in 0..3){
+        for (i in 0..3) {
             category.add(ArrayList<Search_Item>())
         }
         val flag = intent.hasExtra("flag")
 
 
         val listener = object : SearchAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick(view: View, position: Int, categoryIndex:Int) {
-                val intent = Intent(this@SearchActivity,AddPlaceActivity::class.java)
+            override fun onClick(view: View, position: Int, categoryIndex: Int) {
+                val intent = Intent(this@SearchActivity, AddPlaceActivity::class.java)
                 intent.putExtra("placeData", category[categoryIndex][position])
-                setResult(Activity.RESULT_OK,intent)
+                setResult(Activity.RESULT_OK, intent)
                 finish()
             }
         }
-        adapter =  SearchViewPagerAdpater(this, category, listener, flag)
+        adapter = SearchViewPagerAdpater(this, category, listener, flag)
         search_viewpager.adapter = adapter
         TabLayoutMediator(search_tabLayout, search_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
                 // Styling each tab here
-                when(position){
+                when (position) {
                     0 -> {
                         tab.setText("관광")
                     }
@@ -230,7 +230,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }).attach()
     }
-
 
 
     //toolbar에서 back 버튼
