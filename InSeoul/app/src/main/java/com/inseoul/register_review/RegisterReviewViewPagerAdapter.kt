@@ -1,16 +1,11 @@
 package com.inseoul.register_review
 
-import android.app.PendingIntent.getActivity
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
@@ -77,7 +72,7 @@ class RegisterReviewViewPagerAdapter(
             trip_comment = itemView.findViewById(R.id.trip_comment)
             addPhoto = itemView.findViewById(R.id.addPhoto)
             addGallery = itemView.findViewById(R.id.addGallery)
-            imgList = itemView.findViewById(R.id.recyclerView)
+            imgList = itemView.findViewById(R.id.recyclerView_addPlace)
         }
     }
 }

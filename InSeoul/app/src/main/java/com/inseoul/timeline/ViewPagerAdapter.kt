@@ -50,7 +50,7 @@ class ViewPagerAdapter(val c: Context, val itemlist:ArrayList<TimeLineItem>)
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var recyclerView: RecyclerView
         init{
-            recyclerView = itemView.findViewById(R.id.recyclerView)
+            recyclerView = itemView.findViewById(R.id.recyclerView_addPlace)
         }
     }
 }

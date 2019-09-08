@@ -34,6 +34,8 @@ import android.content.Context
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class AddPlaceActivity :
@@ -42,8 +44,9 @@ class AddPlaceActivity :
 
     lateinit var mMap: GoogleMap
     var selectedMarker: Marker? = null
-    val markerList = ArrayList<AddPlaceItem>()
-    val lineList = ArrayList<LatLng>()
+    var markerList = ArrayList<AddPlaceItem>()
+    var lineList = ArrayList<LatLng>()
+    var mCount = 0
 
     private val POLYLINE_STROKE_WIDTH_PX = 7f
     private val PATTERN_GAP_LENGTH_PX = 10f
@@ -64,6 +67,8 @@ class AddPlaceActivity :
     lateinit var rotate_close: Animation
     var isBtnOpen: Boolean = false
 
+    lateinit var adapter: AddPlaceAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
@@ -77,7 +82,7 @@ class AddPlaceActivity :
 
     ////////////////////// Bottom Sheet //////////////////////
     lateinit var sheetBehavior: BottomSheetBehavior<LinearLayout>
-    var STATEFLAG = 0;     // STATE_HALF_EXPANDED = 0
+    var STATEFLAG = 0     // STATE_HALF_EXPANDED = 0
     // STATE_EXPANDED = 1
     // STATE_COLLAPSED = 2
     fun initBottomSheet() {
@@ -87,19 +92,18 @@ class AddPlaceActivity :
 
         sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow_white))
                 } else {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
                 }
                 if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
                 }
             }
 
@@ -127,6 +131,15 @@ class AddPlaceActivity :
     ////////////////////////////////////////////////////////////////////////////////////////
     fun init() {
 
+        val listener = object : AddPlaceAdapter.RecyclerViewAdapterEventListener {
+            override fun onClick(view: View, position: Int) {
+
+            }
+        }
+        adapter = AddPlaceAdapter(this, listener, markerList)
+        recyclerView_addPlace.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        recyclerView_addPlace.adapter = adapter
+
         val extras = intent.extras
         var flag = extras!!.getInt("flag_key", -1)
 
@@ -136,6 +149,7 @@ class AddPlaceActivity :
                 val date = extras!!.getString("PlanDate", "NULL")
                 PlanTitle.hint = date + " 여정"
                 textview_plandate.text = date
+
             }
             //from MySchedulesActivity
             2 -> {
@@ -299,7 +313,7 @@ class AddPlaceActivity :
     }
 
 
-    /////////////////Search에서 넘어왔을때 호출//////////////////////////////
+    ////////////////////////////Search에서 넘어왔을때 호출//////////////////////////////
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -315,30 +329,30 @@ class AddPlaceActivity :
                 }
                 3000 -> {
                     //Search에서 넘어왔을 때
+
                     val item = data!!.getParcelableExtra<Search_Item>("placeData")
-                    //Log.d("alert_back",item.toString())
-                    val placeID = item.id
+                    Log.d("alert_back",item.toString())
 
+                    lineList.add(LatLng(item.posY!!,item.posX!!))
+                    markerList.add(AddPlaceItem(item.id, item.title,item.type, lineList[lineList.size-1],lineList.size))
+                    //Log.d("alert_marekrList",markerList[markerList.size-1].toString())
+                    adapter.notifyDataSetChanged()
 
-//            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
-//            markerList.add(placeData!!)
-//            lineList.add(markerList[markerList.size-1].latLng!!)
+                    for (i in 0 until markerList.size) {
+                        addMarker(markerList[i], false)
+                    }
+                    getMarkerItems()
+                    if (markerList.size != 0) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size - 1], 12f))
+                    } else {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
+                    }
 
                 }
             }
         }
 
-        for (i in 0 until markerList.size) {
-            markerList[i].count = i
-            addMarker(markerList[i], false)
 
-        }
-        getMarkerItems()
-        if (markerList.size != 0) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size - 1], 12f))
-        } else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
-        }
 
     }
 
@@ -402,7 +416,7 @@ class AddPlaceActivity :
                 mk.title("좌표")
                 val lat = it.latitude
                 val lng = it.longitude
-                Log.e("position", "$lat, $lng")
+                //Log.e("position", "$lat, $lng")
                 mk.snippet("$lat, $lng")
                 mk.position(it)
                 mk.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
@@ -446,14 +460,15 @@ class AddPlaceActivity :
         isSelectedMarker: Boolean
     ): Marker {
 
-        var position = markerItem.latLng
-        var order = markerItem.count
+        var placeNm = markerItem.PlaceNm
+        var placePosition = markerItem.latLng
+        var mCount = markerItem.count
         //Log.d("alert_출력",markerItem.count.toString())
 
         var markerOptions = MarkerOptions()
-        markerOptions.position(position!!)
-        markerOptions.title(order.toString())
-        markerOptions.snippet(order.toString())
+        markerOptions.position(placePosition!!)
+        markerOptions.title(placeNm)
+        markerOptions.snippet(mCount.toString())
 
         if (isSelectedMarker) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
@@ -468,11 +483,12 @@ class AddPlaceActivity :
         marker: Marker,
         isSelectedMarker: Boolean
     ): Marker {
-        var idnum = null
-        var title = marker.title
-        var preview = marker.title
+        var placeID = null
+        var placeNm = marker.title
+        var placeType = null
         var latlng = marker.position
-        var temp: AddPlaceItem = AddPlaceItem(idnum, title, preview, latlng)
+        var count = marker.snippet.toInt()
+        var temp = AddPlaceItem(placeID, placeNm, placeType, latlng,count)
 
         return addMarker(temp, isSelectedMarker)
     }
