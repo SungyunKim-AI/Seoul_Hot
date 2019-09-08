@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -19,6 +20,8 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
+import com.inseoul.Server.SearchRequest
+import com.inseoul.Server.idnumRequest
 import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.api_manager.RetrofitService
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -187,7 +190,35 @@ class SearchActivity : AppCompatActivity() {
 
     //////////////////서버 통신////////////////////
     fun initData(p0: String?) {
+        val responseListener = Response.Listener<String> { response ->
+            try {
+                //                    Log.d("dd", response);
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+                    val `object` = success.getJSONObject(count)
+                    //////////////////////////////////////////////////////////////////////
+                    //var searchItm = Search_Item(`object`.getInt("IDNUM"),`object`.getString("NAME"), )
+                    //"class"=>분류,"IDNUM"=>$번호,"NAME"=>업소명 ,"PH"=>전화번호,"Lat"=>lat,"Lng"=>lng,"Spot_new"=>도로명 주소,"INFO"=>세부정보,"HashTag"=>해시태그."IMGURL" => 이미지 주소
+                        //`object`.getInt("IDNUM") 와 같이 정보 긁어오면됨.
+                    ///////////////////////////////////////////////////////////////////////
 
+                    count++
+                }
+                if (success.length() == 0) {
+                    val layout = findViewById(R.id.first_layout) as LinearLayout
+                    layout.visibility = View.VISIBLE
+                } else {
+
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        val idnumrequest = SearchRequest(p0,responseListener)
+        val queue = Volley.newRequestQueue(this@SearchActivity)
+        queue.add(idnumrequest)
     }
 
 
