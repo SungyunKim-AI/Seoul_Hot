@@ -7,6 +7,7 @@
     <color name="colorBtn">#000000</color>
 
     <color name="black">#000000</color>
+    <color name="black_alpha">#88000000</color>
     <color name="layout_back">#CECECE</color>
     <color name="falseBtn">#CECECE</color>
 

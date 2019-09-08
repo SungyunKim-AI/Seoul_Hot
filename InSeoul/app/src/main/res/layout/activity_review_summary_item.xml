@@ -6,7 +6,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_margin="40dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ripple_effect"
+
 >
     <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/summary_img"

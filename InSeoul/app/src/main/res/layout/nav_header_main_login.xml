@@ -68,7 +68,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:textColor="@color/white"
-                    android:background="@drawable/btn_style"
+                    android:background="@drawable/ripple_effect_3"
                     android:clickable="true"
             />
             <Button
@@ -79,7 +79,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:textColor="@color/white"
-                    android:background="@drawable/btn_style"
+                    android:background="@drawable/ripple_effect_3"
                     android:clickable="true"
                     android:layout_marginRight="1dp"
                     android:layout_marginLeft="1dp"
@@ -92,7 +92,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:textColor="@color/white"
-                    android:background="@drawable/btn_style"
+                    android:background="@drawable/ripple_effect_3"
                     android:clickable="true"
             />
         </LinearLayout>

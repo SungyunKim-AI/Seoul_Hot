@@ -43,33 +43,84 @@
                         android:gravity="center"
                         android:background="@drawable/home_bg"
                 >
-                    <Button
-                            android:text="일정"
-                            android:layout_margin="15dp"
-                            android:id="@+id/MkPlanBtn"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:background="@drawable/home_btn"
-                            android:textColor="@color/white"
-                    />
-                    <Button
-                            android:text="나의 일정"
-                            android:layout_margin="15dp"
-                            android:id="@+id/HistoryBtn"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:background="@drawable/home_btn"
-                            android:textColor="@color/white"
-                    />
-                    <Button
-                            android:text="타임라인"
-                            android:layout_margin="15dp"
-                            android:id="@+id/TimeLineBtn"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:background="@drawable/home_btn"
-                            android:textColor="@color/white"
-                    />
+                    <LinearLayout android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="vertical"
+                                  android:gravity="center_horizontal"
+                    >
+                        <TextView
+                                android:text="일정"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black_alpha"
+                                android:layout_margin="10dp"
+                                android:textStyle="bold"
+
+                        />
+
+                        <ImageButton
+                                android:layout_marginHorizontal="15dp"
+                                android:id="@+id/MkPlanBtn"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:src="@drawable/ic_make_plan"
+                                android:background="@drawable/ripple_effect_4"
+                                android:gravity="center"
+                        />
+
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="vertical"
+                                  android:gravity="center_horizontal"
+                    >
+                        <TextView
+                                android:text="마이 페이지"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black_alpha"
+                                android:layout_margin="10dp"
+                                android:textStyle="bold"
+
+                        />
+                        <ImageButton
+                                android:layout_marginHorizontal="15dp"
+                                android:id="@+id/HistoryBtn"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:src="@drawable/ic_my_page"
+                                android:background="@drawable/ripple_effect_4"
+                                android:gravity="center"
+                        />
+
+
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="vertical"
+                                  android:gravity="center_horizontal"
+                    >
+                        <TextView
+                                android:text="타임라인"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black_alpha"
+                                android:layout_margin="10dp"
+                                android:textStyle="bold"
+                        />
+
+                        <ImageButton
+                                android:layout_marginHorizontal="15dp"
+                                android:id="@+id/TimeLineBtn"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:src="@drawable/ic_timeline"
+                                android:background="@drawable/ripple_effect_4"
+                                android:gravity="center"
+
+                        />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
