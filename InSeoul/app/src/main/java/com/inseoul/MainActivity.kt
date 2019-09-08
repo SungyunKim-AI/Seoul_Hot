@@ -379,7 +379,7 @@ class MainActivity :
 
     fun initRecyclerView() {
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
+        recyclerView_addPlace.layoutManager = layoutManager
         val listener = object : HomeAdapter.RecyclerViewAdapterEventListener {
             override fun onClick(view: View) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -389,8 +389,8 @@ class MainActivity :
         }
 
         adapter = HomeAdapter(this, listener, test)
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(this, 1))
+        recyclerView_addPlace.adapter = adapter
+        recyclerView_addPlace.addItemDecoration(DividerItemDecoration(this, 1))
     }
 
 

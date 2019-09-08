@@ -10,26 +10,18 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
 import com.inseoul.Server.SearchRequest
-import com.inseoul.Server.idnumRequest
 import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.api_manager.RetrofitService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_add_place.*
-import kotlinx.android.synthetic.main.activity_add_place.recyclerView
-import kotlinx.android.synthetic.main.activity_register_review_page.*
-import kotlinx.android.synthetic.main.activity_review.*
 import kotlinx.android.synthetic.main.activity_search.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -37,7 +29,6 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import kotlin.collections.ArrayList
 
 class SearchActivity : AppCompatActivity() {

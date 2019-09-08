@@ -1,13 +1,9 @@
 package com.inseoul.search
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
@@ -56,7 +52,7 @@ class SearchViewPagerAdpater (
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var recyclerView: RecyclerView
         init{
-            recyclerView = itemView.findViewById(R.id.recyclerView)
+            recyclerView = itemView.findViewById(R.id.recyclerView_addPlace)
         }
     }
 }
