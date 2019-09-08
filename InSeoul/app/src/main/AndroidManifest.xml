@@ -23,7 +23,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".my_page.MyPageActivity">
+        <activity android:name=".my_page.MyPageActivity"/>
 
         <activity android:name=".add_place.EditPlanDate">
         </activity>
