@@ -82,26 +82,26 @@ public class my_schedule extends AppCompatActivity {
 
         String idNUM = SaveSharedPreference.getUserID(this);
 
-        Response.Listener<String> responseListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try
-                {
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try
+                                {
 //                    Log.d("dd", response);
-                    JSONObject jsonResponse = new JSONObject(response);
-                    JSONArray success= jsonResponse.getJSONArray("response");
-                    int count=0;
-                    while (count<success.length()){
-                        JSONObject object = success.getJSONObject(count);
-                        planidarray.add(object.getInt("PLANID"));
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    JSONArray success= jsonResponse.getJSONArray("response");
+                                    int count=0;
+                                    while (count<success.length()){
+                                        JSONObject object = success.getJSONObject(count);
+                                        planidarray.add(object.getInt("PLANID"));
 //                        Log.d(this.getClass().getName(), planidarray.toString());
 
-                        count++;
-                    }
-                    if(success.length()==0)
-                    {
-                        LinearLayout layout = (LinearLayout)findViewById(R.id.first_layout);
-                        layout.setVisibility(View.VISIBLE);
+                                        count++;
+                                    }
+                                    if(success.length()==0)
+                                    {
+                                        LinearLayout layout = (LinearLayout)findViewById(R.id.first_layout);
+                                        layout.setVisibility(View.VISIBLE);
                     }
                     else{
 
@@ -297,7 +297,7 @@ public class my_schedule extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                Log.d("asyncTask","Strart");
+                Log.d("asyncTask","Start");
                 URL url = new URL(target);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 Log.d("asyncTask","Connect");
