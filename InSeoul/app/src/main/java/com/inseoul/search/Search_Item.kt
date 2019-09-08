@@ -12,7 +12,8 @@ data class Search_Item(
     val posY: Double?,
     val addr1: String?,
     val addr2: String?,
-    val tel: String?
+    val tel: String?,
+    val servertryp: Int
 ) : Parcelable{
 
     constructor(source: Parcel) : this(
@@ -24,7 +25,8 @@ data class Search_Item(
     source.readValue(Double::class.java.classLoader) as Double?,
     source.readString(),
     source.readString(),
-    source.readString()
+    source.readString(),
+        source.readInt()
     )
 
     override fun describeContents() = 0
@@ -39,6 +41,7 @@ data class Search_Item(
         writeString(addr1)
         writeString(addr2)
         writeString(tel)
+        writeInt(servertryp)
     }
 
     companion object {
