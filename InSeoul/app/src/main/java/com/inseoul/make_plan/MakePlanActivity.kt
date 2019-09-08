@@ -1,29 +1,18 @@
 package com.inseoul.make_plan
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_make_plan.*
 import java.util.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.applikeysolutions.cosmocalendar.utils.SelectionType
 import com.inseoul.add_place.AddPlaceActivity
-import com.inseoul.search.SearchActivity
-import okhttp3.*
-import org.json.JSONObject
-import java.io.IOException
-import java.net.URL
 
 
 class MakePlanActivity : AppCompatActivity() {

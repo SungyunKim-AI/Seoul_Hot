@@ -73,13 +73,10 @@ class SearchAdapter(val context: Context,
             }
         }
         holder.itemView.setOnClickListener {
-//            listener!!.onClick(it, position)
             val intent = Intent(context, SearchDetail::class.java)
             intent.putExtra("data", data)
-            Log.v("Before intent", data.posX.toString() +  ", " + data.posY.toString())
-
+            //Log.v("Before intent", data.posX.toString() +  ", " + data.posY.toString())
             startActivity(context, intent, null)
-//            listener!!.onClick2(it, position)
         }
 
     }
@@ -87,7 +84,7 @@ class SearchAdapter(val context: Context,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var thumbnail: RoundedImageView
         var item_title: TextView
-        var selectBtn: Button
+        var selectBtn: TextView
         init {
             item_title = itemView.findViewById(R.id.search_title)
             thumbnail = itemView.findViewById(R.id.search_thumbnail)
