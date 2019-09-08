@@ -31,14 +31,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
-import android.graphics.Color
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import com.applikeysolutions.cosmocalendar.dialog.CalendarDialog
-import com.applikeysolutions.cosmocalendar.dialog.OnDaysSelectionListener
-import com.applikeysolutions.cosmocalendar.model.Day
-import com.applikeysolutions.cosmocalendar.utils.SelectionType
 
 
 class AddPlaceActivity :
