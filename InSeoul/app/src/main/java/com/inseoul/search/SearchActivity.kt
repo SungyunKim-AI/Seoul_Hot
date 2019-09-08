@@ -50,6 +50,7 @@ class SearchActivity : AppCompatActivity() {
     var culture = ArrayList<Search_Item>()
     var food = ArrayList<Search_Item>()
     var hotel = ArrayList<Search_Item>()
+    var temp = ArrayList<Search_Item>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -74,7 +75,10 @@ class SearchActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 //Log.d("Submit",p0)
                 //////////////////////// DB Connect & Query ////////////////////////
-
+                tour.clear()
+                hotel.clear()
+                food.clear()
+                culture.clear()
                 searchKeyword(p0!!)
                 initData(p0)
                 initViewPager()
