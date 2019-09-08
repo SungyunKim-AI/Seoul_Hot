@@ -164,9 +164,6 @@ class AddPlaceActivity :
 
                 textview_plandate.text = ""
             }
-            4 -> {
-                //Search에서 다시 넘어옴
-            }
         }
 
 
