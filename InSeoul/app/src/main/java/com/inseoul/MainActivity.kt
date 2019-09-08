@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
@@ -21,9 +20,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.rotationMatrix
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,15 +31,13 @@ import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_member.SignInActivity
 import com.inseoul.manage_member.SignUpActivity
-import com.inseoul.manage_schedules.my_schedule
+import com.inseoul.manage_schedules.MySchedulesActivity
 import com.inseoul.review.ReviewActivity
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.type_mini
-import kotlinx.android.synthetic.main.nav_header_main_login.*
-import org.w3c.dom.Text
 
 class MainActivity :
     AppCompatActivity(),
@@ -117,7 +112,7 @@ class MainActivity :
             if (!loginCheck())
                 loginDialog()
             else {
-                val intent = Intent(this, my_schedule::class.java)
+                val intent = Intent(this, MySchedulesActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -227,7 +222,7 @@ class MainActivity :
             //마이 페이지
             var myPageBtn = header.findViewById<Button>(R.id.myPage_on)
             myPageBtn.setOnClickListener {
-                val intent = Intent(this, my_schedule::class.java)
+                val intent = Intent(this, MySchedulesActivity::class.java)
                 startActivity(intent)
             }
 
@@ -356,7 +351,7 @@ class MainActivity :
 
         HistoryBtn.setOnClickListener {
             if (SaveSharedPreference.getUserID(this) != "") {
-                val intent = Intent(this, my_schedule::class.java)
+                val intent = Intent(this, MySchedulesActivity::class.java)
                 startActivity(intent)
             } else {
                 if (!loginCheck())

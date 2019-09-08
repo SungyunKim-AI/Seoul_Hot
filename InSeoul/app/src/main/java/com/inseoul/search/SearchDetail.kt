@@ -360,9 +360,9 @@ class SearchDetail :
                         ) { dialog, which ->
                             dialog.dismiss()
                             val intent_add = Intent(this@SearchDetail, AddPlaceActivity::class.java)
-                            intent_add.putExtra("PlanTitle_add", strName)
-                            intent_add.putExtra("flag_key", 1)
-                            Log.d("alert", strName!!)
+                            intent_add.putExtra("PlaceID", strName)
+                            intent_add.putExtra("flag_key", 3)
+                            //Log.d("alert", strName!!)
                             startActivity(intent_add)
                         }
                     innBuilder.setNegativeButton(

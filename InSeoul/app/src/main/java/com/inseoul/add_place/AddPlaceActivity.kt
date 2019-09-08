@@ -128,41 +128,49 @@ class AddPlaceActivity :
     fun init() {
 
         val extras = intent.extras
-        var flag: Int
-        flag = extras!!.getInt("flag_key", -1)
-        Log.d("alert", flag.toString())
+        var flag = extras!!.getInt("flag_key", -1)
+
         when (flag) {
+            // from MakePlanActivity
             1 -> {
-                //flag가 1이라면 SearchDetail에서 넘어옴
-
-                var title_add: String
-                var date_add: String
-                var theme_add: String
-
-                title_add = extras!!.getString("PlanTitle_add", "NULL")
-
-//            textview_theme = this.textview_plantheme
-                textview_plandate.text = ""
-            }
-            2 -> {
-                // MakePlanActivity에서 넘어옴
-                var date: String
-                var theme: String
-
-                date = extras!!.getString("PlanDate", "NULL")
-
+                val date = extras!!.getString("PlanDate", "NULL")
                 PlanTitle.hint = date + " 여정"
                 textview_plandate.text = date
             }
+            //from MySchedulesActivity
+            2 -> {
+                val planID = extras!!.getInt("PlanID")
+                //Log.d("alert_planID",planID.toString())
+                /////////////////////////////////////////////////
+
+                //PlanID를 서버에 보내서 플랜 받아오게
+                //Plan에서
+                // 1. 일정 제목
+                // 2. 일정 날짜
+                // 3. 일정에 포함되어 있는 장소들의 ID 값들
+
+                //////////////////////////////////////////////////
+                val date = extras!!.getString("textview_date")
+                PlanTitle.setText(extras!!.getString("textview_title",date))
+                textview_plandate.text = date
+
+            }
+            //from SearchDetail
             3 -> {
-                //flag가 3이라면 my_schedule에서 넘어옴
-                var title_edit: String
+                val planID = extras!!.getInt("PlanID")
+                //Log.d("alert_planID",planID.toString())
+                /////////////////////////////////////////////////
 
-                title_edit = extras!!.getString("textview_title", "NULL")
+                //PlanID를 서버에 보내서 플랜 받아오게
+                //Plan에서
+                // 1. 일정 제목
+                // 2. 일정 날짜
+                // 3. 일정에 포함되어 있는 장소들의 ID 값들
 
-//            textview_theme = this.textview_plantheme
+                //////////////////////////////////////////////////
 
-                textview_plandate.text = ""
+                //SearchDetail에서 받아온 PlaceID 값
+                val placeID = extras!!.getInt("PlaceID")
             }
         }
 
@@ -311,55 +319,6 @@ class AddPlaceActivity :
                     //Log.d("alert_back",item.toString())
                     val placeID = item.id
 
-                    val responseListener = Response.Listener<String> { response ->
-                        try {
-                            //                    Log.d("dd", response);
-                            val jsonResponse = JSONObject(response)
-                            val success = jsonResponse.getJSONObject("response")
-                            var count = 0
-                            if (success.getBoolean("success")) {
-                                // success.getString("UPSONM") -> 업소명
-                                // success.getString("PHNUM")-> 업소 전화번호
-                                Log.d("usp", success.getString("UPSONM") + success.getString("PHNUM"))
-
-                                count++
-                            }
-
-
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    var idnumrequest = PlaceRequest(placeID, responseListener)
-                    var queue = Volley.newRequestQueue(this@AddPlaceActivity)
-                    queue.add(idnumrequest)
-                    var HashList: ArrayList<Int> = ArrayList()
-                    val responseListener2 = Response.Listener<String> { response ->
-                        try {
-                            //                    Log.d("dd", response);
-                            val jsonResponse = JSONObject(response)
-                            val success = jsonResponse.getJSONArray("response")
-                            var count = 0
-                            while (count < success.length()) {
-                                val `object` = success.getJSONObject(count)
-                                //`object`.getString("Hash") 해쉬태그 열
-                                Log.d("hash", `object`.getString("Hash"))
-                                count++
-                            }
-                            if (success.length() == 0) {
-                                val layout = findViewById<View>(R.id.first_layout) as LinearLayout
-                                layout.visibility = View.VISIBLE
-                            } else {
-
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    idnumrequest = PlaceRequest(placeID, responseListener2)
-                    queue = Volley.newRequestQueue(this@AddPlaceActivity)
-                    queue.add(idnumrequest)
-                    //Log.d("alert_data",placeID.toString())
 
 //            val placeData = data?.getParcelableExtra<AddPlaceItem>("placeData")
 //            markerList.add(placeData!!)
@@ -371,7 +330,6 @@ class AddPlaceActivity :
 
         for (i in 0 until markerList.size) {
             markerList[i].count = i
-            //Log.d("alert_대입",markerList[i].count.toString())
             addMarker(markerList[i], false)
 
         }
@@ -385,37 +343,11 @@ class AddPlaceActivity :
     }
 
     fun initMap() {
-        readFile()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
     }
 
-    var positionArray = ArrayList<ArrayList<Double>>()
-
-    fun readFile() {
-        val scan = Scanner(resources.openRawResource(R.raw.is_map))
-        var result = ""
-        while (scan.hasNextLine()) {
-            val line = scan.nextLine()
-            result += line
-        }
-        parsingGson(result)
-    }
-
-    fun parsingGson(result: String) {
-        val json = JSONObject(result)
-        val array = json.getJSONArray("data")
-        for (i in 0 until array.length()) {
-            val lat = array.getJSONObject(i).getString("Yd")
-            val lng = array.getJSONObject(i).getString("Xd")
-            val pos = ArrayList<Double>()
-            pos.add(lat.toDouble())
-            pos.add(lng.toDouble())
-            positionArray.add(pos)
-            Log.d("LatLng", "$lat, $lng")
-        }
-    }
 
     ////////////////// Compute Distance //////////////////
     fun distance(lat1: Double, lat2: Double, lng1: Double, lng2: Double): Double {
@@ -466,12 +398,12 @@ class AddPlaceActivity :
             } else {
                 mMap.clear()                    // 수정 필요
                 /////////////// 클릭한 지점의 위치 ///////////////
-                val mk = MarkerOptions();
+                val mk = MarkerOptions()
                 mk.title("좌표")
                 val lat = it.latitude
                 val lng = it.longitude
                 Log.e("position", "$lat, $lng")
-                mk.snippet("$lat, $lng");
+                mk.snippet("$lat, $lng")
                 mk.position(it)
                 mk.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
 
@@ -481,15 +413,15 @@ class AddPlaceActivity :
                 //////////////////////////////////////////////////
 
                 /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
-                for (i in 0 until positionArray.size) {
-                    if (distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1]) < DISTANCE) {
-                        var marker = MarkerOptions()
-                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
-                        marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
-                        mMap.addMarker(marker)
-
-                    }
-                }
+//                for (i in 0 until positionArray.size) {
+//                    if (distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1]) < DISTANCE) {
+//                        var marker = MarkerOptions()
+//                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
+//                        marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
+//                        mMap.addMarker(marker)
+//
+//                    }
+//                }
                 /////////////////////////////////////////////////////////////////////////
             }
         }

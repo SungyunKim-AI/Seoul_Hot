@@ -72,7 +72,7 @@
         </activity>
         <activity android:name=".register_review.RegisterReviewActivity">
         </activity>
-        <activity android:name=".manage_schedules.my_schedule">
+        <activity android:name=".manage_schedules.MySchedulesActivity">
         </activity>
         <activity android:name=".timeline.TimeLineActivity">
         </activity>

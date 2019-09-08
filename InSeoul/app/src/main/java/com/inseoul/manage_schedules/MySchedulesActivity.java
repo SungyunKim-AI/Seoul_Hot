@@ -37,7 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class my_schedule extends AppCompatActivity {
+public class MySchedulesActivity extends AppCompatActivity {
 
     //현재 일정 변수
     private ArrayList<recyclerview_schedule> mArrayList;
@@ -52,7 +52,7 @@ public class my_schedule extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager_past;
 
 
-    public ArrayList<Integer> planidarray = new ArrayList<Integer>();
+    public ArrayList<Integer> planidarray = new ArrayList<>();
     private  ArrayList<String> planlist = new ArrayList<>();
     private  ArrayList<String> planlist_past = new ArrayList<>();
 
@@ -72,7 +72,7 @@ public class my_schedule extends AppCompatActivity {
     public void init() {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
-        mLinearLayoutManager = new LinearLayoutManager(my_schedule.this);
+        mLinearLayoutManager = new LinearLayoutManager(MySchedulesActivity.this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
 
@@ -112,7 +112,7 @@ public class my_schedule extends AppCompatActivity {
             }
         };
         idnumRequest idnumrequest = new idnumRequest(idNUM, responseListener);
-        RequestQueue queue = Volley.newRequestQueue(my_schedule.this);
+        RequestQueue queue = Volley.newRequestQueue(MySchedulesActivity.this);
         queue.add(idnumrequest);
 
         ShowPlanTask showPlanTask = new ShowPlanTask();
@@ -137,7 +137,7 @@ public class my_schedule extends AppCompatActivity {
         add_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(my_schedule.this, MakePlanActivity.class);
+                Intent intent = new Intent(MySchedulesActivity.this, MakePlanActivity.class);
                 startActivity(intent);
             }
         });
@@ -151,10 +151,12 @@ public class my_schedule extends AppCompatActivity {
 
                 //intent 전달
                 Intent intent_addPlace = new Intent(getBaseContext(), AddPlaceActivity.class);
+                intent_addPlace.putExtra("PlanID", planidarray.get(position));
                 intent_addPlace.putExtra("textview_title", Schedules.getSchedule_title());
                 intent_addPlace.putExtra("textview_date", Schedules.getSchedule_date());
-                intent_addPlace.putExtra("flag_key",3);
+                intent_addPlace.putExtra("flag_key",2);
                 startActivity(intent_addPlace);
+                finish();
             }
 
             @Override
@@ -199,10 +201,10 @@ public class my_schedule extends AppCompatActivity {
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
-        private my_schedule.ClickListener clickListener;
+        private MySchedulesActivity.ClickListener clickListener;
 
 
-        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final my_schedule.ClickListener clickListener) {
+        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final MySchedulesActivity.ClickListener clickListener) {
             this.clickListener = clickListener;
             gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -268,7 +270,7 @@ public class my_schedule extends AppCompatActivity {
 
         String target;
         int PlanID;
-        ProgressDialog asyncDialog = new ProgressDialog(my_schedule.this);
+        ProgressDialog asyncDialog = new ProgressDialog(MySchedulesActivity.this);
 
 
 
