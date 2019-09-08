@@ -1,10 +1,10 @@
 package com.inseoul.Server;
 
 import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
+        import com.android.volley.toolbox.StringRequest;
 
-import java.util.HashMap;
-import java.util.Map;
+        import java.util.HashMap;
+        import java.util.Map;
 
 public class RegisterRequest extends StringRequest {
     final static private String URL= "http://ksun1234.cafe24.com/User_Register.php";
