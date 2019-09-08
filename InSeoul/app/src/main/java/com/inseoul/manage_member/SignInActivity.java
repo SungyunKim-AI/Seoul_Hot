@@ -2,7 +2,6 @@ package com.inseoul.manage_member;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,7 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.inseoul.MainActivity;
 import com.inseoul.R;
-import org.json.JSONArray;
+import com.inseoul.Server.Login_Request;
 import org.json.JSONObject;
 
 public class SignInActivity extends AppCompatActivity implements TextView.OnEditorActionListener {

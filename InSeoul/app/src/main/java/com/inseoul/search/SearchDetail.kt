@@ -22,10 +22,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.inseoul.R
+import com.inseoul.Server.idnumRequest
 import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.api_manager.RetrofitService
 import com.inseoul.manage_member.SaveSharedPreference
-import com.inseoul.manage_schedules.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_search_detail.*
