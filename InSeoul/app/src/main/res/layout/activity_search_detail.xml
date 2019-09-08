@@ -35,6 +35,7 @@
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:background="@drawable/logo"
         >
             <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/detail_image_view_pager"

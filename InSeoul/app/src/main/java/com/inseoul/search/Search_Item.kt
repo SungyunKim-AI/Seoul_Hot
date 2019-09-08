@@ -13,7 +13,7 @@ data class Search_Item(
     val addr1: String?,
     val addr2: String?,
     val tel: String?,
-    val servertryp: Int
+    val servertype: Int
 ) : Parcelable{
 
     constructor(source: Parcel) : this(
@@ -41,7 +41,7 @@ data class Search_Item(
         writeString(addr1)
         writeString(addr2)
         writeString(tel)
-        writeInt(servertryp)
+        writeInt(servertype)
     }
 
     companion object {

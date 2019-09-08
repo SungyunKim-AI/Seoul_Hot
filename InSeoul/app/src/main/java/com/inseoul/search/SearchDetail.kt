@@ -2,6 +2,7 @@ package com.inseoul.search
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.AsyncTask
 import android.util.Log
 import android.view.MenuItem
@@ -129,6 +130,14 @@ class SearchDetail :
     fun initData() {
         imgList = ArrayList()
         data = intent.getParcelableExtra<Search_Item>("data")
+        if(data.servertype == 1){
+            detail_title.setTextColor(Color.BLACK)
+            add_my_list.setImageDrawable(getDrawable(R.drawable.ic_bookmark_black))
+            supportActionBar!!.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+
+        } else {
+            detail_title.setTextColor(Color.WHITE)
+        }
         loadDetailImg()
 
     }
@@ -137,7 +146,6 @@ class SearchDetail :
     fun initView(){
         detail_title.text = data.title
         detail_address.text = "주소: " + data.addr1
-
     }
     fun initViewPager(){
 
