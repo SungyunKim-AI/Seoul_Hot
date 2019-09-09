@@ -338,22 +338,22 @@ class AddPlaceActivity :
                     //Log.d("alert_marekrList",markerList[markerList.size-1].toString())
                     adapter.notifyDataSetChanged()
 
-                    for (i in 0 until markerList.size) {
-                        addMarker(markerList[i], false)
-                    }
-                    getMarkerItems()
-                    if (markerList.size != 0) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size - 1], 12f))
-                    } else {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
-                    }
-
                 }
             }
+            
+            //마커 새로 찍기
+            for (i in 0 until markerList.size) {
+                addMarker(markerList[i], false)
+            }
+            getMarkerItems()
+            if (markerList.size != 0) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size - 1], 12f))
+            } else {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
+            }
+
+
         }
-
-
-
     }
 
     fun initMap() {
