@@ -48,13 +48,21 @@ class MyPageActivity : AppCompatActivity() {
             var t = ArrayList<MyPage_Item>()
 
             for(i in 0..10){
-                t.add(MyPage_Item("This is Title" + i.toString(), "This is Content" + i.toString(), null))
+                t.add(MyPage_Item("This is Title" + i.toString(), "This is Content" + i.toString(), null,false))
             }
             test.add(t)
 
         }
 
     }
+    lateinit var Will:ArrayList<ArrayList<MyPage_Item>>
+    lateinit var Past:ArrayList<ArrayList<MyPage_Item>>
+    lateinit var Review:ArrayList<ArrayList<MyPage_Item>>
+
+    fun initData(){
+
+    }
+
 
     lateinit var adapter:MyPage_ViewPagerAdapter
     fun initViewPager(){
