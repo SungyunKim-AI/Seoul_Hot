@@ -285,7 +285,6 @@ class AddPlaceActivity :
         }
 
         editPlanTitleComplete.setOnClickListener {
-            PlanTitle.width = WRAP_CONTENT
             PlanTitle.isFocusableInTouchMode = false
             PlanTitle.isFocusable = false
             editPlanTitleComplete.visibility = GONE
@@ -550,6 +549,7 @@ class AddPlaceActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
+                //뒤로 가기 할때
                 finish()
                 return true
             }
