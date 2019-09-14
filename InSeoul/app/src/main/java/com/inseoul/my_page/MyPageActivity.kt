@@ -16,6 +16,8 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
+import com.inseoul.Server.SearchRequest
+import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.Server.idnumRequest
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_schedules.adapter_schedule
@@ -23,6 +25,7 @@ import com.inseoul.manage_schedules.adapter_schedule_past
 import com.inseoul.manage_schedules.recyclerview_schedule
 import com.inseoul.manage_schedules.recyclerview_schedule_past
 import com.inseoul.search.SearchDetail
+import com.inseoul.search.Search_Item
 import com.inseoul.timeline.TimeLineItem
 import com.inseoul.timeline.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_my_page.*
@@ -31,6 +34,9 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -38,39 +44,92 @@ class MyPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_page)
         initToolbar()
-        initViewPager()
+        initData()
     }
 
     lateinit var test:ArrayList<ArrayList<MyPage_Item>>
-    fun initTest(){
-        test = ArrayList()
-        for(j in 0..2){
-            var t = ArrayList<MyPage_Item>()
 
-            for(i in 0..10){
-                t.add(MyPage_Item("This is Title" + i.toString(), "This is Content" + i.toString(), null,false))
-            }
-            test.add(t)
 
-        }
-
-    }
-    lateinit var Will:ArrayList<ArrayList<MyPage_Item>>
-    lateinit var Past:ArrayList<ArrayList<MyPage_Item>>
-    lateinit var Review:ArrayList<ArrayList<MyPage_Item>>
 
     fun initData(){
+        val id = SaveSharedPreference.getUserID(this)
+        val responseListener = Response.Listener<String> { response ->
+            try {
+                test = ArrayList()
+                 Log.d("dd", response);
+                var Will:ArrayList<MyPage_Item>
+                var Past:ArrayList<MyPage_Item>
+                var Review:ArrayList<MyPage_Item>
+                Will = ArrayList<MyPage_Item>()
+                Past = ArrayList<MyPage_Item>()
+                Review = ArrayList<MyPage_Item>()
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
 
+                    val `object` = success.getJSONObject(count)
+                    var searchitm = MyPage_Item(
+                        `object`.getInt("#"),
+                        `object`.getString("TripName"),
+                        `object`.getString("DPDATE"),
+
+                        `object`.getString("THEME"),
+                        `object`.getInt("LIKES"),
+                        `object`.getString("Plan"),
+                        `object`.getString("MEM"),
+                        null,
+                        false
+                    )
+                    Log.d("d",`object`.toString())
+                    val now = System.currentTimeMillis()
+                    val date = Date(now)
+                    val sdf = SimpleDateFormat("yyyy-MM-dd")
+
+                    val getTime = sdf.parse(sdf.format(date))
+                    val planTIME = sdf.parse(searchitm.date)
+                    var d= 0
+                    if(`object`.getInt("Rebool")==1){
+                        Review.add(searchitm)
+                    }
+                    else{
+                        if(getTime.before(planTIME)){
+                            Will.add(searchitm)
+                        }
+                        else{
+                            Past.add(searchitm)
+                        }
+                    }
+
+
+                    ///////////////////////////////////////////////////////////////////////
+
+                    count++
+                }
+                test.add(Will)
+                test.add(Past)
+                test.add(Review)
+                initViewPager()
+
+
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        val idnumrequest = ShowPlanRegister(id,responseListener)
+        val queue = Volley.newRequestQueue(this@MyPageActivity)
+        queue.add(idnumrequest)
     }
 
 
     lateinit var adapter:MyPage_ViewPagerAdapter
     fun initViewPager(){
 
-        initTest()
 
         adapter = MyPage_ViewPagerAdapter(this, test)
         my_page_viewpager.adapter = adapter
+
         TabLayoutMediator(tabLayout, my_page_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
                 // Styling each tab here
@@ -87,6 +146,7 @@ class MyPageActivity : AppCompatActivity() {
                 }
             }
         }).attach()
+
     }
 
     fun initToolbar(){
