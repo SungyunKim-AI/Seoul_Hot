@@ -1,12 +1,16 @@
 package com.inseoul.my_page
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import com.inseoul.register_review.RegisterReviewActivity
+import com.inseoul.review.ReviewActivity
 
 
 class MyPage_ViewPagerAdapter(
@@ -37,6 +41,14 @@ class MyPage_ViewPagerAdapter(
         val listener = object: MyPage_RecyclerViewAdapter.RecyclerViewAdapterEventListener{
             override fun onClick(view: View) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                if(position == 1){
+                    val intent = Intent(c,RegisterReviewActivity::class.java)
+                    c.startActivity(intent)
+                }
+                if(position == 2){
+                    val intent = Intent(c,ReviewActivity::class.java)
+                    c.startActivity(intent)
+                }
             }
         }
 

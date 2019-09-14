@@ -97,37 +97,4 @@
             />
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="@color/c7"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" android:id="@+id/linearLayout4">
-    </LinearLayout>
-
-
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/linearLayout6">
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="미세먼지"
-                android:textSize="18dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:textColor="#000000"
-        />
-        <kr.go.seoul.airquality.AirQualityTypeMini
-                android:id="@+id/type_mini"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-        />
-    </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

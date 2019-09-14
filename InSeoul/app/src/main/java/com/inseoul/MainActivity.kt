@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
@@ -25,19 +26,29 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.inseoul.api_manager.RetrofitService
+import com.inseoul.forecast.Forecast_shortTermItem
 import com.inseoul.home.HomeAdapter
 import com.inseoul.home.HomeItem
 import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_member.SignInActivity
 import com.inseoul.manage_member.SignUpActivity
-import com.inseoul.manage_schedules.my_schedule
+import com.inseoul.my_page.MyPageActivity
 import com.inseoul.review.ReviewActivity
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.nav_header_main.type_mini
+import kotlinx.android.synthetic.main.nav_header_main.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity :
     AppCompatActivity(),
@@ -57,9 +68,137 @@ class MainActivity :
     lateinit var fab_rotate: Animation
     lateinit var fab_rotate_close: Animation
 
+    lateinit var model_shortTerm: ArrayList<Forecast_shortTermItem>
+
+    fun ForecastAPI_ShortTerm(){
+
+        model_shortTerm = ArrayList()
+
+        val _type = "json"
+        val numOfRows = 40
+        val pageNo = 1
+        var base_data = 1
+        var base_time =""
+        val nx = 60
+        val ny = 127
+
+        val s_now = System.currentTimeMillis()
+        val s_date = Date(s_now)
+        val s_format = SimpleDateFormat("yyyyMMdd").format(s_date).toInt()
+        val s_month = SimpleDateFormat("MM").format(s_date).toInt()
+        val s_day = SimpleDateFormat("dd").format(s_date).toInt()
+
+        val s_time = SimpleDateFormat("HH").format(s_date).toInt()
+        val s_minute = SimpleDateFormat("mm").format(s_date).toInt()
+
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+
+
+        base_data = s_format
+        base_time = s_time.toString() + s_minute.toString()
+
+        Log.e("time_d", s_format.toString())
+        Log.e("time_t", s_time.toString())
+        Log.e("time_m", s_minute.toString())
+        Log.e("time_base",base_time)
+
+
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://newsky2.kma.go.kr/service/")
+            .build()
+            .create(RetrofitService::class.java)
+            .ShortTermWeather(base_data, base_time, nx, ny, numOfRows, pageNo, _type)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e("shortTerm", it.toString())
+                for(i in 0 until it.response.body.items.item.size) {
+
+                    when(it.response.body.items.item[i].category){
+                        "T1H"->{
+                            model_shortTerm[i % 4].T1H = it.response.body.items.item[i].fcstValue
+                        }
+                        "PTY"->{
+                            model_shortTerm[i % 4].PTY = it.response.body.items.item[i].fcstValue.toInt()
+                        }
+                        "SKY"->{
+                            model_shortTerm[i % 4].SKY = it.response.body.items.item[i].fcstValue.toInt()
+                        }
+                    }
+                }
+                model_shortTerm[0].date = it.response.body.items.item[0].fcstDate
+                model_shortTerm[0].time = it.response.body.items.item[0].fcstTime
+
+                model_shortTerm[1].date = it.response.body.items.item[1].fcstDate
+                model_shortTerm[1].time = it.response.body.items.item[1].fcstTime
+
+                model_shortTerm[2].date = it.response.body.items.item[2].fcstDate
+                model_shortTerm[2].time = it.response.body.items.item[2].fcstTime
+
+                model_shortTerm[3].date = it.response.body.items.item[3].fcstDate
+                model_shortTerm[3].time = it.response.body.items.item[3].fcstTime
+
+
+                for(i in 0..3){
+                    if(model_shortTerm[i].SKY != null && model_shortTerm[i].PTY != null){
+                        when(model_shortTerm[i].SKY){
+                            1->{
+                                home_weather_icon.setImageResource(R.drawable.w_sun)
+                                home_status.text = "맑음"
+                            }
+                            3, 4->{
+                                when(model_shortTerm[i].PTY){
+                                    0->{
+                                        home_weather_icon.setImageResource(R.drawable.w_cloud)
+                                        home_status.text = "흐림"
+                                    }
+                                    1,2,4->{
+                                        home_weather_icon.setImageResource(R.drawable.w_rain)
+                                        home_status.text = "비"
+                                    }
+                                    3->{
+                                        home_weather_icon.setImageResource(R.drawable.w_snow)
+                                        home_status.text = "눈"
+                                    }
+                                }
+                            }
+                        }
+                        home_date.text = model_shortTerm[i].month.toString() + "/" + model_shortTerm[i].day.toString()
+                        home_temp.text = model_shortTerm[i].T1H.toString() + "℃"
+                        break;
+                    }
+                }
+
+
+                var str = "\n"
+                str += model_shortTerm[0].toString()
+                str += "\n"
+                str += model_shortTerm[1].toString()
+                str += "\n"
+                str += model_shortTerm[2].toString()
+                str += "\n"
+                str += model_shortTerm[3].toString()
+                Log.e("hsoh0306", str)
+//                test.text = str
+
+            },{
+                Log.v("Fail","")
+            })
+    }
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        ForecastAPI_ShortTerm()
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         setSupportActionBar(toolbar)
@@ -112,7 +251,7 @@ class MainActivity :
             if (!loginCheck())
                 loginDialog()
             else {
-                val intent = Intent(this, my_schedule::class.java)
+                val intent = Intent(this, MyPageActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -222,7 +361,7 @@ class MainActivity :
             //마이 페이지
             var myPageBtn = header.findViewById<Button>(R.id.myPage_on)
             myPageBtn.setOnClickListener {
-                val intent = Intent(this, my_schedule::class.java)
+                val intent = Intent(this, MyPageActivity::class.java)
                 startActivity(intent)
             }
 
@@ -297,7 +436,6 @@ class MainActivity :
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        type_mini.setOpenAPIKey(key)
 
         menuInflater.inflate(R.menu.main, menu)
         return true
@@ -351,7 +489,7 @@ class MainActivity :
 
         HistoryBtn.setOnClickListener {
             if (SaveSharedPreference.getUserID(this) != "") {
-                val intent = Intent(this, my_schedule::class.java)
+                val intent = Intent(this, MyPageActivity::class.java)
                 startActivity(intent)
             } else {
                 if (!loginCheck())
