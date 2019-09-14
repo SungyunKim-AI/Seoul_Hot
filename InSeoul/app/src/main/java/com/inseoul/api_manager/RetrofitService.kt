@@ -1,7 +1,10 @@
 package com.inseoul.api_manager
 
-import com.inseoul.data_model.DetailImageModel
-import com.inseoul.data_model.SearchKeyWordModel
+import com.inseoul.data_model.*
+import com.inseoul.testData
+import com.inseoul.testData2
+import com.inseoul.testData3
+import com.inseoul.testData4
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -49,5 +52,50 @@ interface RetrofitService {
 
     ): Observable<DetailImageModel>
 
+    // 오늘 날씨
+    @GET("VilageFrcstDspthDocInfoService/WidOverlandForecast?ServiceKey=OuWYx%2FiEKH%2F4M%2FfNA1UkjXhgmbyzoZ%2Br6qd2PO9Xl5YrwSsRh9aJy28X0LbJz4ztErDoP5p1vEXgekEyLJS57g%3D%3D")
+    fun weather_default(
+        @Query("regId") regId:String,
+//        @Query("ServiceKey") ServiceKey:String,
+        @Query("_type") _type:String
+
+    ): Observable<ForecastModel_default>
+
+
+    @GET("SecndSrtpdFrcstInfoService2/ForecastTimeData?ServiceKey=OuWYx%2FiEKH%2F4M%2FfNA1UkjXhgmbyzoZ%2Br6qd2PO9Xl5YrwSsRh9aJy28X0LbJz4ztErDoP5p1vEXgekEyLJS57g%3D%3D")
+    fun ShortTermWeather(
+        @Query("base_date") base_date:Int,
+        @Query("base_time") base_time:String,
+        @Query("nx") nx:Int,
+        @Query("ny") ny:Int,
+        @Query("numOfRows") numOfRows:Int,
+        @Query("pageNo") pageNo:Int,
+
+        @Query("_type") _type:String
+
+    ): Observable<ForecastModel_ShortTerm>
+
+    // 중기 예보 (날씨)
+    @GET("MiddleFrcstInfoService/getMiddleLandWeather?ServiceKey=OuWYx%2FiEKH%2F4M%2FfNA1UkjXhgmbyzoZ%2Br6qd2PO9Xl5YrwSsRh9aJy28X0LbJz4ztErDoP5p1vEXgekEyLJS57g%3D%3D")
+    fun MiddleWeather(
+        @Query("regId") regId:String,
+        @Query("tmFc") tmFc:Long,
+        @Query("numOfRows") numOfRows:Int,
+        @Query("pageNo") pageNo:Int,
+
+        @Query("_type") _type:String
+
+    ): Observable<ForecastModel_MiddleWeather>
+    // 중기 예보 (온도)
+    @GET("MiddleFrcstInfoService/getMiddleTemperature?ServiceKey=OuWYx%2FiEKH%2F4M%2FfNA1UkjXhgmbyzoZ%2Br6qd2PO9Xl5YrwSsRh9aJy28X0LbJz4ztErDoP5p1vEXgekEyLJS57g%3D%3D")
+    fun MiddleTemperature(
+        @Query("regId") regId:String,
+        @Query("tmFc") tmFc:Long,
+        @Query("numOfRows") numOfRows:Int,
+        @Query("pageNo") pageNo:Int,
+
+        @Query("_type") _type:String
+
+    ): Observable<ForecastModel_MiddleTemperature>
 
 }
