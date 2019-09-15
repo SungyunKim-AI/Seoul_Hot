@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
 import com.inseoul.Server.AddPlaceRegister
-import com.inseoul.Server.PlaceRequest
+
 import com.inseoul.search.SearchActivity
 import com.inseoul.search.Search_Item
 import kotlinx.android.synthetic.main.activity_add_place.*

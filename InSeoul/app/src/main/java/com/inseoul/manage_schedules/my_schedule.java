@@ -44,7 +44,7 @@ public class my_schedule extends AppCompatActivity {
     private adapter_schedule mAdapter;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-
+    private String planliststring="";
     //지난 일정 변수
     private ArrayList<recyclerview_schedule_past> mArrayList_past;
     private adapter_schedule_past mAdapter_past;
@@ -60,7 +60,13 @@ public class my_schedule extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_schedule);
-
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
+        mLinearLayoutManager = new LinearLayoutManager(my_schedule.this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        //////////////지나간 일정///////////////
+        mRecyclerView_past = (RecyclerView) findViewById(R.id.recyclerview_past_list);
+        mLinearLayoutManager_past = new LinearLayoutManager(this);
+        mRecyclerView_past.setLayoutManager(mLinearLayoutManager_past);
 
         initToolbar();
         init();
@@ -71,9 +77,6 @@ public class my_schedule extends AppCompatActivity {
     //리사이클러뷰 세팅
     public void init() {
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
-        mLinearLayoutManager = new LinearLayoutManager(my_schedule.this);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
 
         // MainActivity에서 RecyclerView의 데이터에 접근
@@ -82,14 +85,14 @@ public class my_schedule extends AppCompatActivity {
 
         String idNUM = SaveSharedPreference.getUserID(this);
 
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try
-                                {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try
+                {
 //                    Log.d("dd", response);
-                                    JSONObject jsonResponse = new JSONObject(response);
-                                    JSONArray success= jsonResponse.getJSONArray("response");
+                    JSONObject jsonResponse = new JSONObject(response);
+                    JSONArray success= jsonResponse.getJSONArray("response");
                                     int count=0;
                                     while (count<success.length()){
                                         JSONObject object = success.getJSONObject(count);
@@ -119,10 +122,8 @@ public class my_schedule extends AppCompatActivity {
         showPlanTask.execute();
 
 
-        //////////////지나간 일정///////////////
-        mRecyclerView_past = (RecyclerView) findViewById(R.id.recyclerview_past_list);
-        mLinearLayoutManager_past = new LinearLayoutManager(this);
-        mRecyclerView_past.setLayoutManager(mLinearLayoutManager_past);
+
+
 
 
     }
@@ -337,25 +338,29 @@ public class my_schedule extends AppCompatActivity {
                     Log.d("as",planidarray.toString());
                     if(planidarray.contains(planID)){
                         Log.d("async","ss"+ Integer.toString(planID));
-                        mArrayList.add(new recyclerview_schedule(object.getString("TripName")  , object.getString("DPDATE" )));
-                        mAdapter = new adapter_schedule(mArrayList);
-                        mRecyclerView.setAdapter(mAdapter);
+                        recyclerview_schedule rn = new recyclerview_schedule(object.getString("TripName")  , object.getString("DPDATE" ));
+                        recyclerview_schedule_past rnp = new recyclerview_schedule_past(object.getString("TripName")  , object.getString("DPDATE" ));
+//                        mArrayList.add(rn);
+
                         planlist.add(object.getString("PLAN"));
                         planlist_past.add(object.getString("PLAN"));
-                        mArrayList_past.add(new recyclerview_schedule_past(object.getString("TripName"), object.getString("DPDATE" )));
+                        mArrayList_past.add(rnp);
+
+                        mAdapter = new adapter_schedule(mArrayList);
+
+                        mRecyclerView.setAdapter(mAdapter);
                         mAdapter_past = new adapter_schedule_past(mArrayList_past);
                         mRecyclerView_past.setAdapter(mAdapter_past);
 
+
                     }
-
-
-
-
-
 
                     count++;
 
                 }
+//                Log.d("dd",mArrayList.get(0).getSchedule_title());
+
+
 
 
             }catch (Exception e){

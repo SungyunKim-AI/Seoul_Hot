@@ -44,7 +44,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
         setContentView(R.layout.activity_register_review)
 
         initToolbar()
-//        initIntent()
+          initIntent()
 //        initView()
 //        initBtn()
 //        initRecyclerView()
@@ -63,6 +63,14 @@ class RegisterReviewActivity : AppCompatActivity()  {
             testArray.add(ReviewItem(null,null,1,0, null, null, i,"존맛탱$i", testhash, ArrayList<Drawable?>(), null, 123.33,123.22,"xxxx", "xxx", 0, 0))
         }
     }
+    fun initServer(){
+        testArray = ArrayList()
+        val count =0
+        for( i in tripList){
+
+        }
+    }
+
 
     lateinit var adpater: RegisterReviewViewPagerAdapter
     private fun initViewPager() {
@@ -104,10 +112,10 @@ class RegisterReviewActivity : AppCompatActivity()  {
         planID = extras.getInt("PLANID",  -1)
 
         val planist = plan_LIST!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val o = planist.size - 1
+        val o = planist.size
         Log.d("json", Integer.toString(o))
         Log.d("json", plan_LIST.toString())
-        for (p in 0 until tripList.size) {
+        for (p in 0 until o) {
             Log.d("json", plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
             tripList!!.add(plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
         }
@@ -198,7 +206,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
     var imageFilePath = ""
     fun createImageFile(): File{
         var imageFileName = ""
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val timeStamp = SimpleDateFormat("yyMMddHHmm").format(Date())
         imageFileName = "TEST_" + timeStamp + "_"
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val image = File.createTempFile(
@@ -215,26 +223,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
 //        text_review_date.text = review_date
     }
 
-    fun readFile(){
-        val scan = Scanner(resources.openRawResource(R.raw.inseoul_upso_data))
-        var result = ""
-        while(scan.hasNextLine()){
-            val line = scan.nextLine()
-            result += line
-        }
-        parsingJson(result)
-    }
 
-    fun parsingJson(result:String){
-        val json = JSONObject(result)
-        val array = json.getJSONArray("data")
-        for(i in 0 until array.length()){
-            val u_class = array.getJSONObject(i).getString("class")
-            val u_Id_Num = array.getJSONObject(i).getString("Id_Num")
-            val u_Upso_nm = array.getJSONObject(i).getString("Upso_nm")
-            val u_Ph_Num = array.getJSONObject(i).getString("Ph_Num")
-        }
-    }
     ////////////////Toolbar//////////////
     fun initToolbar() {
         //toolbar 커스텀 코드
