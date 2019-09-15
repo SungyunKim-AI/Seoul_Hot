@@ -17,8 +17,8 @@ class MyPage_RecyclerViewAdapter(
     var items:ArrayList<MyPage_Item>,
     var viewType:Int
 ): RecyclerView.Adapter<MyPage_RecyclerViewAdapter.ViewHolder>() {
-    override fun getItemViewType(position: Int): Int {
 
+    override fun getItemViewType(position: Int): Int {
         return viewType
     }
 
