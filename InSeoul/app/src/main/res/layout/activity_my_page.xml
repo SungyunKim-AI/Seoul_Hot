@@ -56,11 +56,12 @@
                             android:text="10"
                             android:gravity="center"
                             android:layout_margin="20dp"
-                            android:id="@+id/befor_count"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:textColor="@color/white"
-                            android:background="@drawable/home_btn"
+                            android:id="@+id/before_count"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:textSize="32dp"
+                            android:textColor="@color/black"
 
                     />
                     <TextView
@@ -68,21 +69,22 @@
                             android:gravity="center"
                             android:layout_margin="20dp"
                             android:id="@+id/after_count"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:textColor="@color/white"
-                            android:background="@drawable/home_btn"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:textSize="32dp"
+                            android:textColor="@color/black"
                     />
                     <TextView
                             android:text="3"
                             android:gravity="center"
                             android:layout_margin="20dp"
-
                             android:id="@+id/review_count"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:textColor="@color/white"
-                            android:background="@drawable/home_btn"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:textSize="32dp"
+                            android:textColor="@color/black"
 
                     />
 

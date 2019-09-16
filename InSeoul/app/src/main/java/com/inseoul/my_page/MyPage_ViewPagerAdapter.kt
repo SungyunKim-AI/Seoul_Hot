@@ -2,6 +2,7 @@ package com.inseoul.my_page
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,13 +40,17 @@ class MyPage_ViewPagerAdapter(
         layoutManager = LinearLayoutManager(c, RecyclerView.VERTICAL, false)
         holder.recyclerView.layoutManager = layoutManager
         val listener = object: MyPage_RecyclerViewAdapter.RecyclerViewAdapterEventListener{
-            override fun onClick(view: View) {
+            override fun onClick(view: View, p:Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 if(position == 1){
+                    // 리뷰 작성으로
                     val intent = Intent(c,RegisterReviewActivity::class.java)
+                    intent.putExtra("item",itemlist[1][p])
+                    Log.e("hsoh0306_regist_intent", itemlist[1][p].toString())
                     c.startActivity(intent)
                 }
                 if(position == 2){
+                    // 내가 쓴 리뷰로
                     val intent = Intent(c,ReviewActivity::class.java)
                     c.startActivity(intent)
                 }

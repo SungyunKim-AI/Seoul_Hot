@@ -24,6 +24,7 @@ import androidx.core.content.FileProvider
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
+import com.inseoul.my_page.MyPage_Item
 import com.inseoul.review.ReviewItem
 import kotlinx.android.synthetic.main.activity_add_place_main.*
 import kotlinx.android.synthetic.main.activity_home.*
@@ -39,6 +40,8 @@ import java.util.logging.Handler
 
 class RegisterReviewActivity : AppCompatActivity()  {
 
+    lateinit var imgArray:ArrayList<ArrayList<String>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_review)
@@ -52,7 +55,9 @@ class RegisterReviewActivity : AppCompatActivity()  {
         initViewPager()
     }
 
-    lateinit var testArray:ArrayList<ReviewItem>
+//    lateinit var testArray:ArrayList<ReviewItem>
+    lateinit var reviewArray:ArrayList<ReviewItem>
+/*
     fun initTest(){
         var testhash = ArrayList<String>()
         testhash.add("존맛")
@@ -63,8 +68,9 @@ class RegisterReviewActivity : AppCompatActivity()  {
             testArray.add(ReviewItem(null,null,1,0, null, null, i,"존맛탱$i", testhash, ArrayList<Drawable?>(), null, 123.33,123.22,"xxxx", "xxx", 0, 0))
         }
     }
+    */
     fun initServer(){
-        testArray = ArrayList()
+//        testArray = ArrayList()
         val count =0
         for( i in tripList){
 
@@ -75,7 +81,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
     lateinit var adpater: RegisterReviewViewPagerAdapter
     private fun initViewPager() {
 
-        initTest()
+  //      initTest()
 
         val listener = object: RegisterReviewViewPagerAdapter.EventListener{
             override fun addPhotoOnClick(view: View, position: Int) {
@@ -88,7 +94,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                 storage(positon)
             }
         }
-        adpater = RegisterReviewViewPagerAdapter(this, listener, testArray)
+        adpater = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
         viewpager.adapter = adpater
         TabLayoutMediator(tabLayout, viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
@@ -103,22 +109,54 @@ class RegisterReviewActivity : AppCompatActivity()  {
     lateinit var tripList:ArrayList<String>
 
     fun initIntent(){
+        reviewArray = ArrayList()
         tripList = ArrayList()
+        imgArray = ArrayList()
 
-        val extras = intent.extras
-        review_title = extras!!.getString("textview_title_past", "null")
-        review_date = extras!!.getString("textview_date_past", "null")
-        val plan_LIST = extras.getString("PLANLIST", "null")
-        planID = extras.getInt("PLANID",  -1)
+        val item = intent.getParcelableExtra<MyPage_Item>("item")
+        review_title = item.title
+        review_date = item.date
+        val plan_LIST = item.plan
+        planID = -1                         // planID 필요
+//        val extras = intent.extras
+//        review_title = extras!!.getString("textview_title_past", "null")
+//        review_date = extras!!.getString("textview_date_past", "null")
+//        val plan_LIST = extras.getString("PLANLIST", "null")
+//        planID = extras.getInt("PLANID",  -1)
 
         val planist = plan_LIST!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val o = planist.size
-        Log.d("json", Integer.toString(o))
-        Log.d("json", plan_LIST.toString())
+//        Log.d("json", Integer.toString(o))
+//        Log.d("json", plan_LIST.toString())
         for (p in 0 until o) {
-            Log.d("json", plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
+//            Log.d("json", plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
             tripList!!.add(plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
+
+            val iArray = ArrayList<String>()
+            imgArray.add(iArray)
+            reviewArray.add(ReviewItem(
+                null,
+                null,
+                1,
+                0,
+                null,
+                null,
+                0,
+                "존맛탱$",         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
+                null,
+                ArrayList<Drawable?>(),
+                null,
+                123.33,
+                123.22,
+                "xxxx",
+                "xxx",
+                0,
+                0)
+            )
+
+
         }
+
     }
 
     /////////////////// Photo ///////////////////
@@ -165,7 +203,11 @@ class RegisterReviewActivity : AppCompatActivity()  {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val file = File(imageFilePath)
-            testArray[index].imageList!!.add(Drawable.createFromPath(imageFilePath))
+
+            // Add Image URI
+            imgArray[viewpager.currentItem].add(imageFilePath)
+
+            reviewArray[index].imageList!!.add(Drawable.createFromPath(imageFilePath))
             adpater.notifyItemChanged(index)
 
             Log.v("img", file.toString())
@@ -183,12 +225,18 @@ class RegisterReviewActivity : AppCompatActivity()  {
                     var dataStr = clipData.getItemAt(0).uri
                     val inputStream = contentResolver.openInputStream(clipData.getItemAt(0).uri)
 
-                    testArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(0).uri.path))
+                    // Add Image URI
+                    imgArray[viewpager.currentItem].add(clipData.getItemAt(0).uri.path!!)
+
+                    reviewArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(0).uri.path))
                 } else if(clipData.itemCount > 1 && clipData.itemCount < 10){
                     for(i in 0 until clipData.itemCount){
                         val inputStream = contentResolver.openInputStream(clipData.getItemAt(i).uri)
 
-                        testArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(i).uri.path))
+                        // Add Image URI
+                        imgArray[viewpager.currentItem].add(clipData.getItemAt(i).uri.path!!)
+
+                        reviewArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(i).uri.path))
                     }
                 }
             }
