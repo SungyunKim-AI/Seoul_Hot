@@ -129,7 +129,6 @@ class MyPageActivity : AppCompatActivity() {
 
         adapter = MyPage_ViewPagerAdapter(this, test)
         my_page_viewpager.adapter = adapter
-        my_page_viewpager.isUserInputEnabled = false
 
         TabLayoutMediator(tabLayout, my_page_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {

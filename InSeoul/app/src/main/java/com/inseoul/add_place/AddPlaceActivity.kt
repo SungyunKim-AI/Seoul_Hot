@@ -338,7 +338,7 @@ class AddPlaceActivity :
                         `object`.getInt("LIKES"), // 좋아요수
                         `object`.getString("Plan"), // 플랜 리스트
                         `object`.getString("MEM"), // 멤버
-                        null,
+                        "",
                         false
                     )
 

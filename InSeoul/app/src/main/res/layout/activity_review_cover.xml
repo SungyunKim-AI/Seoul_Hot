@@ -17,15 +17,15 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
         />
-
     </HorizontalScrollView>
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/black"
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:paddingVertical="50dp"
+            android:paddingVertical="30dp"
             android:paddingHorizontal="30dp"
             android:alpha="0.7"
     >
