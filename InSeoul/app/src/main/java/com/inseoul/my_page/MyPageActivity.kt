@@ -1,42 +1,15 @@
 package com.inseoul.my_page
 
-import android.app.ProgressDialog
-import android.os.AsyncTask
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Response
-import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
-import com.inseoul.Server.SearchRequest
-import com.inseoul.Server.ShowPlanRegister
-import com.inseoul.Server.idnumRequest
-import com.inseoul.manage_member.SaveSharedPreference
-import com.inseoul.manage_schedules.adapter_schedule
-import com.inseoul.manage_schedules.adapter_schedule_past
-import com.inseoul.manage_schedules.recyclerview_schedule
-import com.inseoul.manage_schedules.recyclerview_schedule_past
-import com.inseoul.search.SearchDetail
-import com.inseoul.search.Search_Item
-import com.inseoul.timeline.TimeLineItem
-import com.inseoul.timeline.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_my_page.*
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -162,10 +135,9 @@ class MyPageActivity : AppCompatActivity() {
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
         actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
 
-
-        ///////////////////////////////////////////////////////
-
     }
+
+
     ///////////////toolbar에서 back 버튼
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

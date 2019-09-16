@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
 
-class AddPlaceAdapter(
+class AddPlace_RecyclerViewAdapter(
     val context: Context,
     var listener:RecyclerViewAdapterEventListener,
     var items:ArrayList<AddPlaceItem>
 
-): RecyclerView.Adapter<AddPlaceAdapter.ViewHolder>() {
+): RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
         fun onClick(view: View, position: Int)

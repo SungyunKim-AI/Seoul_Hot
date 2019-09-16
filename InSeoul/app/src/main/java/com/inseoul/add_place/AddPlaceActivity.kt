@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
 import com.inseoul.Server.AddPlaceRegister
-
 import com.inseoul.search.SearchActivity
 import com.inseoul.search.Search_Item
 import kotlinx.android.synthetic.main.activity_add_place.*
@@ -32,13 +31,12 @@ import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.view.View.*
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
-import com.inseoul.my_page.MyPage_Item
 import java.text.SimpleDateFormat
 
 
@@ -48,9 +46,7 @@ class AddPlaceActivity :
 
     lateinit var mMap: GoogleMap
     var selectedMarker: Marker? = null
-    var markerList = ArrayList<AddPlaceItem>()
-    var lineList = ArrayList<LatLng>()
-    var mCount = 0
+    var dayList = ArrayList<ArrayList<AddPlaceItem>>()
 
     private val POLYLINE_STROKE_WIDTH_PX = 7f
     private val PATTERN_GAP_LENGTH_PX = 10f
@@ -70,8 +66,6 @@ class AddPlaceActivity :
     lateinit var rotate_open: Animation
     lateinit var rotate_close: Animation
     var isBtnOpen: Boolean = false
-
-    lateinit var adapter: AddPlaceAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +99,11 @@ class AddPlaceActivity :
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow_white))
                 } else {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
-
                 }
                 if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
                     sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
                 }
+
             }
 
         }
@@ -128,22 +122,14 @@ class AddPlaceActivity :
                 app_bar.setExpanded(true, true)
                 add_place_title.text = ""
             }
-
         }
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////
+    lateinit var adapter: AddPlace_ViewPagerAdapter
+
     fun init() {
-
-        val listener = object : AddPlaceAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick(view: View, position: Int) {
-
-            }
-        }
-        adapter = AddPlaceAdapter(this, listener, markerList)
-        recyclerView_addPlace.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        recyclerView_addPlace.adapter = adapter
 
         val extras = intent.extras
         var flag = extras!!.getInt("flag_key", -1)
@@ -151,10 +137,11 @@ class AddPlaceActivity :
         when (flag) {
             // from MakePlanActivity
             1 -> {
+                initRecylcerview(extras)
+
                 val date = extras!!.getString("PlanDate", "NULL")
                 PlanTitle.hint = date + " 여정"
                 textview_plandate.text = date
-
             }
             //from MySchedulesActivity
             2 -> {
@@ -192,7 +179,6 @@ class AddPlaceActivity :
                 val placeID = extras!!.getInt("PlaceID")
             }
         }
-
 
         /////////////완료 버튼//////////
         finishBtn.setOnClickListener {
@@ -346,6 +332,70 @@ class AddPlaceActivity :
                     count++
                 }
 
+    ////////////////////날짜 계산해서 개수 만큼 뷰페이저 생성///////////////////////
+    fun initRecylcerview(extras: Bundle) {
+
+        //날짜 차이 계산 하기
+        val start = extras!!.getString("startDate")
+        val end = extras!!.getString("endDate")
+
+        var formatter = SimpleDateFormat("yyyy-MM-dd")
+        val beginDate = formatter.parse(start)
+        val endDate = formatter.parse(end)
+
+        val diff = endDate.getTime() - beginDate.getTime()
+        val diffDays = ((diff / (24 * 60 * 60 * 1000)) + 1).toInt()
+
+        for (i in 0..diffDays) {
+            val t = ArrayList<AddPlaceItem>()
+            dayList.add(t)
+        }
+
+        adapter = AddPlace_ViewPagerAdapter(this, diffDays, dayList)
+        add_place_viewpager.adapter = adapter
+
+        TabLayoutMediator(tabLayout_addPlace, add_place_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
+            override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+                var day = position + 1
+                tab.setText("day-$day")
+            }
+        }).attach()
+
+        if(tabLayout_addPlace.tabCount>4){
+            tabLayout_addPlace.tabMode = TabLayout.MODE_SCROLLABLE
+        }
+    }
+              
+/////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
+    fun RequestPlanItem(PlanID:Int){
+        val responseListener = Response.Listener<String> { response ->
+            try {
+
+                Log.d("dd", response);
+
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+
+                    val `object` = success.getJSONObject(count)
+                    var searchitm = MyPage_Item(
+                        `object`.getInt("#"), // planID
+                        `object`.getString("TripName"), // Plan 이름
+                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
+
+                        `object`.getString("THEME"), // 여행 주제
+                        `object`.getInt("LIKES"), // 좋아요수
+                        `object`.getString("Plan"), // 플랜 리스트
+                        `object`.getString("MEM"), // 멤버
+                        "",
+                        false
+                    )
+
+
+                    count++
+                }
+
 
 
 
@@ -357,6 +407,7 @@ class AddPlaceActivity :
         val queue = Volley.newRequestQueue(this@AddPlaceActivity)
         queue.add(idnumrequest)
     }
+              
 
     ////////////////////////////Search에서 넘어왔을때 호출//////////////////////////////
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -376,36 +427,47 @@ class AddPlaceActivity :
                     //Search에서 넘어왔을 때
 
                     val item = data!!.getParcelableExtra<Search_Item>("placeData")
-                    Log.d("alert_back", item.toString())
+                    //Log.d("alert_back", item.toString())
 
-                    lineList.add(LatLng(item.posY!!, item.posX!!))
-                    markerList.add(
+                    var selectDate = add_place_viewpager.currentItem
+
+                    dayList[selectDate].add(
                         AddPlaceItem(
+                            selectDate,
                             item.id,
                             item.title,
                             item.type,
-                            lineList[lineList.size - 1],
-                            lineList.size
+                            LatLng(item.posY!!, item.posX!!),
+                            dayList[selectDate].size + 1
                         )
                     )
-                    //Log.d("alert_marekrList",markerList[markerList.size-1].toString())
                     adapter.notifyDataSetChanged()
 
                 }
             }
 
-            //마커 새로 찍기
-            for (i in 0 until markerList.size) {
-                addMarker(markerList[i], false)
-            }
-            getMarkerItems()
-            if (markerList.size != 0) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lineList[markerList.size - 1], 12f))
-            } else {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
-            }
+            initMarker()
 
+        }
+    }
 
+    //마커 새로 찍기
+    fun initMarker(){
+
+        mMap.clear()
+        //var markerList = ArrayList<AddPlaceItem>()
+        var markerList = dayList[add_place_viewpager.currentItem]
+
+        for (i in 0 until markerList.size) {
+            addMarker(markerList[i], false)
+        }
+
+        getMarkerItems()
+
+        if (markerList.size != 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dayList[add_place_viewpager.currentItem][0].latLng, 12f))
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
         }
     }
 
@@ -476,10 +538,10 @@ class AddPlaceActivity :
 
                 mMap.addMarker(mk)
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(it))
-
-                //////////////////////////////////////////////////
-
-                /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
+//
+//                //////////////////////////////////////////////////
+//
+//                /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
 //                for (i in 0 until positionArray.size) {
 //                    if (distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1]) < DISTANCE) {
 //                        var marker = MarkerOptions()
@@ -489,15 +551,37 @@ class AddPlaceActivity :
 //
 //                    }
 //                }
-                /////////////////////////////////////////////////////////////////////////
+//                /////////////////////////////////////////////////////////////////////////
             }
         }
 
+        //View Page Change Call Back
+        val PageChangeCallback = object: ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                //선택했던 마커 되돌리기
+                if (selectedMarker != null) {
+                    Log.d("alert_selected1",selectedMarker.toString())
+ //                   addMarker(selectedMarker!!, false)
+//                    selectedMarker!!.remove()
+                    selectedMarker = null
+                }
+
+                initMarker()
+            }
+        }
+        add_place_viewpager.registerOnPageChangeCallback(PageChangeCallback)
+
     }
 
+    //폴리 라인 만들기
     fun getMarkerItems() {
+        var lineList = ArrayList<LatLng>()
+        for (i in 0 until dayList[add_place_viewpager.currentItem].size) {
+            lineList.add(dayList[add_place_viewpager.currentItem][i].latLng!!)
+        }
 
-        //폴리 라인 만들기
         val polyline = mMap.addPolyline(
             PolylineOptions()
                 .clickable(true)
@@ -516,7 +600,6 @@ class AddPlaceActivity :
         var placeNm = markerItem.PlaceNm
         var placePosition = markerItem.latLng
         var mCount = markerItem.count
-        //Log.d("alert_출력",markerItem.count.toString())
 
         var markerOptions = MarkerOptions()
         markerOptions.position(placePosition!!)
@@ -541,7 +624,8 @@ class AddPlaceActivity :
         var placeType = null
         var latlng = marker.position
         var count = marker.snippet.toInt()
-        var temp = AddPlaceItem(placeID, placeNm, placeType, latlng, count)
+        var selectDate = dayList[add_place_viewpager.currentItem][count-1].date
+        var temp = AddPlaceItem(selectDate, placeID, placeNm, placeType, latlng, count)
 
         return addMarker(temp, isSelectedMarker)
     }
@@ -558,6 +642,7 @@ class AddPlaceActivity :
     fun changeSelectedMarker(marker: Marker?) {
         //선택했던 마커 되돌리기
         if (selectedMarker != null) {
+            Log.d("alert_selected2",selectedMarker.toString())
             addMarker(selectedMarker!!, false)
             selectedMarker!!.remove()
         }
