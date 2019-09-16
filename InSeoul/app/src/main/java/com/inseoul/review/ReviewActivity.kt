@@ -26,11 +26,11 @@ class ReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
-        val toast = Toast.makeText(this, "옆으로 드래그 하세요 >>",Toast.LENGTH_SHORT)
-        toast.set
-        
-            .setGravity(Gravity.TOP, 0, 0)
-            .show()
+
+        // 앱 첫 실행시에만 실행하도록 수정하기
+        val toast = Toast.makeText(this, "좌우로 드래그 하세요",Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.TOP, 0, 50)
+        toast.show()
 
         initToolbar()
         initViewPager()

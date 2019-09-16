@@ -1,6 +1,7 @@
 package com.inseoul.my_page
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.inseoul.R
 import com.inseoul.Server.SearchRequest
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.Server.idnumRequest
+import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_schedules.adapter_schedule
 import com.inseoul.manage_schedules.adapter_schedule_past
@@ -45,7 +47,16 @@ class MyPageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_my_page)
         initToolbar()
         initData()
+        initBtn()
     }
+
+    fun initBtn(){
+        add_schedule.setOnClickListener {
+            val intent = Intent(this, MakePlanActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
 
     lateinit var test:ArrayList<ArrayList<MyPage_Item>>
 
