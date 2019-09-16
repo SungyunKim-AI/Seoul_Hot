@@ -37,6 +37,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.my_page.MyPage_Item
 import java.text.SimpleDateFormat
 
 
@@ -146,16 +147,9 @@ class AddPlaceActivity :
             //from MySchedulesActivity
             2 -> {
                 val planID = extras!!.getInt("PlanID")
-                //Log.d("alert_planID",planID.toString())
-                /////////////////////////////////////////////////
 
-                //PlanID를 서버에 보내서 플랜 받아오게
-                //Plan에서
+                RequestPlanItem(planID)
 
-                // 2. 일정 날짜
-                // 3. 일정에 포함되어 있는 장소들의 ID 값들
-
-                //////////////////////////////////////////////////
                 val date = extras!!.getString("textview_date")
                 PlanTitle.setText(extras!!.getString("textview_title", date))
                 textview_plandate.text = date
@@ -211,6 +205,7 @@ class AddPlaceActivity :
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+
         addBtn.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             intent.putExtra("flag", true)
@@ -302,35 +297,6 @@ class AddPlaceActivity :
             isBtnOpen = true
         }
     }
-    /////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
-    fun RequestPlanItem(PlanID:Int){
-        val responseListener = Response.Listener<String> { response ->
-            try {
-
-                Log.d("dd", response);
-
-                val jsonResponse = JSONObject(response)
-                val success = jsonResponse.getJSONArray("response")
-                var count = 0
-                while (count < success.length()) {
-
-                    val `object` = success.getJSONObject(count)
-                    var searchitm = MyPage_Item(
-                        `object`.getInt("#"), // planID
-                        `object`.getString("TripName"), // Plan 이름
-                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
-
-                        `object`.getString("THEME"), // 여행 주제
-                        `object`.getInt("LIKES"), // 좋아요수
-                        `object`.getString("Plan"), // 플랜 리스트
-                        `object`.getString("MEM"), // 멤버
-                        null,
-                        false
-                    )
-
-
-                    count++
-                }
 
     ////////////////////날짜 계산해서 개수 만큼 뷰페이저 생성///////////////////////
     fun initRecylcerview(extras: Bundle) {
@@ -361,53 +327,11 @@ class AddPlaceActivity :
             }
         }).attach()
 
-        if(tabLayout_addPlace.tabCount>4){
+        if (tabLayout_addPlace.tabCount > 4) {
             tabLayout_addPlace.tabMode = TabLayout.MODE_SCROLLABLE
         }
     }
-              
-/////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
-    fun RequestPlanItem(PlanID:Int){
-        val responseListener = Response.Listener<String> { response ->
-            try {
 
-                Log.d("dd", response);
-
-                val jsonResponse = JSONObject(response)
-                val success = jsonResponse.getJSONArray("response")
-                var count = 0
-                while (count < success.length()) {
-
-                    val `object` = success.getJSONObject(count)
-                    var searchitm = MyPage_Item(
-                        `object`.getInt("#"), // planID
-                        `object`.getString("TripName"), // Plan 이름
-                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
-
-                        `object`.getString("THEME"), // 여행 주제
-                        `object`.getInt("LIKES"), // 좋아요수
-                        `object`.getString("Plan"), // 플랜 리스트
-                        `object`.getString("MEM"), // 멤버
-                        "",
-                        false
-                    )
-
-
-                    count++
-                }
-
-
-
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        val idnumrequest = ShowPlanRegister(PlanID.toString(),responseListener)
-        val queue = Volley.newRequestQueue(this@AddPlaceActivity)
-        queue.add(idnumrequest)
-    }
-              
 
     ////////////////////////////Search에서 넘어왔을때 호출//////////////////////////////
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -452,7 +376,7 @@ class AddPlaceActivity :
     }
 
     //마커 새로 찍기
-    fun initMarker(){
+    fun initMarker() {
 
         mMap.clear()
         //var markerList = ArrayList<AddPlaceItem>()
@@ -477,28 +401,6 @@ class AddPlaceActivity :
         mapFragment!!.getMapAsync(this)
     }
 
-
-    ////////////////// Compute Distance //////////////////
-    fun distance(lat1: Double, lat2: Double, lng1: Double, lng2: Double): Double {
-        val theta = lng1 - lng2;
-        var dist =
-            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta))
-        dist = acos(dist)
-        dist = rad2deg(dist)
-        dist = dist * 60 * 1.1515
-        dist = dist * 1609.344      // Mile to Meter
-
-        return dist
-    }
-
-    fun deg2rad(deg: Double): Double {     // Degree to Radian
-        return (deg * PI / 180.0)
-    }
-
-    fun rad2deg(rad: Double): Double {     // Radian to Degree
-        return (rad * 180 / PI)
-    }
-    //////////////////////////////////////////////////////
 
     //    Camera Option Reference
 //    1: World
@@ -556,15 +458,12 @@ class AddPlaceActivity :
         }
 
         //View Page Change Call Back
-        val PageChangeCallback = object: ViewPager2.OnPageChangeCallback(){
+        val PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
                 //선택했던 마커 되돌리기
                 if (selectedMarker != null) {
-                    Log.d("alert_selected1",selectedMarker.toString())
- //                   addMarker(selectedMarker!!, false)
-//                    selectedMarker!!.remove()
                     selectedMarker = null
                 }
 
@@ -624,7 +523,7 @@ class AddPlaceActivity :
         var placeType = null
         var latlng = marker.position
         var count = marker.snippet.toInt()
-        var selectDate = dayList[add_place_viewpager.currentItem][count-1].date
+        var selectDate = dayList[add_place_viewpager.currentItem][count - 1].date
         var temp = AddPlaceItem(selectDate, placeID, placeNm, placeType, latlng, count)
 
         return addMarker(temp, isSelectedMarker)
@@ -642,7 +541,7 @@ class AddPlaceActivity :
     fun changeSelectedMarker(marker: Marker?) {
         //선택했던 마커 되돌리기
         if (selectedMarker != null) {
-            Log.d("alert_selected2",selectedMarker.toString())
+            Log.d("alert_selected2", selectedMarker.toString())
             addMarker(selectedMarker!!, false)
             selectedMarker!!.remove()
         }
@@ -660,6 +559,46 @@ class AddPlaceActivity :
         changeSelectedMarker(null)
     }
 
+    /////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
+    fun RequestPlanItem(PlanID: Int){
+        val responseListener = Response.Listener<String> { response ->
+            try {
+
+                Log.d("dd", response)
+
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+
+                    val `object` = success.getJSONObject(count)
+                    var searchitm = MyPage_Item(
+                        `object`.getInt("#"), // planID
+                        `object`.getString("TripName"), // Plan 이름
+                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
+
+                        `object`.getString("THEME"), // 여행 주제
+                        `object`.getInt("LIKES"), // 좋아요수
+                        `object`.getString("Plan"), // 플랜 리스트
+                        `object`.getString("MEM"), // 멤버
+                        "",
+                        false
+                    )
+                    Log.d("alert_search",searchitm.toString())
+
+                    count++
+                }
+
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        val idnumrequest = ShowPlanRegister(PlanID.toString(), responseListener)
+        val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+        queue.add(idnumrequest)
+
+    }
 
     ////////////////Toolbar//////////////
     fun initToolbar() {
@@ -684,4 +623,26 @@ class AddPlaceActivity :
         }
         return super.onOptionsItemSelected(item)
     }
+
+    ////////////////// Compute Distance //////////////////
+    fun distance(lat1: Double, lat2: Double, lng1: Double, lng2: Double): Double {
+        val theta = lng1 - lng2;
+        var dist =
+            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta))
+        dist = acos(dist)
+        dist = rad2deg(dist)
+        dist = dist * 60 * 1.1515
+        dist = dist * 1609.344      // Mile to Meter
+
+        return dist
+    }
+
+    fun deg2rad(deg: Double): Double {     // Degree to Radian
+        return (deg * PI / 180.0)
+    }
+
+    fun rad2deg(rad: Double): Double {     // Radian to Degree
+        return (rad * 180 / PI)
+    }
+    //////////////////////////////////////////////////////
 }

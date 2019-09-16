@@ -3,12 +3,21 @@ package com.inseoul.my_page
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
+import com.android.volley.Response
+import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
+import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.manage_member.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_my_page.*
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MyPageActivity : AppCompatActivity() {
