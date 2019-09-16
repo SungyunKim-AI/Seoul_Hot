@@ -1,6 +1,8 @@
 package com.inseoul.my_page
 
-
+import android.app.ProgressDialog
+import android.content.Intent
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +14,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.Server.idnumRequest
+import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_my_page.*
 import org.json.JSONObject
@@ -27,7 +31,16 @@ class MyPageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_my_page)
         initToolbar()
         initData()
+        initBtn()
     }
+
+    fun initBtn(){
+        add_schedule.setOnClickListener {
+            val intent = Intent(this, MakePlanActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
 
     lateinit var test:ArrayList<ArrayList<MyPage_Item>>
 
@@ -111,7 +124,6 @@ class MyPageActivity : AppCompatActivity() {
 
         adapter = MyPage_ViewPagerAdapter(this, test)
         my_page_viewpager.adapter = adapter
-        my_page_viewpager.isUserInputEnabled = false
 
         TabLayoutMediator(tabLayout, my_page_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {

@@ -5,8 +5,10 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
@@ -24,6 +26,12 @@ class ReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
+
+        // 앱 첫 실행시에만 실행하도록 수정하기
+        val toast = Toast.makeText(this, "좌우로 드래그 하세요",Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.TOP, 0, 50)
+        toast.show()
+
         initToolbar()
         initViewPager()
 
@@ -50,9 +58,11 @@ class ReviewActivity : AppCompatActivity() {
 //        view_pager2.isUserInputEnabled = true
 //        view_pager2.onInterceptTouchEvent()
 //        view_pager2.onInterceptTouchEvent(false)
+
+
         val PageChangeCallback = object:ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
-                toolbar_review.isVisible = (position != 0)
+//                toolbar_review.isVisible = (position != 0)
                 super.onPageSelected(position)
             }
             override fun onPageScrollStateChanged(state: Int) {
