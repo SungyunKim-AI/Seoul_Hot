@@ -23,8 +23,11 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".forecast.ForecastActivity">
+        </activity>
+        <activity android:name=".TestActivity">
+        </activity>
         <activity android:name=".my_page.MyPageActivity"/>
-
         <activity android:name=".add_place.EditPlanDate">
         </activity>
         <activity android:name=".review.ReviewActivity"/>
@@ -64,8 +67,6 @@
                 android:name="com.google.android.geo.API_KEY"
                 android:value="@string/google_maps_key"/>
 
-        <activity android:name=".TestActivity">
-        </activity>
         <activity android:name=".manage_member.SignUpActivity">
         </activity>
         <activity android:name=".manage_member.SignInActivity">

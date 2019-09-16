@@ -32,6 +32,7 @@ import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.view.View.*
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,6 +102,7 @@ class AddPlaceActivity :
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow_white))
                 } else {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
+
                 }
                 if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
                     sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
@@ -165,7 +167,7 @@ class AddPlaceActivity :
 
                 //////////////////////////////////////////////////
                 val date = extras!!.getString("textview_date")
-                PlanTitle.setText(extras!!.getString("textview_title",date))
+                PlanTitle.setText(extras!!.getString("textview_title", date))
                 textview_plandate.text = date
 
             }
@@ -331,16 +333,24 @@ class AddPlaceActivity :
                     //Search에서 넘어왔을 때
 
                     val item = data!!.getParcelableExtra<Search_Item>("placeData")
-                    Log.d("alert_back",item.toString())
+                    Log.d("alert_back", item.toString())
 
-                    lineList.add(LatLng(item.posY!!,item.posX!!))
-                    markerList.add(AddPlaceItem(item.id, item.title,item.type, lineList[lineList.size-1],lineList.size))
+                    lineList.add(LatLng(item.posY!!, item.posX!!))
+                    markerList.add(
+                        AddPlaceItem(
+                            item.id,
+                            item.title,
+                            item.type,
+                            lineList[lineList.size - 1],
+                            lineList.size
+                        )
+                    )
                     //Log.d("alert_marekrList",markerList[markerList.size-1].toString())
                     adapter.notifyDataSetChanged()
 
                 }
             }
-            
+
             //마커 새로 찍기
             for (i in 0 until markerList.size) {
                 addMarker(markerList[i], false)
@@ -488,7 +498,7 @@ class AddPlaceActivity :
         var placeType = null
         var latlng = marker.position
         var count = marker.snippet.toInt()
-        var temp = AddPlaceItem(placeID, placeNm, placeType, latlng,count)
+        var temp = AddPlaceItem(placeID, placeNm, placeType, latlng, count)
 
         return addMarker(temp, isSelectedMarker)
     }
@@ -539,6 +549,7 @@ class AddPlaceActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
+                //뒤로 가기 할때
                 finish()
                 return true
             }
