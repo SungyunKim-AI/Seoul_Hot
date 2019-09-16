@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 
 data class AddPlaceItem(
+    var date:Int ?= null,
     var placeID:Int ? = null,
     var PlaceNm:String ?= null,
     var PlaceType:Int ?= null,
@@ -13,14 +14,16 @@ data class AddPlaceItem(
 ):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readString(),
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readParcelable(LatLng::class.java.classLoader),
         parcel.readValue(Int::class.java.classLoader) as? Int
     ) {
-}
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeValue(date)
         parcel.writeValue(placeID)
         parcel.writeString(PlaceNm)
         parcel.writeValue(PlaceType)
@@ -42,4 +45,3 @@ data class AddPlaceItem(
         }
     }
 }
-

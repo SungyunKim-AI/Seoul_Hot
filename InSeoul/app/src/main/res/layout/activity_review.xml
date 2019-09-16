@@ -25,6 +25,7 @@
                 android:layout_height="20dp"
                 android:background="@drawable/toggle_selector_heart"
                 android:layout_gravity="right"
+                android:visibility="gone"
         />
 
         <ImageButton
@@ -36,6 +37,7 @@
                 android:src="@drawable/ic_bookmark"
                 android:background="@color/invisible"
                 android:layout_gravity="right"
+                android:visibility="gone"
         />
         <ImageButton
                 android:id="@+id/finishBtn"
