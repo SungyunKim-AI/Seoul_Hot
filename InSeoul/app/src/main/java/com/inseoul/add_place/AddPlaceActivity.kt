@@ -37,6 +37,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.my_page.MyPage_Item
+import java.text.SimpleDateFormat
 
 
 class AddPlaceActivity :
@@ -313,7 +316,47 @@ class AddPlaceActivity :
             isBtnOpen = true
         }
     }
+    /////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
+    fun RequestPlanItem(PlanID:Int){
+        val responseListener = Response.Listener<String> { response ->
+            try {
 
+                Log.d("dd", response);
+
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+
+                    val `object` = success.getJSONObject(count)
+                    var searchitm = MyPage_Item(
+                        `object`.getInt("#"), // planID
+                        `object`.getString("TripName"), // Plan 이름
+                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
+
+                        `object`.getString("THEME"), // 여행 주제
+                        `object`.getInt("LIKES"), // 좋아요수
+                        `object`.getString("Plan"), // 플랜 리스트
+                        `object`.getString("MEM"), // 멤버
+                        null,
+                        false
+                    )
+
+
+                    count++
+                }
+
+
+
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        val idnumrequest = ShowPlanRegister(PlanID.toString(),responseListener)
+        val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+        queue.add(idnumrequest)
+    }
 
     ////////////////////////////Search에서 넘어왔을때 호출//////////////////////////////
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
