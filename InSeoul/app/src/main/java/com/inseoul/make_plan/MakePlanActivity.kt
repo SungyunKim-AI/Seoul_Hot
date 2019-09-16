@@ -117,6 +117,8 @@ class MakePlanActivity : AppCompatActivity() {
 
                 val intent = Intent(this, AddPlaceActivity::class.java)
 
+                intent.putExtra("startDate",startYear+"-"+startMonth+"-"+startDay)
+                intent.putExtra("endDate",endYear+"-"+endMonth+"-"+endDay)
                 intent.putExtra("PlanDate", resultStr)
                 intent.putExtra("PlanRange", range)
                 intent.putExtra("flag_key",1)
