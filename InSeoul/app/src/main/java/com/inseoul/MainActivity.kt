@@ -80,7 +80,10 @@ class MainActivity :
         builder.addInterceptor(interceptor)
         return builder.build()
     }
+
+    lateinit var w_intent:Intent
     fun ForecastAPI_ShortTerm(){
+        w_intent = Intent(this, ForecastActivity::class.java)
 
         model_shortTerm = ArrayList()
 
@@ -111,7 +114,7 @@ class MainActivity :
         if(s_minute < 30){
             base_time = (s_time - 1).toString() + "30"
         } else{
-            base_time = s_time.toString() + "00"
+            base_time = (s_time).toString() + "30"
         }
 //        base_time = s_time.toString() + s_minute.toString()
 
@@ -134,10 +137,10 @@ class MainActivity :
             .subscribe({
                 Log.e("shortTerm", it.toString())
                 for(i in 0 until it.response.body.items.item.size) {
-
                     when(it.response.body.items.item[i].category){
                         "T1H"->{
                             model_shortTerm[i % 4].T1H = it.response.body.items.item[i].fcstValue
+
                         }
                         "PTY"->{
                             model_shortTerm[i % 4].PTY = it.response.body.items.item[i].fcstValue.toInt()
@@ -162,6 +165,8 @@ class MainActivity :
 
                 for(i in 0..3){
                     if(model_shortTerm[i].SKY != null && model_shortTerm[i].PTY != null){
+                        w_intent.putExtra("today_weather", model_shortTerm[i])
+
                         when(model_shortTerm[i].SKY){
                             1->{
                                 home_weather_icon.setImageResource(R.drawable.w_sun)
@@ -185,7 +190,7 @@ class MainActivity :
                             }
                         }
                         home_date.text = model_shortTerm[i].month.toString() + "/" + model_shortTerm[i].day.toString()
-                        home_temp.text = model_shortTerm[i].T1H.toString() + "℃"
+                        home_temp.text = model_shortTerm[i].T1H.toString() + "º"
                         break;
                     }
                 }
@@ -493,8 +498,7 @@ class MainActivity :
 
         // 날씨
         weather.setOnClickListener {
-            val intent = Intent(this, ForecastActivity::class.java)
-            startActivity(intent)
+            startActivity(w_intent)
         }
 
         /////////backpress//////////

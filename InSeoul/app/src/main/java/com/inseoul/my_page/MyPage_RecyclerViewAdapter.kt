@@ -23,7 +23,7 @@ class MyPage_RecyclerViewAdapter(
     }
 
     interface RecyclerViewAdapterEventListener {
-        fun onClick(view: View)
+        fun onClick(view: View, p:Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -64,7 +64,7 @@ class MyPage_RecyclerViewAdapter(
         holder.item_date.text = data.date
 
         holder.itemView.setOnClickListener {
-            listener!!.onClick(it)
+            listener!!.onClick(it, position)
         }
     }
 
