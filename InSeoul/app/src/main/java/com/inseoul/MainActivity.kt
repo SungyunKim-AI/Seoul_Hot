@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.inseoul.api_manager.RetrofitService
+import com.inseoul.forecast.ForecastActivity
 import com.inseoul.forecast.Forecast_shortTermItem
 import com.inseoul.home.HomeAdapter
 import com.inseoul.home.HomeItem
@@ -43,6 +44,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -70,7 +73,17 @@ class MainActivity :
 
     lateinit var model_shortTerm: ArrayList<Forecast_shortTermItem>
 
+    fun createOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        builder.addInterceptor(interceptor)
+        return builder.build()
+    }
+
+    lateinit var w_intent:Intent
     fun ForecastAPI_ShortTerm(){
+        w_intent = Intent(this, ForecastActivity::class.java)
 
         model_shortTerm = ArrayList()
 
@@ -98,7 +111,12 @@ class MainActivity :
 
 
         base_data = s_format
-        base_time = s_time.toString() + s_minute.toString()
+        if(s_minute < 30){
+            base_time = (s_time - 1).toString() + "30"
+        } else{
+            base_time = (s_time).toString() + "30"
+        }
+//        base_time = s_time.toString() + s_minute.toString()
 
         Log.e("time_d", s_format.toString())
         Log.e("time_t", s_time.toString())
@@ -110,6 +128,7 @@ class MainActivity :
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("http://newsky2.kma.go.kr/service/")
+            .client(createOkHttpClient())
             .build()
             .create(RetrofitService::class.java)
             .ShortTermWeather(base_data, base_time, nx, ny, numOfRows, pageNo, _type)
@@ -118,10 +137,10 @@ class MainActivity :
             .subscribe({
                 Log.e("shortTerm", it.toString())
                 for(i in 0 until it.response.body.items.item.size) {
-
                     when(it.response.body.items.item[i].category){
                         "T1H"->{
                             model_shortTerm[i % 4].T1H = it.response.body.items.item[i].fcstValue
+
                         }
                         "PTY"->{
                             model_shortTerm[i % 4].PTY = it.response.body.items.item[i].fcstValue.toInt()
@@ -146,6 +165,8 @@ class MainActivity :
 
                 for(i in 0..3){
                     if(model_shortTerm[i].SKY != null && model_shortTerm[i].PTY != null){
+                        w_intent.putExtra("today_weather", model_shortTerm[i])
+
                         when(model_shortTerm[i].SKY){
                             1->{
                                 home_weather_icon.setImageResource(R.drawable.w_sun)
@@ -169,7 +190,7 @@ class MainActivity :
                             }
                         }
                         home_date.text = model_shortTerm[i].month.toString() + "/" + model_shortTerm[i].day.toString()
-                        home_temp.text = model_shortTerm[i].T1H.toString() + "℃"
+                        home_temp.text = model_shortTerm[i].T1H.toString() + "º"
                         break;
                     }
                 }
@@ -474,6 +495,11 @@ class MainActivity :
     fun initBtn() {
         toolbar.navigationIcon = getDrawable(R.drawable.hamburger)
 
+
+        // 날씨
+        weather.setOnClickListener {
+            startActivity(w_intent)
+        }
 
         /////////backpress//////////
         backPressCloseHandler = BackPressCloseHandler(this)

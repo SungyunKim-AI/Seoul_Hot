@@ -36,6 +36,7 @@ import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.inseoul.Server.ShowPlanRegister
 import java.text.SimpleDateFormat
 
 
@@ -150,7 +151,7 @@ class AddPlaceActivity :
 
                 //PlanID를 서버에 보내서 플랜 받아오게
                 //Plan에서
-                // 1. 일정 제목
+
                 // 2. 일정 날짜
                 // 3. 일정에 포함되어 있는 장소들의 ID 값들
 
@@ -301,7 +302,35 @@ class AddPlaceActivity :
             isBtnOpen = true
         }
     }
+    /////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
+    fun RequestPlanItem(PlanID:Int){
+        val responseListener = Response.Listener<String> { response ->
+            try {
 
+                Log.d("dd", response);
+
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+
+                    val `object` = success.getJSONObject(count)
+                    var searchitm = MyPage_Item(
+                        `object`.getInt("#"), // planID
+                        `object`.getString("TripName"), // Plan 이름
+                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
+
+                        `object`.getString("THEME"), // 여행 주제
+                        `object`.getInt("LIKES"), // 좋아요수
+                        `object`.getString("Plan"), // 플랜 리스트
+                        `object`.getString("MEM"), // 멤버
+                        null,
+                        false
+                    )
+
+
+                    count++
+                }
 
     ////////////////////날짜 계산해서 개수 만큼 뷰페이저 생성///////////////////////
     fun initRecylcerview(extras: Bundle) {
@@ -335,9 +364,50 @@ class AddPlaceActivity :
         if(tabLayout_addPlace.tabCount>4){
             tabLayout_addPlace.tabMode = TabLayout.MODE_SCROLLABLE
         }
-
-
     }
+              
+/////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
+    fun RequestPlanItem(PlanID:Int){
+        val responseListener = Response.Listener<String> { response ->
+            try {
+
+                Log.d("dd", response);
+
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+
+                    val `object` = success.getJSONObject(count)
+                    var searchitm = MyPage_Item(
+                        `object`.getInt("#"), // planID
+                        `object`.getString("TripName"), // Plan 이름
+                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
+
+                        `object`.getString("THEME"), // 여행 주제
+                        `object`.getInt("LIKES"), // 좋아요수
+                        `object`.getString("Plan"), // 플랜 리스트
+                        `object`.getString("MEM"), // 멤버
+                        "",
+                        false
+                    )
+
+
+                    count++
+                }
+
+
+
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        val idnumrequest = ShowPlanRegister(PlanID.toString(),responseListener)
+        val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+        queue.add(idnumrequest)
+    }
+              
 
     ////////////////////////////Search에서 넘어왔을때 호출//////////////////////////////
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

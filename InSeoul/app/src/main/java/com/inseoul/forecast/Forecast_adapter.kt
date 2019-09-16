@@ -66,8 +66,8 @@ class Forecast_adapter (
             }
         }
         holder.date.text = data.date
-        holder.t_high.text = data.t_high.toString() + "℃"
-        holder.t_low.text = data.t_low.toString() + "℃"
+        holder.t_high.text = data.t_high.toString() + "º"
+        holder.t_low.text = data.t_low.toString() + "º"
 
     }
 

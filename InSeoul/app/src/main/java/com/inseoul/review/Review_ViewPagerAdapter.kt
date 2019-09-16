@@ -61,9 +61,11 @@ class Review_ViewPagerAdapter(
 
 
                 var hashTag = ""
-                for(i in 0 until data.upso_hashTag.size){
-                    var temp = "#" + data.upso_hashTag[i] + " "
-                    hashTag += temp
+                if(data.upso_hashTag != null){
+                    for(i in 0 until data.upso_hashTag.size){
+                        var temp = "#" + data.upso_hashTag[i] + " "
+                        hashTag += temp
+                    }
                 }
 
                 holder.review_hashtag.text = hashTag

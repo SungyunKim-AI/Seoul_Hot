@@ -18,11 +18,9 @@ import com.inseoul.data_model.ForecastModel_MiddleTemperature
 import com.inseoul.data_model.ForecastModel_MiddleWeather
 import com.inseoul.data_model.ForecastModel_ShortTerm
 import com.inseoul.data_model.ForecastModel_default
-import com.inseoul.my_page.MyPage_RecyclerViewAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_forecast.*
-import kotlinx.android.synthetic.main.activity_test.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -53,190 +51,26 @@ class ForecastActivity : AppCompatActivity() {
     lateinit var ttDate:String
     lateinit var retrofit:RetrofitService
 
-
-    lateinit var progress:Dialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forecast)
 
-        progress = ProgressDialog.progressDialog(this)
-        progress.show()
         init()
         initToolbar()
         ForecastAPI_default()
         var tmFc:Long = 0
         if(time.toInt() >= 18) {
             tmFc = (format + "1800").toLong()
-        } else if(time.toInt() < 18 && time.toInt() >= 6){
+        } else if(time.toInt() in 6..17){
             tmFc = (format + "0600").toLong()
         } else {
             tmFc = (yFormat + "1800").toLong()
         }
-        progress.dismiss()
-
         ForecastAPI_weather(tmFc)
         ForecastAPI_temperature(tmFc)
 
         Log.e("itemList", itemList.toString())
     }
-
-    fun initView(){
-        t_date.text = r_date
-        tt_date.text = tDate
-        ttt_date.text = ttDate
-
-        val t_time = SimpleDateFormat("HH").format(model_default.item[0].announceTime)
-        if(t_time.toInt() >= 17 || t_time.toInt() < 5){
-            today_temp_high.text = model_default.item[0].ta.toString()
-            today_temp_low.text = model_default.item[0].ta.toString()
-
-            tt_status.text = model_default.item[2].wf
-            tt_temp_high.text = model_default.item[2].ta.toString()
-            tt_temp_low.text = model_default.item[1].ta.toString()
-
-            ttt_status.text = model_default.item[4].wf
-            ttt_temp_high.text = model_default.item[4].ta.toString()
-            ttt_temp_low.text = model_default.item[3].ta.toString()
-
-            if(model_default.item[2].rnYn == 0 && model_default.item[2].wfCd == "DB01"){
-                ttt_weather_icon.setImageResource(R.drawable.w_sun)
-            }
-            if (model_default.item[2].rnYn == 0 && model_default.item[2].wfCd == "DB03") {
-                ttt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
-            }
-            if (model_default.item[2].rnYn == 0 && model_default.item[2].wfCd == "DB04") {
-                ttt_weather_icon.setImageResource(R.drawable.w_cloud)
-            }
-            if (model_default.item[2].rnYn == 1 || model_default.item[2].rnYn == 4) {
-                ttt_weather_icon.setImageResource(R.drawable.w_rain)
-            }
-            if (model_default.item[2].rnYn == 3 || model_default.item[2].rnYn == 2) {
-                ttt_weather_icon.setImageResource(R.drawable.w_snow)
-            }
-            if(model_default.item[4].rnYn == 0 && model_default.item[4].wfCd == "DB01"){
-                ttt_weather_icon.setImageResource(R.drawable.w_sun)
-            }
-            if (model_default.item[4].rnYn == 0 && model_default.item[4].wfCd == "DB03") {
-                ttt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
-            }
-            if (model_default.item[4].rnYn == 0 && model_default.item[4].wfCd == "DB04") {
-                ttt_weather_icon.setImageResource(R.drawable.w_cloud)
-            }
-            if (model_default.item[4].rnYn == 1 || model_default.item[4].rnYn == 4) {
-                ttt_weather_icon.setImageResource(R.drawable.w_rain)
-            }
-            if (model_default.item[4].rnYn == 3 || model_default.item[4].rnYn == 2) {
-                ttt_weather_icon.setImageResource(R.drawable.w_snow)
-            }
-
-        } else if(t_time.toInt() < 17 && t_time.toInt() >= 11){
-            today_temp_high.text = model_default.item[0].ta.toString()
-            today_temp_low.text = model_default.item[0].ta.toString()
-
-            tt_status.text = model_default.item[2].wf
-            tt_temp_high.text = model_default.item[2].ta.toString()
-            tt_temp_low.text = model_default.item[1].ta.toString()
-
-            ttt_status.text = model_default.item[4].wf
-            ttt_temp_high.text = model_default.item[4].ta.toString()
-            ttt_temp_low.text = model_default.item[3].ta.toString()
-
-            if(model_default.item[2].rnYn == 0 && model_default.item[2].wfCd == "DB01"){
-                ttt_weather_icon.setImageResource(R.drawable.w_sun)
-            }
-            if (model_default.item[2].rnYn == 0 && model_default.item[2].wfCd == "DB03") {
-                ttt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
-            }
-            if (model_default.item[2].rnYn == 0 && model_default.item[2].wfCd == "DB04") {
-                ttt_weather_icon.setImageResource(R.drawable.w_cloud)
-            }
-            if (model_default.item[2].rnYn == 1 || model_default.item[2].rnYn == 4) {
-                ttt_weather_icon.setImageResource(R.drawable.w_rain)
-            }
-            if (model_default.item[2].rnYn == 3 || model_default.item[2].rnYn == 2) {
-                ttt_weather_icon.setImageResource(R.drawable.w_snow)
-            }
-            if(model_default.item[4].rnYn == 0 && model_default.item[4].wfCd == "DB01"){
-                ttt_weather_icon.setImageResource(R.drawable.w_sun)
-            }
-            if (model_default.item[4].rnYn == 0 && model_default.item[4].wfCd == "DB03") {
-                ttt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
-            }
-            if (model_default.item[4].rnYn == 0 && model_default.item[4].wfCd == "DB04") {
-                ttt_weather_icon.setImageResource(R.drawable.w_cloud)
-            }
-            if (model_default.item[4].rnYn == 1 || model_default.item[4].rnYn == 4) {
-                ttt_weather_icon.setImageResource(R.drawable.w_rain)
-            }
-            if (model_default.item[4].rnYn == 3 || model_default.item[4].rnYn == 2) {
-                ttt_weather_icon.setImageResource(R.drawable.w_snow)
-            }
-
-        } else if(t_time.toInt() >= 5 && t_time.toInt() < 11){
-            today_temp_high.text = model_default.item[1].ta.toString()
-            today_temp_low.text = model_default.item[0].ta.toString()
-
-            tt_status.text = model_default.item[3].wf
-            tt_temp_high.text = model_default.item[3].ta.toString()
-            tt_temp_low.text = model_default.item[2].ta.toString()
-
-            ttt_status.text = model_default.item[5].wf
-            ttt_temp_high.text = model_default.item[5].ta.toString()
-            ttt_temp_low.text = model_default.item[4].ta.toString()
-
-            if(model_default.item[3].rnYn == 0 && model_default.item[3].wfCd == "DB01"){
-                ttt_weather_icon.setImageResource(R.drawable.w_sun)
-            }
-            if (model_default.item[3].rnYn == 0 && model_default.item[3].wfCd == "DB03") {
-                ttt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
-            }
-            if (model_default.item[3].rnYn == 0 && model_default.item[3].wfCd == "DB04") {
-                ttt_weather_icon.setImageResource(R.drawable.w_cloud)
-            }
-            if (model_default.item[3].rnYn == 1 || model_default.item[3].rnYn == 4) {
-                ttt_weather_icon.setImageResource(R.drawable.w_rain)
-            }
-            if (model_default.item[3].rnYn == 3 || model_default.item[3].rnYn == 2) {
-                ttt_weather_icon.setImageResource(R.drawable.w_snow)
-            }
-
-            if(model_default.item[5].rnYn == 0 && model_default.item[5].wfCd == "DB01"){
-                ttt_weather_icon.setImageResource(R.drawable.w_sun)
-            }
-            if (model_default.item[5].rnYn == 0 && model_default.item[5].wfCd == "DB03") {
-                ttt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
-            }
-            if (model_default.item[5].rnYn == 0 && model_default.item[5].wfCd == "DB04") {
-                ttt_weather_icon.setImageResource(R.drawable.w_cloud)
-            }
-            if (model_default.item[5].rnYn == 1 || model_default.item[5].rnYn == 4) {
-                ttt_weather_icon.setImageResource(R.drawable.w_rain)
-            }
-            if (model_default.item[5].rnYn == 3 || model_default.item[5].rnYn == 2) {
-                ttt_weather_icon.setImageResource(R.drawable.w_snow)
-            }
-        }
-        t_status.text = model_default.item[0].wf
-
-
-        if(model_default.item[0].rnYn == 0 && model_default.item[0].wfCd == "DB01"){
-            t_weather_icon.setImageResource(R.drawable.w_sun)
-        }
-        if (model_default.item[0].rnYn == 0 && model_default.item[0].wfCd == "DB03") {
-            t_weather_icon.setImageResource(R.drawable.w_sun_cloud)
-        }
-        if (model_default.item[0].rnYn == 0 && model_default.item[0].wfCd == "DB04") {
-            t_weather_icon.setImageResource(R.drawable.w_cloud)
-        }
-        if (model_default.item[0].rnYn == 1 || model_default.item[0].rnYn == 4) {
-            t_weather_icon.setImageResource(R.drawable.w_rain)
-        }
-        if (model_default.item[0].rnYn == 3 || model_default.item[0].rnYn == 2) {
-            t_weather_icon.setImageResource(R.drawable.w_snow)
-        }
-    }
-
-
 
     fun init(){
         retrofit = Retrofit.Builder()
@@ -275,6 +109,31 @@ class ForecastActivity : AppCompatActivity() {
         tt_calendar.add(Calendar.DATE, + 2)
         ttDate = SimpleDateFormat("MM/dd").format(tt_calendar.getTime())
 
+
+        // 날씨 정보 재활용
+        val data = getIntent().getParcelableExtra<Forecast_shortTermItem>("today_weather")
+
+        Log.e("data_weather", data.toString())
+        when(data.SKY){
+            1->{
+                now_weather_icon.setImageResource(R.drawable.w_sun)
+            }
+            3, 4->{
+                when(data.PTY){
+                    0->{
+                        now_weather_icon.setImageResource(R.drawable.w_cloud)
+                    }
+                    1,2,4->{
+                        now_weather_icon.setImageResource(R.drawable.w_rain)
+                    }
+                    3->{
+                        now_weather_icon.setImageResource(R.drawable.w_snow)
+                    }
+                }
+            }
+        }
+        now_temp.text = data.T1H.toString() + "º"
+        now_date.text = month + "월" + day + "일"
 //        Log.d("hsoh0306", format + "\n" + yFormat)
     }
     lateinit var itemList:ArrayList<Forecast_item>
@@ -312,6 +171,146 @@ class ForecastActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 model_default = it.response.body.items
+
+                tt_date.text = tDate
+                ttt_date.text = ttDate
+
+//        val t_time = SimpleDateFormat("HH").format(model_default.item[0].announceTime)
+                val t_time = time
+                Log.v("hsoh0306_time", model_default.item[0].toString())
+                if(t_time.toInt() >= 17 || t_time.toInt() < 5){
+                    tt_temp.text = model_default.item[1].ta.toString() + "º" + "/" + model_default.item[2].ta.toString() + "º"
+
+                    ttt_temp.text = model_default.item[3].ta.toString() + "º" + "/" + model_default.item[4].ta.toString() + "º"
+
+                    when(model_default.item[4].wfCd){
+                        "DB01"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_sun)
+                        }
+                        "DB03"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                        "DB04"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                    }
+                    when(model_default.item[4].rnYn){
+                        1,4->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_rain)
+                        }
+                        2,3->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_snow)
+                        }
+                    }
+                    when(model_default.item[2].wfCd){
+                        "DB01"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_sun)
+                        }
+                        "DB03"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                        "DB04"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                    }
+                    when(model_default.item[2].rnYn){
+                        1,4->{
+                            tt_weather_icon.setImageResource(R.drawable.w_rain)
+                        }
+                        2,3->{
+                            tt_weather_icon.setImageResource(R.drawable.w_snow)
+                        }
+                    }
+
+
+                } else if(t_time.toInt() in 11..16){
+                    tt_temp.text = model_default.item[1].ta.toString() + "º" + "/" + model_default.item[2].ta.toString() + "º"
+
+                    ttt_temp.text = model_default.item[3].ta.toString() + "º" + "/" + model_default.item[4].ta.toString() + "º"
+
+                    when(model_default.item[5].wfCd){
+                        "DB01"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_sun)
+                        }
+                        "DB03"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                        "DB04"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                    }
+                    when(model_default.item[5].rnYn){
+                        1,4->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_rain)
+                        }
+                        2,3->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_snow)
+                        }
+                    }
+                    when(model_default.item[3].wfCd){
+                        "DB01"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_sun)
+                        }
+                        "DB03"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
+                        }
+                        "DB04"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                    }
+                    when(model_default.item[3].rnYn){
+                        1,4->{
+                            tt_weather_icon.setImageResource(R.drawable.w_rain)
+                        }
+                        2,3->{
+                            tt_weather_icon.setImageResource(R.drawable.w_snow)
+                        }
+                    }
+
+                } else if(t_time.toInt() in 5..10){
+                    tt_temp.text = model_default.item[2].ta.toString() + "º" + "/" + model_default.item[3].ta.toString() + "º"
+
+                    ttt_temp.text = model_default.item[4].ta.toString() + "º" + "/" + model_default.item[5].ta.toString() + "º"
+
+                    when(model_default.item[4].wfCd){
+                        "DB01"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_sun)
+                        }
+                        "DB03"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
+                        }
+                        "DB04"->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                    }
+                    when(model_default.item[4].rnYn){
+                        1,4->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_rain)
+                        }
+                        2,3->{
+                            ttt_weather_icon.setImageResource(R.drawable.w_snow)
+                        }
+                    }
+                    when(model_default.item[2].wfCd){
+                        "DB01"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_sun)
+                        }
+                        "DB03"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_sun_cloud)
+                        }
+                        "DB04"->{
+                            tt_weather_icon.setImageResource(R.drawable.w_cloud)
+                        }
+                    }
+                    when(model_default.item[2].rnYn){
+                        1,4->{
+                            tt_weather_icon.setImageResource(R.drawable.w_rain)
+                        }
+                        2,3->{
+                            tt_weather_icon.setImageResource(R.drawable.w_snow)
+                        }
+                    }
+                }
             },{
                 Log.v("Fail","")
             })
@@ -389,7 +388,6 @@ class ForecastActivity : AppCompatActivity() {
 
                 initData()
                 initRecyclerView()
-                initView()
 
             },{
                 Log.v("Fail","")
