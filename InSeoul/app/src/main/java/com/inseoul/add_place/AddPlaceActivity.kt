@@ -159,7 +159,7 @@ class AddPlaceActivity :
 
                 //PlanID를 서버에 보내서 플랜 받아오게
                 //Plan에서
-                // 1. 일정 제목
+
                 // 2. 일정 날짜
                 // 3. 일정에 포함되어 있는 장소들의 ID 값들
 
