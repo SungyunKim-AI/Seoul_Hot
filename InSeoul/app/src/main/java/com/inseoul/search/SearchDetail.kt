@@ -192,10 +192,10 @@ class SearchDetail :
 
                     val now = System.currentTimeMillis()
                     val date = Date(now)
-                    val sdf = SimpleDateFormat("yyyy-MM-dd")
+                    val dateStr = SimpleDateFormat("yyyy-MM-dd")
 
-                    val getTime = sdf.parse(sdf.format(date))
-                    val planTIME = sdf.parse(planList[planList.size - 1].endDate)
+                    val getTime = dateStr.parse(dateStr.format(date))
+                    val planTIME = dateStr.parse(temp.endDate)
 
                     if (getTime.before(planTIME)) {
                         planList.add(temp)
