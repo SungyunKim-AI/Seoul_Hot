@@ -113,35 +113,12 @@ class RegisterReviewActivity : AppCompatActivity()  {
 
   //      initTest()
 
-        val listener = object: RegisterReviewViewPagerAdapter.EventListener{
-            override fun addPhotoOnClick(view: View, position: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                camera(position)
-            }
 
-            override fun addGalleryOnClick(view: View, positon: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                storage(positon)
-            }
 
-            override fun onEditTextChanged(position: Int, str: String) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                commentArray[position] = str
-            }
-        }
-        adapter = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
-        viewpager.adapter = adapter
-        TabLayoutMediator(tabLayout, viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
-            override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-                // Styling each tab here
-            }
-        }).attach()
+
 
         // comment Array Init
-        commentArray = ArrayList()
-        for(i in 0 until adapter.itemCount){
-            commentArray.add("")
-        }
+
     }
 
     fun initIntent(){
@@ -164,6 +141,8 @@ class RegisterReviewActivity : AppCompatActivity()  {
         val o = planist.size
 //        Log.d("json", Integer.toString(o))
 //        Log.d("json", plan_LIST.toString())
+        commentArray = ArrayList()
+
         for (p in 0 until o) {
 //            Log.d("json", plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
             tripList!!.add(plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
@@ -173,12 +152,9 @@ class RegisterReviewActivity : AppCompatActivity()  {
                     Log.d("dd", response)
 
                     val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getJSONArray("response")
-                    var count = 0
-                    while (count < success.length()) {
-
-                        val `object` = success.getJSONObject(count)
-                        reviewArray.add(ReviewItem(
+                    val success = jsonResponse.getJSONObject("response")
+                    Log.d("alert_search","")
+                    reviewArray.add(ReviewItem(
                             null,
                             null,
                             1,
@@ -186,7 +162,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                             null,
                             null,
                             0,
-                            `object`.getString("UPSONM"),         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
+                            success.getString("UPSONM"),         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
                             null,
                             ArrayList<Drawable?>(),
                             null,
@@ -196,16 +172,40 @@ class RegisterReviewActivity : AppCompatActivity()  {
                             "xxx",
                             0,
                             0)
-                        )
-                        Log.d("alert_search","")
-
-                        count++
-                    }
+                    )
+                    Log.d("alert_search","")
+                    commentArray.add("")
 
 
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
+                if(p==o-1){
+                    val listener = object: RegisterReviewViewPagerAdapter.EventListener{
+                        override fun addPhotoOnClick(view: View, position: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                            camera(position)
+                        }
+
+                        override fun addGalleryOnClick(view: View, positon: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                            storage(positon)
+                        }
+
+                        override fun onEditTextChanged(position: Int, str: String) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                            commentArray[position] = str
+                        }
+                    }
+                adapter = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
+                viewpager.adapter = adapter
+                TabLayoutMediator(tabLayout, viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
+                    override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+                        // Styling each tab here
+                    }
+                }).attach()
+
+            }
             }
             val idnumrequest = PlaceRequest(Integer.parseInt(planist[p]), responseListener)
             val queue = Volley.newRequestQueue(this@RegisterReviewActivity)
@@ -353,74 +353,5 @@ class RegisterReviewActivity : AppCompatActivity()  {
         }
         return super.onOptionsItemSelected(item)
     }
-    public void HTTpfileUpload(){
-        String pathToOurFile = imageFilePath;
-        String urlServer = "http://ksun1234.cafe24.com/UploadIMG.php";
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        try {
-            FileInputStream mFileInputStream = new FileInputStream(imageFilePath);
-            URL connectUrl = new URL(urlServer);
-            Log.d("Test", "mFileInputStream  is " + imageFileName);
-            Log.d("Test", "mFileInputStream  is " + imageFilePath);
-            // open connection
-            HttpURLConnection conn = (HttpURLConnection)connectUrl.openConnection();
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            conn.setUseCaches(false);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
-            // write data
-            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-            dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + imageFileName +"\"" + lineEnd);
-            dos.writeBytes(lineEnd);
-
-            int bytesAvailable = mFileInputStream.available();
-            int maxBufferSize = 1024;
-            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-
-            byte[] buffer = new byte[bufferSize];
-            int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-
-            Log.d("Test", "image byte is " + bytesRead);
-
-            // read image
-            while (bytesRead > 0) {
-                dos.write(buffer, 0, bufferSize);
-                bytesAvailable = mFileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-            }
-
-            dos.writeBytes(lineEnd);
-            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-            // close streams
-            Log.e("Test" , "File is written");
-            mFileInputStream.close();
-            dos.flush(); // finish upload...
-
-            // get response
-            int ch;
-            InputStream is = conn.getInputStream();
-            StringBuffer b =new StringBuffer();
-            while( ( ch = is.read() ) != -1 ){
-                b.append( (char)ch );
-            }
-            String s=b.toString();
-            Log.e("Test", "result = " + s);
-
-            dos.close();
-            conn.disconnect();
-
-
-        } catch (Exception e) {
-            Log.d("Test", "exception " + e.getMessage());
-            // TODO: handle exception
-        }
-    }
 }
