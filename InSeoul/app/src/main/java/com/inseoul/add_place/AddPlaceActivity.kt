@@ -136,45 +136,52 @@ class AddPlaceActivity :
         val extras = intent.extras
         var flag = extras!!.getInt("flag_key", -1)
 
-        when (flag) {
-            // from MakePlanActivity
-            1 -> {
-                initRecylcerview(extras)
+        // from MakePlanActivity
+        if(flag==1){
+            //날짜 차이 계산 하기
+            val start = extras!!.getString("startDate")
+            val end = extras!!.getString("endDate")
+            initRecylcerview(start!!, end!!)
 
-                val date = extras!!.getString("PlanDate", "NULL")
-                PlanTitle.hint = date + " 여정"
+            val date = extras!!.getString("PlanDate", "NULL")
+            PlanTitle.hint = date + " 여정"
 
-                textview_plandate.text = date
-            }
+            textview_plandate.text = date
+        }else{
             //from MySchedulesActivity
-            2 -> {
-                val planID = extras!!.getInt("PlanID")
+            val planID = extras!!.getInt("PlanID")
+            var searchitm = RequestPlanItem(planID)
 
-                RequestPlanItem(planID)
+            initRecylcerview(searchitm.date, searchitm.thumbnail!!)
 
-                val date = extras!!.getString("textview_date")
-                PlanTitle.setText(extras!!.getString("textview_title", date))
-                textview_plandate.text = date
+            val date = searchitm.date + searchitm.thumbnail!!
+            PlanTitle.setText(extras!!.getString("textview_title", date))
+            textview_plandate.text = date
 
-            }
             //from SearchDetail
-            3 -> {
-                val planID = extras!!.getInt("PlanID")
-                //Log.d("alert_planID",planID.toString())
-                /////////////////////////////////////////////////
-
-                //PlanID를 서버에 보내서 플랜 받아오게
-                //Plan에서
-                // 1. 일정 제목
-                // 2. 일정 날짜
-                // 3. 일정에 포함되어 있는 장소들의 ID 값들
-
-                //////////////////////////////////////////////////
-
-                //SearchDetail에서 받아온 PlaceID 값
+            if(flag==3){
                 val placeID = extras!!.getInt("PlaceID")
+
+                val item = extras!!.getParcelable<Search_Item>("placeData")
+                //Log.d("alert_back", item.toString())
+
+                var selectDate = add_place_viewpager.currentItem
+
+                dayList[selectDate].add(
+                    AddPlaceItem(
+                        selectDate,
+                        item?.id,
+                        item?.title,
+                        item?.type,
+                        LatLng(item?.posY!!, item.posX!!),
+                        dayList[selectDate].size + 1
+                    )
+                )
+                adapter.notifyDataSetChanged()
+
             }
         }
+
 
         /////////////완료 버튼/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         finishBtn.setOnClickListener {
@@ -198,13 +205,13 @@ class AddPlaceActivity :
             }
 
             PlanName = PlanTitle.text.toString()
-            DPDATE = extras!!.getString("startDate","2222-22-22")
-            ADDATE = extras!!.getString("endDate","2222-22-22")
+            DPDATE = extras!!.getString("startDate", "2222-22-22")
+            ADDATE = extras!!.getString("endDate", "2222-22-22")
             THEME = "NOTHEME"
-            for(i in dayList)
-                for(c in i)
-                    PLAN = PLAN + c.placeID +","
-            Log.d("dd",PlanName+DPDATE+ ADDATE+ THEME+ PLAN)
+            for (i in dayList)
+                for (c in i)
+                    PLAN = PLAN + c.placeID + ","
+            Log.d("dd", PlanName + DPDATE + ADDATE + THEME + PLAN)
             val registerRequest =
                 AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME, PLAN, responseListener)
 
@@ -309,11 +316,7 @@ class AddPlaceActivity :
     }
 
     ////////////////////날짜 계산해서 개수 만큼 뷰페이저 생성///////////////////////
-    fun initRecylcerview(extras: Bundle) {
-
-        //날짜 차이 계산 하기
-        val start = extras!!.getString("startDate")
-        val end = extras!!.getString("endDate")
+    fun initRecylcerview(start: String, end: String) {
 
         var formatter = SimpleDateFormat("yyyy-MM-dd")
         val beginDate = formatter.parse(start)
@@ -570,43 +573,41 @@ class AddPlaceActivity :
     }
 
     /////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
-    fun RequestPlanItem(PlanID: Int){
+    fun RequestPlanItem(PlanID: Int): MyPage_Item {
+        lateinit var searchitm: MyPage_Item
+
         val responseListener = Response.Listener<String> { response ->
             try {
-
                 Log.d("dd", response)
 
                 val jsonResponse = JSONObject(response)
                 val success = jsonResponse.getJSONArray("response")
-                var count = 0
-                while (count < success.length()) {
 
-                    val `object` = success.getJSONObject(count)
-                    var searchitm = MyPage_Item(
-                        `object`.getInt("#"), // planID
-                        `object`.getString("TripName"), // Plan 이름
-                        `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
+                val `object` = success.getJSONObject(0)
+                searchitm = MyPage_Item(
+                    `object`.getInt("#"), // planID
+                    `object`.getString("TripName"), // Plan 이름
+                    `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
 
-                        `object`.getString("THEME"), // 여행 주제
-                        `object`.getInt("LIKES"), // 좋아요수
-                        `object`.getString("Plan"), // 플랜 리스트
-                        `object`.getString("MEM"), // 멤버
-                        "",
-                        false
-                    )
-                    Log.d("alert_search",searchitm.toString())
-
-                    count++
-                }
-
+                    `object`.getString("THEME"), // 여행 주제
+                    `object`.getInt("LIKES"), // 좋아요수
+                    `object`.getString("Plan"), // 플랜 리스트
+                    `object`.getString("MEM"), // 멤버
+                    `object`.getString("ADDATE"),
+                    false
+                )
+                Log.d("alert_search", searchitm.toString())
 
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
         }
         val idnumrequest = ShowPlanRegister(PlanID.toString(), responseListener)
         val queue = Volley.newRequestQueue(this@AddPlaceActivity)
         queue.add(idnumrequest)
+
+        return searchitm
 
     }
 
