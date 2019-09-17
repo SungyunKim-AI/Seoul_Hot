@@ -38,6 +38,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.my_page.MyPage_Item
+import java.lang.NullPointerException
 import java.text.SimpleDateFormat
 
 
@@ -142,6 +143,7 @@ class AddPlaceActivity :
 
                 val date = extras!!.getString("PlanDate", "NULL")
                 PlanTitle.hint = date + " 여정"
+
                 textview_plandate.text = date
             }
             //from MySchedulesActivity
@@ -174,8 +176,9 @@ class AddPlaceActivity :
             }
         }
 
-        /////////////완료 버튼//////////
+        /////////////완료 버튼/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         finishBtn.setOnClickListener {
+
             val responseListener = Response.Listener<String> { response ->
                 try {
                     Log.d("d", response)
@@ -194,7 +197,14 @@ class AddPlaceActivity :
                 }
             }
 
-
+            PlanName = PlanTitle.text.toString()
+            DPDATE = extras!!.getString("startDate","2222-22-22")
+            ADDATE = extras!!.getString("endDate","2222-22-22")
+            THEME = "NOTHEME"
+            for(i in dayList)
+                for(c in i)
+                    PLAN = PLAN + c.placeID +","
+            Log.d("dd",PlanName+DPDATE+ ADDATE+ THEME+ PLAN)
             val registerRequest =
                 AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME, PLAN, responseListener)
 
