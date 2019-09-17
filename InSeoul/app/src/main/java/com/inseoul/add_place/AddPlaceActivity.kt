@@ -37,6 +37,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
 import java.lang.NullPointerException
 import java.text.SimpleDateFormat
@@ -209,9 +210,9 @@ class AddPlaceActivity :
             for (i in dayList)
                 for (c in i)
                     PLAN = PLAN + c.placeID + ","
-            Log.d("dd", PlanName + DPDATE + ADDATE + THEME + PLAN)
+            Log.d("dd", PlanName + DPDATE + ADDATE + THEME + PLAN+SaveSharedPreference.getUserID(this).toString())
             val registerRequest =
-                AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME, PLAN, responseListener)
+                AddPlaceRegister(PlanName, DPDATE, ADDATE, THEME, PLAN,SaveSharedPreference.getUserID(this).toString()+"&&", responseListener)
 
             val queue = Volley.newRequestQueue(this@AddPlaceActivity)
             queue.add(registerRequest)
