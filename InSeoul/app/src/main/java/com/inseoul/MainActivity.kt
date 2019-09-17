@@ -111,10 +111,10 @@ class MainActivity :
 
 
         base_data = s_format
-        if(s_minute < 30){
-            base_time = (s_time - 1).toString() + "30"
-        } else{
+        if(s_minute >= 45){
             base_time = (s_time).toString() + "30"
+        } else{
+            base_time = (s_time - 2).toString() + "30"
         }
 //        base_time = s_time.toString() + s_minute.toString()
 
