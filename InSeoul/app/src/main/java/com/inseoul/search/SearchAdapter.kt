@@ -74,6 +74,7 @@ class SearchAdapter(val context: Context,
         holder.itemView.setOnClickListener {
             val intent = Intent(context, SearchDetail::class.java)
             intent.putExtra("data", data)
+            intent.putExtra("flag",flag)        // 시작 액티비티가 search라면 false, addplace라면 true
             //Log.v("Before intent", data.posX.toString() +  ", " + data.posY.toString())
             startActivity(context, intent, null)
         }

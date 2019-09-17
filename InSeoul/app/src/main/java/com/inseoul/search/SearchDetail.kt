@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View.GONE
 import androidx.viewpager2.widget.ViewPager2
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -49,6 +49,8 @@ class SearchDetail :
     lateinit var data: Search_Item
     lateinit var imgList: ArrayList<String>
     lateinit var adapter: SearchDetailViewpagerAdapter
+
+    var flag = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,6 +117,8 @@ class SearchDetail :
     fun initData() {
         imgList = ArrayList()
         data = intent.getParcelableExtra<Search_Item>("data")
+        flag = intent.getBooleanExtra("flag",false)
+        if(flag)  add_my_list.visibility = GONE
 
         if (data.servertype == 1) {
             detail_title.setTextColor(Color.BLACK)
@@ -172,11 +176,16 @@ class SearchDetail :
         val responseListener = Response.Listener<String> { response ->
             try {
 
-                Log.d("dd", response)
+                //Log.d("dd", response)
 
                 val jsonResponse = JSONObject(response)
                 val success = jsonResponse.getJSONArray("response")
                 var count = 0
+
+                if(planList != null){
+                    planList.clear()
+                }
+
                 while (count < success.length()) {
 
                     val `object` = success.getJSONObject(count)
@@ -187,7 +196,7 @@ class SearchDetail :
                         `object`.getString("ADDATE") //도착날짜
                     )
 
-                    Log.d("alert_planItem", `object`.toString())
+                    //Log.d("alert_planItem", `object`.toString())
 
                     val now = System.currentTimeMillis()
                     val date = Date(now)
@@ -196,9 +205,11 @@ class SearchDetail :
                     val getTime = dateStr.parse(dateStr.format(date))
                     val planTIME = dateStr.parse(temp.endDate)
 
+
                     if (getTime.before(planTIME)) {
                         planList.add(temp)
                     }
+
                     count++
                 }
 
@@ -206,7 +217,10 @@ class SearchDetail :
                 e.printStackTrace()
             }
 
-            add_my_list.setOnClickListener(this)
+            if(flag == false){
+                add_my_list.setOnClickListener(this)
+            }
+
         }
         val idnumrequest = ShowPlanRegister(id, responseListener)
         val queue = Volley.newRequestQueue(this)
@@ -285,10 +299,12 @@ class SearchDetail :
                             ) { dialog, which ->
                                 dialog.dismiss()
                                 val intent_add = Intent(this@SearchDetail, AddPlaceActivity::class.java)
-                                intent_add.putExtra("PlaceID", data)
                                 intent_add.putExtra("flag_key", 3)
-                                //Log.d("alert", strName!!)
+                                intent_add.putExtra("PlanID",planList[adapter.getPosition(strName)].planID)
+                                intent_add.putExtra("placeData", data)
+
                                 startActivity(intent_add)
+                                finish()
                             }
                         innBuilder.setNegativeButton(
                             "취소"
