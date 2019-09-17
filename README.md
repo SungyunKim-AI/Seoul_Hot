@@ -1,1 +1,2 @@
-"# Seoul_Hot" 
+"INSEOUL PROJECT" 
+We ARE THE ONE
