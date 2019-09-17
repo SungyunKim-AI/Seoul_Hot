@@ -40,7 +40,25 @@ import java.util.logging.Handler
 
 class RegisterReviewActivity : AppCompatActivity()  {
 
-    lateinit var imgArray:ArrayList<ArrayList<String>>
+    lateinit var reviewArray:ArrayList<ReviewItem>
+
+    lateinit var review_title:String
+    lateinit var review_date:String
+    var planID = -1
+    lateinit var tripList:ArrayList<String>
+
+    lateinit var imgArray:ArrayList<ArrayList<String>>  // 서버로 넘길 Image의 URI
+
+    // 카메라
+    val REQUEST_IMAGE_CAPTURE = 1111
+    val REQUEST_IMAGE_STORAGE = 1112
+
+    var photoUri: Uri? = null
+
+    var index = -1
+
+    // viewpager adapter
+    lateinit var adapter: RegisterReviewViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,14 +67,22 @@ class RegisterReviewActivity : AppCompatActivity()  {
         initToolbar()
           initIntent()
 //        initView()
-//        initBtn()
+        initBtn()
 //        initRecyclerView()
 //        readFile()
         initViewPager()
     }
 
-//    lateinit var testArray:ArrayList<ReviewItem>
-    lateinit var reviewArray:ArrayList<ReviewItem>
+    lateinit var commentArray:ArrayList<String>
+
+    fun initBtn(){
+
+        submit_review.setOnClickListener {
+            Log.v("comment_test", commentArray.toString())
+        }
+    }
+
+    //    lateinit var testArray:ArrayList<ReviewItem>
 /*
     fun initTest(){
         var testhash = ArrayList<String>()
@@ -78,7 +104,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
     }
 
 
-    lateinit var adpater: RegisterReviewViewPagerAdapter
+
     private fun initViewPager() {
 
   //      initTest()
@@ -93,20 +119,26 @@ class RegisterReviewActivity : AppCompatActivity()  {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 storage(positon)
             }
+
+            override fun onEditTextChanged(position: Int, str: String) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                commentArray[position] = str
+            }
         }
-        adpater = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
-        viewpager.adapter = adpater
+        adapter = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
+        viewpager.adapter = adapter
         TabLayoutMediator(tabLayout, viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
                 // Styling each tab here
             }
         }).attach()
-    }
 
-    lateinit var review_title:String
-    lateinit var review_date:String
-    var planID = -1
-    lateinit var tripList:ArrayList<String>
+        // comment Array Init
+        commentArray = ArrayList()
+        for(i in 0 until adapter.itemCount){
+            commentArray.add("")
+        }
+    }
 
     fun initIntent(){
         reviewArray = ArrayList()
@@ -160,12 +192,6 @@ class RegisterReviewActivity : AppCompatActivity()  {
     }
 
     /////////////////// Photo ///////////////////
-    val REQUEST_IMAGE_CAPTURE = 1111
-    val REQUEST_IMAGE_STORAGE = 1112
-
-    var photoUri: Uri? = null
-
-    var index = -1
     fun camera(position:Int){
 
         index = position
@@ -208,7 +234,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
             imgArray[viewpager.currentItem].add(imageFilePath)
 
             reviewArray[index].imageList!!.add(Drawable.createFromPath(imageFilePath))
-            adpater.notifyItemChanged(index)
+            adapter.notifyItemChanged(index)
 
             Log.v("img", file.toString())
 //            HTTpfileUpload()
@@ -242,7 +268,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
             }
 
             Log.v("index", index.toString())
-            adpater.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
 
 
         }

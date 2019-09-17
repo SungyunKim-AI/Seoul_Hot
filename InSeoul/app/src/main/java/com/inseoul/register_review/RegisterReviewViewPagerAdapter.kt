@@ -1,6 +1,8 @@
 package com.inseoul.register_review
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +22,7 @@ class RegisterReviewViewPagerAdapter(
     interface EventListener {
         fun addPhotoOnClick(view: View, position: Int)
         fun addGalleryOnClick(view:View, positon: Int)
+        fun onEditTextChanged(position:Int, str:String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegisterReviewViewPagerAdapter.ViewHolder {
@@ -59,6 +62,22 @@ class RegisterReviewViewPagerAdapter(
         holder.addGallery.setOnClickListener {
             listener.addGalleryOnClick(it, position)
         }
+
+        holder.trip_comment.addTextChangedListener( object: TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {
+//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    listener.onEditTextChanged(position, p0.toString())
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            }
+        )
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){

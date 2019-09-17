@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.inseoul.MainActivity
 import com.inseoul.R
 import com.inseoul.make_plan.RecommendPlan
+import kotlinx.android.synthetic.main.activity_register_review.*
 import kotlinx.android.synthetic.main.activity_review.*
 import kotlinx.android.synthetic.main.activity_review_cover.view.*
 import java.util.*
