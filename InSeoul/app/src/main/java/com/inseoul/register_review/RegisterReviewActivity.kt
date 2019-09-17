@@ -21,9 +21,13 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.android.volley.Response
+import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
+import com.inseoul.Server.PlaceRequest
+import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.my_page.MyPage_Item
 import com.inseoul.review.ReviewItem
 import kotlinx.android.synthetic.main.activity_add_place_main.*
@@ -153,7 +157,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
 //        val extras = intent.extras
 //        review_title = extras!!.getString("textview_title_past", "null")
 //        review_date = extras!!.getString("textview_date_past", "null")
-//        val plan_LIST = extras.getString("PLANLIST", "null")
+//       val plan_LIST = extras.getString("PLANLIST", "null")
 //        planID = extras.getInt("PLANID",  -1)
 
         val planist = plan_LIST!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -163,31 +167,60 @@ class RegisterReviewActivity : AppCompatActivity()  {
         for (p in 0 until o) {
 //            Log.d("json", plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
             tripList!!.add(plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
+            val responseListener = Response.Listener<String> { response ->
+                try {
 
+                    Log.d("dd", response)
+
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getJSONArray("response")
+                    var count = 0
+                    while (count < success.length()) {
+
+                        val `object` = success.getJSONObject(count)
+                        reviewArray.add(ReviewItem(
+                            null,
+                            null,
+                            1,
+                            0,
+                            null,
+                            null,
+                            0,
+                            `object`.getString("UPSONM"),         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
+                            null,
+                            ArrayList<Drawable?>(),
+                            null,
+                            123.33,
+                            123.22,
+                            "xxxx",
+                            "xxx",
+                            0,
+                            0)
+                        )
+                        Log.d("alert_search","")
+
+                        count++
+                    }
+
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            val idnumrequest = PlaceRequest(Integer.parseInt(planist[p]), responseListener)
+            val queue = Volley.newRequestQueue(this@RegisterReviewActivity)
+            queue.add(idnumrequest)
             val iArray = ArrayList<String>()
             imgArray.add(iArray)
-            reviewArray.add(ReviewItem(
-                null,
-                null,
-                1,
-                0,
-                null,
-                null,
-                0,
-                "존맛탱$",         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
-                null,
-                ArrayList<Drawable?>(),
-                null,
-                123.33,
-                123.22,
-                "xxxx",
-                "xxx",
-                0,
-                0)
-            )
+
 
 
         }
+
+    }
+    /////////////////////////////////////////SUNJAE SERVER??????????/////////////////////////////////////////////////////////////////////////////////////////////////
+    fun ServerGETDATE(){
+
 
     }
 
