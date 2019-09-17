@@ -59,8 +59,7 @@ class SearchDetail :
         initViewPager()
         initView()
         initMap()
-
-        add_my_list.setOnClickListener(this)
+        initPlanList()
     }
 
     fun loadDetailImg() {
@@ -206,6 +205,8 @@ class SearchDetail :
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
+            add_my_list.setOnClickListener(this)
         }
         val idnumrequest = ShowPlanRegister(id, responseListener)
         val queue = Volley.newRequestQueue(this)
