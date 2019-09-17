@@ -11,7 +11,7 @@ data class MyPage_Item(
     val likes:Int,
     val plan:String,
     val mem:String,
-    val thumbnail: String,
+    val thumbnail: String?,
     val review:Boolean
 ):Parcelable {
     constructor(parcel: Parcel) : this(
