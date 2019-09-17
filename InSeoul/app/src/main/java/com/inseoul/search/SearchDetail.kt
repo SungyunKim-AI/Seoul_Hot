@@ -1,17 +1,15 @@
 package com.inseoul.search
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
-import android.os.AsyncTask
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -23,9 +21,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.inseoul.R
-import com.inseoul.Server.idnumRequest
+import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.api_manager.RetrofitService
+import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -36,33 +35,20 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.ArrayList
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SearchDetail :
     AppCompatActivity(),
     View.OnClickListener,
-    OnMapReadyCallback
-{
+    OnMapReadyCallback {
 
-    internal var m_name: String? = null
-    private var plan_count: Int = 0
-    private val btnAlert: Button? = null
-
-
-    /////////////TEST CODE///////////////
-    internal var testlist = ArrayList<planlist>()
-    private val upsoID: Int = 0
-    private val planidarray = ArrayList<Int>()
-
+    var planList = ArrayList<planItem>()
 
     lateinit var data: Search_Item
-    lateinit var imgList:ArrayList<String>
-    lateinit var adapter:SearchDetailViewpagerAdapter
+    lateinit var imgList: ArrayList<String>
+    lateinit var adapter: SearchDetailViewpagerAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,12 +59,11 @@ class SearchDetail :
         initViewPager()
         initView()
         initMap()
-        Log.v("Detail data", data.toString())
 
-//        init()
+        add_my_list.setOnClickListener(this)
     }
 
-    fun loadDetailImg(){
+    fun loadDetailImg() {
         val MobileOS = "AND"
         val MobileApp = "InSeuol"
         val contentId = data.id
@@ -96,16 +81,16 @@ class SearchDetail :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 var d =
-                    Log.v("detail image",it.toString())
+                    Log.v("detail image", it.toString())
                 var str = ""
 
-                for(i in 0..it.response.body.items.item.size - 1){
+                for (i in 0..it.response.body.items.item.size - 1) {
                     val data = it.response.body.items.item[i]
 //                    Log.v("tlqkf",data.firstimage2.toString())
                     imgList.add(data.originimgurl)
                 }
                 val size = adapter.itemCount
-                val PageChangeCallback = object: ViewPager2.OnPageChangeCallback(){
+                val PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
                     override fun onPageSelected(position: Int) {
                         img_num.text = (position + 1).toString() + "/$size"
                         super.onPageSelected(position)
@@ -115,10 +100,11 @@ class SearchDetail :
                 adapter.notifyDataSetChanged()
                 detail_indicator.setViewPager(detail_image_view_pager);
 
-            },{
-                Log.v("Fail","")
+            }, {
+                Log.v("Fail", "")
             })
     }
+
     fun createOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
         val interceptor = HttpLoggingInterceptor()
@@ -130,7 +116,8 @@ class SearchDetail :
     fun initData() {
         imgList = ArrayList()
         data = intent.getParcelableExtra<Search_Item>("data")
-        if(data.servertype == 1){
+
+        if (data.servertype == 1) {
             detail_title.setTextColor(Color.BLACK)
             add_my_list.setImageDrawable(getDrawable(R.drawable.ic_bookmark_black))
             supportActionBar!!.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
@@ -139,87 +126,181 @@ class SearchDetail :
             detail_title.setTextColor(Color.WHITE)
         }
         loadDetailImg()
-
     }
 
 
-    fun initView(){
+    fun initView() {
         detail_title.text = data.title
         detail_address.text = "주소: " + data.addr1
     }
-    fun initViewPager(){
+
+
+    fun initViewPager() {
 
         adapter = SearchDetailViewpagerAdapter(this, imgList)
         detail_image_view_pager.adapter = adapter
         detail_indicator.setViewPager(detail_image_view_pager);
         previous.setOnClickListener {
-            detail_image_view_pager.setCurrentItem(detail_image_view_pager.currentItem - 1,true)
+            detail_image_view_pager.setCurrentItem(detail_image_view_pager.currentItem - 1, true)
         }
         next.setOnClickListener {
-            detail_image_view_pager.setCurrentItem(detail_image_view_pager.currentItem + 1,true)
+            detail_image_view_pager.setCurrentItem(detail_image_view_pager.currentItem + 1, true)
         }
     }
 
-    lateinit var mapFragment:SupportMapFragment
+    lateinit var mapFragment: SupportMapFragment
 
-    fun initMap(){
+    fun initMap() {
         mapFragment = supportFragmentManager
             .findFragmentById(R.id.detail_map) as SupportMapFragment
-//        bottom_sheet_map
         mapFragment.getMapAsync(this)
     }
 
     override fun onMapReady(p0: GoogleMap?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         var LatLng = LatLng(data.posY!!, data.posX!!)
         var marker = MarkerOptions()
         marker.position(LatLng)
-        marker.icon(BitmapDescriptorFactory.fromResource(com.inseoul.R.drawable.default_marker))
+        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
         p0!!.addMarker(marker)
-        p0!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng, 15f))
+        p0.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng, 15f))
 
     }
 
-    fun init() {
-        val idNUM = SaveSharedPreference.getUserID(this)
 
-        //        SearchItem searchItem = getIntent().getParcelableExtra("placeData");
-        val responseListener = object : Response.Listener<String> {
-            override fun onResponse(response: String) {
-                try {
-                    Log.d("dd", response)
-                    val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getJSONArray("response")
-                    var count = 0
-                    plan_count = success.length()
-                    while (count < success.length()) {
-                        val `object` = success.getJSONObject(count)
-                        planidarray.add(`object`.getInt("PLANID"))
-                        Log.d(this.javaClass.name, planidarray.toString())
+    fun initPlanList() {
+        val id = SaveSharedPreference.getUserID(this)
 
+        val responseListener = Response.Listener<String> { response ->
+            try {
 
-                        count++
+                Log.d("dd", response)
 
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getJSONArray("response")
+                var count = 0
+                while (count < success.length()) {
+
+                    val `object` = success.getJSONObject(count)
+                    val temp = planItem(
+                        `object`.getInt("#"), // planID
+                        `object`.getString("TripName"), // Plan 이름
+                        `object`.getString("DPDATE"), // 출발 날짜
+                        `object`.getString("ADDATE") //도착날짜
+                    )
+
+                    Log.d("alert_planItem", `object`.toString())
+
+                    val now = System.currentTimeMillis()
+                    val date = Date(now)
+                    val sdf = SimpleDateFormat("yyyy-MM-dd")
+
+                    val getTime = sdf.parse(sdf.format(date))
+                    val planTIME = sdf.parse(planList[planList.size - 1].endDate)
+
+                    if (getTime.before(planTIME)) {
+                        planList.add(temp)
                     }
-                    val showPlanTask = ShowPlanTask()
-                    showPlanTask.execute()
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                    count++
                 }
 
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
-        val idnumrequest = idnumRequest(idNUM, responseListener)
-        val queue = Volley.newRequestQueue(this@SearchDetail)
+        val idnumrequest = ShowPlanRegister(id, responseListener)
+        val queue = Volley.newRequestQueue(this)
         queue.add(idnumrequest)
+    }
 
 
-        /////////////TEST CODE///////////////
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
 
-        //        btnAlert = (Button)findViewById(R.id.add_my_list);
-        //        btnAlert.setOnClickListener(this);
+    //다이얼 로그 세팅 onClick
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.add_my_list -> {
+
+                initPlanList()              //여행 일정 받아오기
+
+                if (planList.size == 0) {
+
+                   val alertBuilder = AlertDialog.Builder(this)
+                    alertBuilder.setTitle("아직 일정이 없어요~")
+                        .setMessage("일정을 생성하시겠습니까?")
+                        .setPositiveButton("확인"){
+                            dialogInterface, i ->
+                            var intent = Intent(this, MakePlanActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        .setNegativeButton("취소"){
+                            dialogInterface, i ->
+                        }
+                        .show()
+
+
+                } else {
+
+                    val alertBuilder = AlertDialog.Builder(this)
+                    //alertBuilder.setIcon(R.drawable.ic_launcher);
+                    alertBuilder.setTitle("이곳을 추가할 일정을 선택하세요")
+
+                    // List Adapter 생성
+                    val adapter = ArrayAdapter<String>(
+                        this@SearchDetail,
+                        android.R.layout.select_dialog_singlechoice
+                    )
+
+                    for (i in 0 until planList.size) {
+                        adapter.add(planList[i].planNm)
+                    }
+
+                    // 버튼 생성
+                    alertBuilder.setNegativeButton(
+                        "취소"
+                    ) { dialog, which -> dialog.dismiss() }
+
+                    // Adapter 셋팅
+                    alertBuilder.setAdapter(
+                        adapter
+                    ) { dialog, id ->
+                        // AlertDialog 안에 있는 AlertDialog
+                        val strName = adapter.getItem(id)
+                        val innBuilder = AlertDialog.Builder(this@SearchDetail)
+                        innBuilder.setMessage(strName)
+                        innBuilder.setTitle("일정을 수정 하시겠습니까?")
+                        innBuilder
+                            .setPositiveButton(
+                                "확인"
+                            ) { dialog, which ->
+                                dialog.dismiss()
+                                val intent_add = Intent(this@SearchDetail, AddPlaceActivity::class.java)
+                                intent_add.putExtra("PlaceID", data)
+                                intent_add.putExtra("flag_key", 3)
+                                //Log.d("alert", strName!!)
+                                startActivity(intent_add)
+                            }
+                        innBuilder.setNegativeButton(
+                            "취소"
+                        ) { dialog, which -> dialog.dismiss() }
+                        innBuilder.show()
+                    }
+                    alertBuilder.show()
+                }
+            }
+
+            else -> {
+            }
+        }
     }
 
     ////////////////Toolbar//////////////
@@ -236,156 +317,7 @@ class SearchDetail :
         toolbar_search_details.bringToFront()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-    inner class ShowPlanTask : AsyncTask<Void, Void, String>() {
 
-        var target = ""
-        internal var PlanID: Int = 0
-        internal var asyncDialog = ProgressDialog(this@SearchDetail)
-
-
-        override fun onPreExecute() {
-
-            super.onPreExecute()
-
-            target = "http://ksun1234.cafe24.com/ShowPlan.php" // 웹 호스팅 정보를 받기위한  php 파일 주소
-
-
-        }
-
-        override fun doInBackground(vararg voids: Void): String? {
-            try {
-                Log.d("asyncTask", "Strart")
-                val url = URL(target)
-                val con = url.openConnection() as HttpURLConnection
-                Log.d("asyncTask", "Connect")
-                val inputStream = con.inputStream
-                val stringBuilder = StringBuilder()
-                val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-                var json: String
-                while ((bufferedReader.readLine()) != null) {
-                    json = bufferedReader.readLine()
-                    stringBuilder.append(json + "\n")
-                }
-                bufferedReader.close()
-                inputStream.close()
-                con.disconnect()
-                return stringBuilder.toString().trim { it <= ' ' }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            return null
-        }
-
-        public override fun onPostExecute(result: String) {
-
-
-            try {
-                Log.d("asyncTask", "onPostExecute")
-                val jsonObject = JSONObject(result)
-                val jsonArray = jsonObject.getJSONArray("response")
-
-                var count = 0
-                while (count < jsonArray.length()) {
-                    Log.d("asyncTask", "Reading$jsonArray")
-                    val `object` = jsonArray.getJSONObject(count)
-                    val planID = `object`.getInt("H")
-                    Log.d("as", planidarray.toString())
-                    if (planidarray.contains(planID)) {
-                        Log.d("async", "ss" + Integer.toString(planID))
-
-                        testlist.add(
-                            planlist(
-                                `object`.getString("TripName"),
-                                `object`.getString("DPDATE"),
-                                `object`.getInt("H")
-                            )
-                        )
-                    }
-
-                    count++
-
-                }
-
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            asyncDialog.dismiss()
-        }
-
-        override fun onCancelled() {
-
-            super.onCancelled()
-        }
-    }
-
-    //다이얼 로그 세팅 onClick
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.add_my_list -> {
-
-                val alertBuilder = AlertDialog.Builder(this)
-                //alertBuilder.setIcon(R.drawable.ic_launcher);
-                alertBuilder.setTitle("이곳을 추가할 일정을 선택하세요")
-
-                // List Adapter 생성
-                val adapter = ArrayAdapter<String>(
-                    this@SearchDetail,
-                    android.R.layout.select_dialog_singlechoice
-                )
-                for (i in 0 until plan_count) {
-                    adapter.add(testlist[i].title)
-                }
-
-                // 버튼 생성
-                alertBuilder.setNegativeButton(
-                    "취소"
-                ) { dialog, which -> dialog.dismiss() }
-
-                // Adapter 셋팅
-                alertBuilder.setAdapter(
-                    adapter
-                ) { dialog, id ->
-                    // AlertDialog 안에 있는 AlertDialog
-                    val strName = adapter.getItem(id)
-                    val innBuilder = AlertDialog.Builder(this@SearchDetail)
-                    innBuilder.setMessage(strName)
-                    innBuilder.setTitle("일정을 수정 하시겠습니까?")
-                    innBuilder
-                        .setPositiveButton(
-                            "확인"
-                        ) { dialog, which ->
-                            dialog.dismiss()
-                            val intent_add = Intent(this@SearchDetail, AddPlaceActivity::class.java)
-                            intent_add.putExtra("PlaceID", strName)
-                            intent_add.putExtra("flag_key", 3)
-                            //Log.d("alert", strName!!)
-                            startActivity(intent_add)
-                        }
-                    innBuilder.setNegativeButton(
-                        "취소"
-                    ) { dialog, which -> dialog.dismiss() }
-                    innBuilder.show()
-                }
-                alertBuilder.show()
-            }
-
-            else -> {
-            }
-        }
-    }
-
-    ////////////////TEST CODE//////////////
-    internal inner class planlist(var title: String, var date: String, var planid: Int)
+    //플랜 아이템 객체
+    data class planItem(var planID: Int, var planNm: String, var startDate: String, var endDate: String)
 }

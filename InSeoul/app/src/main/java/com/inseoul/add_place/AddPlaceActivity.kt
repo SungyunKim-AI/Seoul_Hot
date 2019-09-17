@@ -160,10 +160,8 @@ class AddPlaceActivity :
 
             //from SearchDetail
             if(flag==3){
-                val placeID = extras!!.getInt("PlaceID")
-
                 val item = extras!!.getParcelable<Search_Item>("placeData")
-                //Log.d("alert_back", item.toString())
+                Log.d("alert_back", item.toString())
 
                 var selectDate = add_place_viewpager.currentItem
 
@@ -637,7 +635,7 @@ class AddPlaceActivity :
 
     ////////////////// Compute Distance //////////////////
     fun distance(lat1: Double, lat2: Double, lng1: Double, lng2: Double): Double {
-        val theta = lng1 - lng2;
+        val theta = lng1 - lng2
         var dist =
             sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta))
         dist = acos(dist)

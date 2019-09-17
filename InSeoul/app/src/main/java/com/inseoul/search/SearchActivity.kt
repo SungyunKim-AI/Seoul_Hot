@@ -32,16 +32,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.collections.ArrayList
 
 class SearchActivity : AppCompatActivity() {
-    var hNUM: ArrayList<Int> = ArrayList()
-    var succ = false
-    var upNUM: ArrayList<Int> = ArrayList()
 
     lateinit var category: ArrayList<ArrayList<Search_Item>>
     var tour = ArrayList<Search_Item>()
     var culture = ArrayList<Search_Item>()
     var food = ArrayList<Search_Item>()
     var hotel = ArrayList<Search_Item>()
-    var temp = ArrayList<Search_Item>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -107,10 +105,6 @@ class SearchActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                var d =
-                    Log.v("tlqkf", it.toString())
-                var str = ""
-
 
                 for (i in 0..it.response.body.items.item.size - 1) {
                     val data = it.response.body.items.item[i]

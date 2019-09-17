@@ -51,15 +51,14 @@ class SearchAdapter(val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = items!!.get(position)
 
-
         if(data != null){
             if(data.url != null){
                 val url = data.url!!.replace("\\","")
-                Log.v("Thumbnail", url)
+ //               Log.v("Thumbnail", url)
                 Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.thumbnail)
             } else {
                 Glide.with(context).load(R.drawable.logo).into(holder.thumbnail)
-                Log.v("Thumbnail2", "null")
+ //               Log.v("Thumbnail2", "null")
             }
 
         }
