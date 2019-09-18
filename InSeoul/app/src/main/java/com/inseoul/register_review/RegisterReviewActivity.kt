@@ -88,11 +88,11 @@ class RegisterReviewActivity : AppCompatActivity()  {
                 Log.v("comment_test", reviewArray[i].review_content)
                 var imgarr = ""
                 for(j in imgArray[i]){
-                    var img = j.split("\\").lastIndex
-                    imgarr = imgarr + j.split("\\")[img] + ","
+                    var img = j.split("/").lastIndex
+                    imgarr = imgarr + j.split("/")[img] + ","
                     val up:HTTPUPLOad = HTTPUPLOad()
-                    up.HTTpfileUpload(j,j.split("\\")[img])
-                    Log.d("file Upload", j.split("\\")[img])
+                    up.HTTpfileUpload(j,j.split("/")[img])
+                    Log.d("file Upload", j.split("/")[img])
                 }
 
                 ReviewWriteRequ(planID.toString(),i.toString(),reviewArray[i].num.toString(),imgarr,reviewArray[i].review_content.toString())
