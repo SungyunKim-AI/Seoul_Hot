@@ -1,14 +1,18 @@
 package com.inseoul.review
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.inseoul.R
 
 class ReviewSummaryAdapter(
+    val context: Context,
     val itemlist:MutableList<ReviewItem>
 ) : RecyclerView.Adapter<ReviewSummaryAdapter.ViewHolder>(){
 
@@ -32,7 +36,11 @@ class ReviewSummaryAdapter(
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         val data = itemlist[position]
         var image = data.imageList!![0]!!
-        holder.image.setImageDrawable(image)
+        val url = "http://ksun1234.cafe24.com/" + image
+        Log.d("thumbnail url", url)
+        Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.image)
+
+//        holder.image.setImageDrawable(image)
         holder.name.text = data.upso_name
         holder.location.text = data.location
 

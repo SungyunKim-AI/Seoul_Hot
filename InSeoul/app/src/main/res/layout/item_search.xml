@@ -14,7 +14,9 @@
             app:riv_corner_radius="100dp"
             android:layout_margin="5dp"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher_inseoul_round"/>
+            android:src="@mipmap/ic_launcher_inseoul_round"
+
+    />
 
     <TextView
             android:id="@+id/search_title"

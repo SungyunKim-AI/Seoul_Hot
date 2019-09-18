@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.inseoul.R
 
 class HomeAdapter(val context: Context,
@@ -16,7 +17,7 @@ class HomeAdapter(val context: Context,
 ): RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
-        fun onClick(view: View)
+        fun onClick(view: View, position:Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,14 +42,17 @@ class HomeAdapter(val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = items!!.get(position)
 
-        holder.thumbnail.setImageResource(R.drawable.sample2)
+//        holder.thumbnail.setImageResource(R.drawable.sample2)
+        val url = "http://ksun1234.cafe24.com/" + data.thumbnail
+        Log.d("thumbnail url", url)
+        Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.thumbnail)
         holder.item_title.text = data.title
         holder.item_content.text = data.content
 
 
         Log.v("In RecyclerView", "Bind Item")
         holder.itemView.setOnClickListener {
-            listener!!.onClick(it)
+            listener!!.onClick(it, position)
         }
     }
 

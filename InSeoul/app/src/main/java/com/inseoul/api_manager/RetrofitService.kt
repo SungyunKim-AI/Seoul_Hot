@@ -97,5 +97,8 @@ interface RetrofitService {
         @Query("_type") _type:String
 
     ): Observable<ForecastModel_MiddleTemperature>
+    // 리뷰 받아오기
 
+    @GET("ShowPlan.php")
+    fun getReview(): Observable<ReviewDataModel>
 }

@@ -1,16 +1,20 @@
 package com.inseoul.review
 
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.inseoul.R
 
 class Review_ImageViewPagerAdapter(
-    val itemlist:ArrayList<Drawable?>?
+    var context: Context,
+    val itemlist:List<String?>?
     ) : RecyclerView.Adapter<Review_ImageViewPagerAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +36,11 @@ class Review_ImageViewPagerAdapter(
 
         if(itemlist != null){
             var img = itemlist[position]
-            holder.image.setImageDrawable(img)
+            val url = "http://ksun1234.cafe24.com/" + img
+            Log.d("thumbnail url", url)
+            Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.image)
+
+//            holder.image.setImageDrawable(img)
         }
     }
 

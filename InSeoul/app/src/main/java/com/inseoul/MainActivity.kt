@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.inseoul.api_manager.RetrofitService
+import com.inseoul.data_model.ReviewDataModel
 import com.inseoul.forecast.ForecastActivity
 import com.inseoul.forecast.Forecast_shortTermItem
 import com.inseoul.home.HomeAdapter
@@ -43,6 +44,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_test.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -113,8 +115,10 @@ class MainActivity :
         base_data = s_format
         if(s_minute >= 45){
             base_time = (s_time).toString() + "30"
-        } else{
-            base_time = (s_time - 2).toString() + "30"
+        } else if (s_minute in 30..45) {
+            base_time = (s_time).toString() + "00"
+        } else {
+            base_time = (s_time - 1).toString() + "30"
         }
 //        base_time = s_time.toString() + s_minute.toString()
 
@@ -190,7 +194,11 @@ class MainActivity :
                             }
                         }
                         home_date.text = model_shortTerm[i].month.toString() + "/" + model_shortTerm[i].day.toString()
-                        home_temp.text = model_shortTerm[i].T1H.toString() + "º"
+                        if(model_shortTerm[i].T1H == null){
+                            home_temp.text = "점검중.."
+                        } else {
+                            home_temp.text = model_shortTerm[i].T1H.toString() + "º"
+                        }
                         break;
                     }
                 }
@@ -212,9 +220,6 @@ class MainActivity :
             })
     }
 
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -234,7 +239,9 @@ class MainActivity :
         /////////////////////////////////////////////////////
         initPermission()
         initBtn()
-        initTest()
+//        initTest()
+
+        getReviewFromServer()
         initRecyclerView()
         initFloating()
 
@@ -530,14 +537,49 @@ class MainActivity :
     }
 
     ////////////////// Recycler View //////////////////
-    private val test = ArrayList<HomeItem>()
-    var layoutManager: RecyclerView.LayoutManager? = null
-    var adapter: HomeAdapter? = null
+    private val itemList = ArrayList<HomeItem>()
+    lateinit var layoutManager: RecyclerView.LayoutManager
+    lateinit var adapter: HomeAdapter
 
+    lateinit var rawData: ArrayList<ReviewDataModel.plan>
+
+    // Review 받아오기
+
+    fun getReviewFromServer(){
+        rawData = ArrayList()
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://ksun1234.cafe24.com/")
+            .client(createOkHttpClient())
+            .build()
+            .create(RetrofitService::class.java)
+            .getReview()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                for(i in 0 until it.response.size){
+                    val d = it.response[i]
+                    if(d.ReviewBool == 1){
+                        rawData.add(d)
+
+//                        Log.d("main_review", d.toString())
+
+                        val thumbnail = d.Review!![0].IMGNAME.split(",")[0]
+                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행"))
+                    }
+                }
+                adapter.notifyDataSetChanged()
+            },{
+                Log.v("Fail","")
+            })
+
+    }
     fun initTest() {
 
         for (i in 0..10) {
-            test.add(HomeItem("This is Title" + i.toString(), "This is Content" + i.toString()))
+//            test.add(HomeItem("This is Title" + i.toString(), "This is Content" + i.toString()))
         }
     }
 
@@ -545,14 +587,28 @@ class MainActivity :
         layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView_addPlace.layoutManager = layoutManager
         val listener = object : HomeAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick(view: View) {
+            override fun onClick(view: View, position:Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 val intent = Intent(applicationContext, ReviewActivity::class.java)
+
+                // Review전달
+                var temp = ArrayList<ReviewDataModel.Review>()
+                temp = rawData[position].Review!!
+                intent.putExtra("review",temp)
+
+                // 기본 정보
+                intent.putExtra("Plan", rawData[position].Plan)
+                intent.putExtra("TripName", rawData[position].TripName)
+                intent.putExtra("DPDATE", rawData[position].DPDATE)
+                intent.putExtra("ADDATE", rawData[position].ADDATE)
+
+                Log.e("review_intent", rawData[position].toString())
+
                 startActivity(intent)
             }
         }
 
-        adapter = HomeAdapter(this, listener, test)
+        adapter = HomeAdapter(this, listener, itemList)
         recyclerView_addPlace.adapter = adapter
         recyclerView_addPlace.addItemDecoration(DividerItemDecoration(this, 1))
     }

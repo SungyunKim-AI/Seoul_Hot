@@ -26,16 +26,6 @@
                     android:orientation="vertical"
                     app:layout_collapseMode="parallax"
                     android:id="@+id/linearlayout_size">
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:gravity="center"
-                        android:text="In Seoul"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="36dp"
-                        android:background="@color/colorPrimaryDark"
-                />
                 <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"

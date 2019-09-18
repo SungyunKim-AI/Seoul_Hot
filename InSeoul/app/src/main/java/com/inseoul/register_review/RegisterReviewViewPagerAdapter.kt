@@ -49,7 +49,7 @@ class RegisterReviewViewPagerAdapter(
         if(data.imageList != null){
             var iList = data.imageList
             Log.e("image", iList!!.toString())
-            val adapter = RegisterReviewRecyclerViewAdapter(iList!!)
+            val adapter = RegisterReviewRecyclerViewAdapter(c, iList!!)
             holder.imgList.layoutManager = LinearLayoutManager(c, LinearLayout.HORIZONTAL, false)
             holder.imgList.adapter = adapter
         }

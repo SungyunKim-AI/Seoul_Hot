@@ -3,6 +3,7 @@ package com.inseoul.register_review
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.drawable.Drawable
@@ -215,7 +216,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                 0,
                 "",
                 null,
-                ArrayList<Drawable?>(),
+                ArrayList<String?>(),
                 null,
                 123.33,
                 123.22,
@@ -246,7 +247,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                         null, success.getInt("#"),
                         success.getString("UPSONM"),         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
                         null,
-                        ArrayList<Drawable?>(),
+                        ArrayList<String?>(),
                         "",
                         123.33,
                         123.22,
@@ -312,7 +313,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
             // Add Image URI
             imgArray[viewpager.currentItem].add(imageFilePath)
 
-            reviewArray[index].imageList!!.add(Drawable.createFromPath(imageFilePath))
+            reviewArray[index].imageList!!.add(imageFilePath)
             adapter.notifyDataSetChanged()
 
             Log.v("img", file.toString())
@@ -331,17 +332,19 @@ class RegisterReviewActivity : AppCompatActivity()  {
                     val inputStream = contentResolver.openInputStream(clipData.getItemAt(0).uri)
 
                     // Add Image URI
-                    imgArray[viewpager.currentItem].add(clipData.getItemAt(0).uri.path!!)
+                    val imgName = absolutelyPath(clipData.getItemAt(0).uri!!)
+                    imgArray[viewpager.currentItem].add(imgName)
 
-                    reviewArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(0).uri.path))
+                    reviewArray[index].imageList!!.add(clipData.getItemAt(0).uri.path)
                 } else if(clipData.itemCount > 1 && clipData.itemCount < 10){
                     for(i in 0 until clipData.itemCount){
                         val inputStream = contentResolver.openInputStream(clipData.getItemAt(i).uri)
 
                         // Add Image URI
-                        imgArray[viewpager.currentItem].add(clipData.getItemAt(i).uri.path!!)
+                        val imgName = absolutelyPath(clipData.getItemAt(i).uri!!)
+                        imgArray[viewpager.currentItem].add(imgName)
 
-                        reviewArray[index].imageList!!.add(Drawable.createFromStream(inputStream, clipData.getItemAt(i).uri.path))
+                        reviewArray[index].imageList!!.add(clipData.getItemAt(i).uri.path)
                     }
                 }
             }
@@ -352,6 +355,18 @@ class RegisterReviewActivity : AppCompatActivity()  {
 
         }
 
+    }
+
+    // 절대경로 변환
+    fun absolutelyPath(path: Uri): String {
+
+        var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+        var c: Cursor = contentResolver.query(path, proj, null, null, null)!!
+        var index = c.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        c.moveToFirst()
+
+        var result = c.getString(index)
+        return result
     }
 
 //    lateinit var imageFilePath: String

@@ -2,6 +2,7 @@ package com.inseoul.review
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.inseoul.R
@@ -32,7 +34,7 @@ class Review_ViewPagerAdapter(
             is ViewHolder1 -> {
                 var size = data.imageList!!.size
 
-                holder.review_img.adapter = Review_ImageViewPagerAdapter(data.imageList)
+                holder.review_img.adapter = Review_ImageViewPagerAdapter(c, data.imageList)
                 val PageChangeCallback = object:ViewPager2.OnPageChangeCallback(){
                     override fun onPageSelected(position: Int) {
                         holder.img_num.text = (position + 1).toString() + "/$size"
@@ -84,7 +86,12 @@ class Review_ViewPagerAdapter(
 //                holder.relative_layout.onInterceptTouchEvent()
             }
             is ViewHolder0 -> {
-                holder.coverImg.setImageDrawable(data.info!!.coverImg)
+                var img = data.info!!.coverImg
+//                holder.image.setImageResource(R.drawable.sample2)
+                val url = "http://ksun1234.cafe24.com/" + img
+                Log.d("thumbnail url", url)
+                Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.coverImg)
+//                holder.coverImg.setImageDrawable(data.info!!.coverImg)
 
 //                val animSlide = AnimationUtils.loadAnimation(c, R.anim.slide)
 //                holder.coverImg.startAnimation(animSlide)
@@ -240,7 +247,7 @@ class Review_ViewPagerAdapter(
 
             // recyclerView
             val real_item = itemlist.subList(1,itemlist.size-2)
-            val adapter = ReviewSummaryAdapter(real_item)
+            val adapter = ReviewSummaryAdapter(c, real_item)
             recyclerView.layoutManager = LinearLayoutManager(c)
             recyclerView.adapter = adapter
 
@@ -323,33 +330,35 @@ class Review_ViewPagerAdapter(
 //            p0!!.addMarker(marker)
 //            p0!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng, 13f))
 
-            var list = itemlist[0].summary!!.list
+            if(itemlist[0].summary != null){
+                var list = itemlist[0].summary!!.list
 
-            // Add PolyLine
-            val POLYLINE_STROKE_WIDTH_PX = 7f
-            val PATTERN_GAP_LENGTH_PX = 10f
-            val DOT = Dot()
-            val GAP = Gap(PATTERN_GAP_LENGTH_PX)
-            val PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT)
-            val polyline = p0.addPolyline(
-                PolylineOptions()
-                    .clickable(true)
-                    .addAll(list)
-            )
-            polyline.width = POLYLINE_STROKE_WIDTH_PX
-            polyline.pattern = PATTERN_POLYLINE_DOTTED
+                // Add PolyLine
+                val POLYLINE_STROKE_WIDTH_PX = 7f
+                val PATTERN_GAP_LENGTH_PX = 10f
+                val DOT = Dot()
+                val GAP = Gap(PATTERN_GAP_LENGTH_PX)
+                val PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT)
+                val polyline = p0.addPolyline(
+                    PolylineOptions()
+                        .clickable(true)
+                        .addAll(list)
+                )
+                polyline.width = POLYLINE_STROKE_WIDTH_PX
+                polyline.pattern = PATTERN_POLYLINE_DOTTED
 
-            // Add Marker
-            p0!!.moveCamera(CameraUpdateFactory.newLatLngZoom(list[0], 13f))
-            for(i in 0 until list.size){
-                var marker = MarkerOptions()
-                marker.position(list[i])
-                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
-                p0.addMarker(marker)
+                // Add Marker
+                p0!!.moveCamera(CameraUpdateFactory.newLatLngZoom(list[0], 13f))
+                for(i in 0 until list.size){
+                    var marker = MarkerOptions()
+                    marker.position(list[i])
+                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
+                    p0.addMarker(marker)
+                }
+
+                p0.setOnMarkerClickListener(this)
+                p0.setOnMapClickListener(this)
             }
-
-            p0.setOnMarkerClickListener(this)
-            p0.setOnMapClickListener(this)
         }
 
     }

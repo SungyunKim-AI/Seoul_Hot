@@ -10,12 +10,12 @@ data class reviewInfo(
     val title:String,
     val date:String,
     val userId:String,
-    val coverImg:Drawable?
+    val coverImg:String
 )
 data class ReviewItem(      // 내용
     val info:reviewInfo?,
     val summary:reviewSummary?,
-    val type:Int,
+    var type:Int,
 
     val id:Int,
     val reviewHash:ArrayList<String>?,
@@ -24,7 +24,7 @@ data class ReviewItem(      // 내용
     val num:Int,
     val upso_name:String,
     val upso_hashTag:ArrayList<String>?,
-    var imageList:ArrayList<Drawable?>?,
+    var imageList:ArrayList<String?>?,
     var review_content:String?,
     val posX:Double,
     val posY:Double,

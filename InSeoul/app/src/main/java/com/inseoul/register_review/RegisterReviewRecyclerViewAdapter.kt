@@ -1,15 +1,19 @@
 package com.inseoul.register_review
 
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.inseoul.R
 
 class RegisterReviewRecyclerViewAdapter(
-    val itemlist:ArrayList<Drawable?>
+    val c: Context,
+    val itemlist:ArrayList<String?>
 ): RecyclerView.Adapter<RegisterReviewRecyclerViewAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -30,7 +34,13 @@ class RegisterReviewRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //        holder.setIsRecyclable(false)
-        holder.img.setImageDrawable(itemlist[position])
+//        holder.img.setImageDrawable(itemlist[position])
+        var img = itemlist[position]
+//            holder.image.setImageResource(R.drawable.sample2)
+        val url = "http://ksun1234.cafe24.com/" + img
+//        Log.d("thumbnail url", url)
+        Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.img)
+
         holder.cancel.setOnClickListener {
 
         }
