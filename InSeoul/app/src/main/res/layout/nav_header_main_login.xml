@@ -23,23 +23,17 @@
                 android:gravity="center"
                 android:layout_marginTop="15dp"
         >
-            <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:paddingTop="@dimen/nav_header_vertical_spacing"
-                    android:contentDescription="@string/nav_header_desc"
-                    android:id="@+id/imageView"
-                    android:layout_margin="15dp"
-                    android:src="@drawable/profile"
-            />
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_weight="1"
+                    android:layout_margin="25dp"
             >
                 <TextView
                         android:id="@+id/tvId"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -50,6 +44,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="일정을 생성하고 관리하세요"
+                        android:layout_marginTop="10dp"
                         android:linksClickable="true"
                         android:id="@+id/tv_plan_count"/>
             </LinearLayout>
@@ -57,6 +52,7 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center"
         >
