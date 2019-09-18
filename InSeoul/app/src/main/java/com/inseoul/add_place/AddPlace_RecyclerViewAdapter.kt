@@ -1,12 +1,20 @@
 package com.inseoul.add_place
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.core.app.ActivityCompat.postponeEnterTransition
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import com.inseoul.search.SearchActivity
+import kotlinx.android.synthetic.main.activity_add_place_page.view.*
+import org.w3c.dom.Text
 
 class AddPlace_RecyclerViewAdapter(
     val context: Context,
@@ -71,8 +79,10 @@ class AddPlace_RecyclerViewAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            listener!!.onClick(it, position)
+            listener.onClick(it, position)
         }
+
+
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

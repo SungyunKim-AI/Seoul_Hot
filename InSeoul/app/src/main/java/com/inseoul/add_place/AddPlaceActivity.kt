@@ -148,7 +148,7 @@ class AddPlaceActivity :
             initRecylcerview(start!!, end!!)
 
             val date = extras!!.getString("PlanDate", "NULL")
-            PlanTitle.hint = date + " 여정"
+//            PlanTitle.hint = date + " 여정"
 
             textview_plandate.text = date
         } else {
@@ -212,12 +212,6 @@ class AddPlaceActivity :
             finish()
         }
 
-        addBtn.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            intent.putExtra("flag", true)
-            startActivityForResult(intent, 3000)
-        }
-
         fade_out = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_morebtn_anim)
         rotate_open = AnimationUtils.loadAnimation(applicationContext, R.anim.rotate_anim)
         rotate_close = AnimationUtils.loadAnimation(applicationContext, R.anim.rotate_anim_close)
@@ -257,6 +251,7 @@ class AddPlaceActivity :
             if (i == EditorInfo.IME_ACTION_DONE) {
                 PlanTitle.isFocusableInTouchMode = false
                 PlanTitle.isFocusable = false
+                editPlanTitleBtn.visibility = VISIBLE
                 editPlanTitleComplete.visibility = GONE
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
@@ -269,6 +264,7 @@ class AddPlaceActivity :
         editPlanTitleBtn.setOnClickListener {
             PlanTitle.isFocusableInTouchMode = true
             PlanTitle.requestFocus()
+            editPlanTitleBtn.visibility = GONE
             editPlanTitleComplete.visibility = VISIBLE
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(PlanTitle, 0)
@@ -277,6 +273,7 @@ class AddPlaceActivity :
         editPlanTitleComplete.setOnClickListener {
             PlanTitle.isFocusableInTouchMode = false
             PlanTitle.isFocusable = false
+            editPlanTitleBtn.visibility = VISIBLE
             editPlanTitleComplete.visibility = GONE
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
@@ -319,8 +316,19 @@ class AddPlaceActivity :
             dayList.add(t)
         }
 
-        adapter = AddPlace_ViewPagerAdapter(this, diffDays, dayList)
+        val listener = object : AddPlace_ViewPagerAdapter.ViewPagerAdapterEventListener {
+            override fun onClick(view: View,position: Int) {
+                val intent = Intent(this@AddPlaceActivity, SearchActivity::class.java)
+                intent.putExtra("flag", true)
+                startActivityForResult(intent, 3000)
+            }
+
+        }
+
+
+        adapter = AddPlace_ViewPagerAdapter(this, diffDays, listener ,dayList)
         add_place_viewpager.adapter = adapter
+
 
         TabLayoutMediator(tabLayout_addPlace, add_place_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
@@ -670,6 +678,7 @@ class AddPlaceActivity :
         val actionBar = supportActionBar
         actionBar!!.setDisplayShowCustomEnabled(true) //커스터마이징 하기 위해 필요
         actionBar.setDisplayShowTitleEnabled(false)
+        actionBar.setTitle("일정 추가하기")
 
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
         actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
