@@ -27,8 +27,8 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
-import com.inseoul.Server.PlaceRequest
-import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.Server.*
+import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
 import com.inseoul.review.ReviewItem
 import kotlinx.android.synthetic.main.activity_add_place_main.*
@@ -83,9 +83,19 @@ class RegisterReviewActivity : AppCompatActivity()  {
 
     fun initBtn(){
 
-        submit_review.setOnClickListener {
+        submit_review.setOnClickListener {//LANIDnum: String,IndexOFPLAN:String , PlaceID: String, IMGNAMEARR:String , Review:String
             for(i in 0 until reviewArray.size){
                 Log.v("comment_test", reviewArray[i].review_content)
+                var imgarr = ""
+                for(j in imgArray[i]){
+                    var img = j.split("\\").lastIndex
+                    imgarr = imgarr + j.split("\\")[img] + ","
+                    val up:HTTPUPLOad = HTTPUPLOad()
+                    up.HTTpfileUpload(j,j.split("\\")[img])
+                    Log.d("file Upload", j.split("\\")[img])
+                }
+
+                ReviewWriteRequ(planID.toString(),i.toString(),reviewArray[i].num.toString(),imgarr,reviewArray[i].review_content.toString())
             }
         }
     }
@@ -109,6 +119,29 @@ class RegisterReviewActivity : AppCompatActivity()  {
         for( i in tripList){
 
         }
+    }
+    fun ReviewWriteRequ(PLANIDnum: String,IndexOFPLAN:String , PlaceID: String, IMGNAMEARR:String , Review:String){
+        val responseListener = Response.Listener<String> { response ->
+            try {
+                Log.d("d", response)
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getBoolean("success")
+                if (success) {
+                    Toast.makeText(this@RegisterReviewActivity, "정상적 등록 완료", Toast.LENGTH_SHORT).show()
+                    //finish()
+
+                } else {
+                    Toast.makeText(this@RegisterReviewActivity, "등록 실패", Toast.LENGTH_SHORT).show()
+                    //finish()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        val registerRequest = ReviewWriteRequest(PLANIDnum,IndexOFPLAN,PlaceID, IMGNAMEARR,Review,responseListener)
+
+        val queue = Volley.newRequestQueue(this@RegisterReviewActivity)
+        queue.add(registerRequest)
     }
 
 
@@ -149,10 +182,11 @@ class RegisterReviewActivity : AppCompatActivity()  {
         imgArray = ArrayList()
 
         val item = intent.getParcelableExtra<MyPage_Item>("item")
+        planID = item.Num
         review_title = item.title
         review_date = item.date
         val plan_LIST = item.plan
-        planID = -1                         // planID 필요
+                               // planID 필요
 //        val extras = intent.extras
 //        review_title = extras!!.getString("textview_title_past", "null")
 //        review_date = extras!!.getString("textview_date_past", "null")
@@ -209,8 +243,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                         1,
                         0,
                         null,
-                        null,
-                        0,
+                        null, success.getInt("#"),
                         success.getString("UPSONM"),         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
                         null,
                         ArrayList<Drawable?>(),
