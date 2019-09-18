@@ -59,6 +59,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/radius_btn"
                     android:textColor="@color/white"
+                    android:visibility="gone"
             />
         </LinearLayout>
     </LinearLayout>

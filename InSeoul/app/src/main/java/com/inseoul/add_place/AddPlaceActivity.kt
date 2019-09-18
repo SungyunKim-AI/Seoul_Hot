@@ -317,7 +317,7 @@ class AddPlaceActivity :
         }
 
         val listener = object : AddPlace_ViewPagerAdapter.ViewPagerAdapterEventListener {
-            override fun onClick(view: View,position: Int) {
+            override fun onClick(view: View, position: Int) {
                 val intent = Intent(this@AddPlaceActivity, SearchActivity::class.java)
                 intent.putExtra("flag", true)
                 startActivityForResult(intent, 3000)
@@ -326,18 +326,20 @@ class AddPlaceActivity :
         }
 
 
-        adapter = AddPlace_ViewPagerAdapter(this, diffDays, listener ,dayList)
+        adapter = AddPlace_ViewPagerAdapter(this, diffDays, listener, dayList)
         add_place_viewpager.adapter = adapter
 
 
         TabLayoutMediator(tabLayout_addPlace, add_place_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
             override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+
                 var day = position + 1
                 tab.setText("day-$day")
+
             }
         }).attach()
 
-        if (tabLayout_addPlace.tabCount > 4) {
+        if (tabLayout_addPlace.tabCount > 5) {
             tabLayout_addPlace.tabMode = TabLayout.MODE_SCROLLABLE
         }
     }
@@ -639,8 +641,6 @@ class AddPlaceActivity :
                 ////////////////////////
 
                 //서버에 날짜 넣어주세요 순재씨
-
-
 
 
                 ////////////////////////
