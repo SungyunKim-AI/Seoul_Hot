@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.FileProvider
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -69,20 +70,23 @@ class RegisterReviewActivity : AppCompatActivity()  {
         setContentView(R.layout.activity_register_review)
 
         initToolbar()
-          initIntent()
+        initIntent()
 //        initView()
         initBtn()
 //        initRecyclerView()
 //        readFile()
         initViewPager()
+        ServerGETDATE()
     }
 
-    lateinit var commentArray:ArrayList<String>
+//    lateinit var commentArray:ArrayList<String>
 
     fun initBtn(){
 
         submit_review.setOnClickListener {
-            Log.v("comment_test", commentArray.toString())
+            for(i in 0 until reviewArray.size){
+                Log.v("comment_test", reviewArray[i].review_content)
+            }
         }
     }
 
@@ -115,7 +119,25 @@ class RegisterReviewActivity : AppCompatActivity()  {
 
 
 
+        val listener = object: RegisterReviewViewPagerAdapter.EventListener{
+            override fun addPhotoOnClick(view: View, position: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                camera(position)
+            }
 
+            override fun addGalleryOnClick(view: View, positon: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                storage(positon)
+            }
+
+        }
+        adapter = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
+        viewpager.adapter = adapter
+        TabLayoutMediator(tabLayout, viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
+            override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+                // Styling each tab here
+            }
+        }).attach()
 
         // comment Array Init
 
@@ -137,90 +159,81 @@ class RegisterReviewActivity : AppCompatActivity()  {
 //       val plan_LIST = extras.getString("PLANLIST", "null")
 //        planID = extras.getInt("PLANID",  -1)
 
-        val planist = plan_LIST!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val o = planist.size
+        val planlist = plan_LIST!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val o = planlist.size
 //        Log.d("json", Integer.toString(o))
 //        Log.d("json", plan_LIST.toString())
-        commentArray = ArrayList()
+//        commentArray = ArrayList()
 
         for (p in 0 until o) {
 //            Log.d("json", plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
             tripList!!.add(plan_LIST.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[p])
-            val responseListener = Response.Listener<String> { response ->
-                try {
-
-                    Log.d("dd", response)
-
-                    val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getJSONObject("response")
-                    Log.d("alert_search","")
-                    reviewArray.add(ReviewItem(
-                            null,
-                            null,
-                            1,
-                            0,
-                            null,
-                            null,
-                            0,
-                            success.getString("UPSONM"),         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
-                            null,
-                            ArrayList<Drawable?>(),
-                            null,
-                            123.33,
-                            123.22,
-                            "xxxx",
-                            "xxx",
-                            0,
-                            0)
-                    )
-                    Log.d("alert_search","")
-                    commentArray.add("")
-
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                if(p==o-1){
-                    val listener = object: RegisterReviewViewPagerAdapter.EventListener{
-                        override fun addPhotoOnClick(view: View, position: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                            camera(position)
-                        }
-
-                        override fun addGalleryOnClick(view: View, positon: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                            storage(positon)
-                        }
-
-                        override fun onEditTextChanged(position: Int, str: String) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                            commentArray[position] = str
-                        }
-                    }
-                adapter = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
-                viewpager.adapter = adapter
-                TabLayoutMediator(tabLayout, viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
-                    override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-                        // Styling each tab here
-                    }
-                }).attach()
-
-            }
-            }
-            val idnumrequest = PlaceRequest(Integer.parseInt(planist[p]), responseListener)
-            val queue = Volley.newRequestQueue(this@RegisterReviewActivity)
-            queue.add(idnumrequest)
+//            commentArray.add("")
             val iArray = ArrayList<String>()
             imgArray.add(iArray)
-
-
-
+            reviewArray.add(ReviewItem(
+                null,
+                null,
+                1,
+                0,
+                null,
+                null,
+                0,
+                "",
+                null,
+                ArrayList<Drawable?>(),
+                null,
+                123.33,
+                123.22,
+                "",
+                "",
+                0,
+                0
+            ))
         }
+
 
     }
     /////////////////////////////////////////SUNJAE SERVER??????????/////////////////////////////////////////////////////////////////////////////////////////////////
     fun ServerGETDATE(){
+        for(i in 0 until reviewArray.size){
+            val responseListener = Response.Listener<String> { response ->
+                try {
+                    Log.d("hsoh0306", response)
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getJSONObject("response")
+                    Log.d("alert_search", "")
+                    reviewArray[i] = ReviewItem(
+                        null,
+                        null,
+                        1,
+                        0,
+                        null,
+                        null,
+                        0,
+                        success.getString("UPSONM"),         // 서버 연결 후 업소 정보 받아서 리뷰 어레이 초기화 하기
+                        null,
+                        ArrayList<Drawable?>(),
+                        "",
+                        123.33,
+                        123.22,
+                        "xxxx",
+                        "xxx",
+                        0,
+                        0
+                    )
+                    Log.d("alert_search", "")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            val idnumrequest = PlaceRequest(Integer.parseInt(tripList[i]), responseListener)
+            val queue = Volley.newRequestQueue(this@RegisterReviewActivity)
+            queue.add(idnumrequest)
 
+        }
+        Log.d("hsoh0306_2", reviewArray.toString())
+        adapter.notifyDataSetChanged()
 
     }
 
@@ -267,7 +280,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
             imgArray[viewpager.currentItem].add(imageFilePath)
 
             reviewArray[index].imageList!!.add(Drawable.createFromPath(imageFilePath))
-            adapter.notifyItemChanged(index)
+            adapter.notifyDataSetChanged()
 
             Log.v("img", file.toString())
 //            HTTpfileUpload()

@@ -25,7 +25,7 @@ data class ReviewItem(      // 내용
     val upso_name:String,
     val upso_hashTag:ArrayList<String>?,
     var imageList:ArrayList<Drawable?>?,
-    val review_content:String?,
+    var review_content:String?,
     val posX:Double,
     val posY:Double,
     val location:String,

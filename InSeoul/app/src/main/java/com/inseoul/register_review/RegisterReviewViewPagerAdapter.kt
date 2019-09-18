@@ -16,13 +16,12 @@ import com.inseoul.review.ReviewItem
 class RegisterReviewViewPagerAdapter(
     val c: Context,
     val listener:EventListener,
-    val itemlist:ArrayList<ReviewItem>
+    var itemlist:ArrayList<ReviewItem>
 ) : RecyclerView.Adapter<RegisterReviewViewPagerAdapter.ViewHolder>(){
 
     interface EventListener {
         fun addPhotoOnClick(view: View, position: Int)
         fun addGalleryOnClick(view:View, positon: Int)
-        fun onEditTextChanged(position:Int, str:String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegisterReviewViewPagerAdapter.ViewHolder {
@@ -70,14 +69,19 @@ class RegisterReviewViewPagerAdapter(
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 //                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    listener.onEditTextChanged(position, p0.toString())
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 //                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    itemlist[position].review_content = holder.trip_comment.text.toString()
+
                 }
             }
         )
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
