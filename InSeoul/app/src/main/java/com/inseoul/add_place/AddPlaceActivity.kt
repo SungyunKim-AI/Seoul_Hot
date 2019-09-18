@@ -152,11 +152,11 @@ class AddPlaceActivity :
 
             textview_plandate.text = date
         } else {
-            //from MySchedulesActivity
+            //from MyPageActivity
             val planID = extras!!.getInt("PlanID")
 
-            if(flag==3){
-                tempItem = extras.getParcelable<Search_Item>("placeData")!!
+            if (flag == 3) {
+                tempItem = extras.getParcelable("placeData")!!
             }
 
             RequestPlanItem(planID, flag)
@@ -562,7 +562,7 @@ class AddPlaceActivity :
     }
 
     /////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
-    fun RequestPlanItem(PlanID: Int, flag:Int) {
+    fun RequestPlanItem(PlanID: Int, flag: Int) {
 
         val id = SaveSharedPreference.getUserID(this)
 
@@ -603,13 +603,43 @@ class AddPlaceActivity :
 
             initRecylcerview(searchitm.date, searchitm.thumbnail!!)
 
-            val date = searchitm.date + searchitm.thumbnail!!
+            val start_calendar = searchitm.date.split("-")
+            var startDay = start_calendar[2]
+            var startMonth = start_calendar[1]
+            var startYear = start_calendar[0]
+
+            val end_calendar = searchitm.thumbnail!!.split("-")
+            var endDay = end_calendar[2]
+            var endMonth = end_calendar[1]
+            var endYear = end_calendar[0]
+
+            var resultStr: String? = null
+
+            if (startYear == endYear) {
+                resultStr = startYear + "." + startMonth + "." + startDay + " - " + endMonth + "." + endDay
+            }
+            if (startYear == endYear && startMonth == endMonth && startDay == endDay) {
+                resultStr = startYear + "." + startMonth + "." + startDay
+            }
+
+            val date = resultStr
             PlanTitle.setText(searchitm.title)
             textview_plandate.text = date
 
-            //from SearchDetail
-            if (flag == 3) {
-                Log.d("alert_back", tempItem.toString())
+            if (flag == 2) {
+
+                ////////////////////////
+
+                //서버에 날짜 넣어주세요 순재씨
+
+
+
+
+                ////////////////////////
+
+            } else if (flag == 3) {
+                //from SearchDetail
+                //Log.d("alert_back", tempItem.toString())
 
                 var selectDate = add_place_viewpager.currentItem
 
@@ -623,9 +653,8 @@ class AddPlaceActivity :
                         dayList[selectDate].size + 1
                     )
                 )
-                adapter.notifyDataSetChanged()
-
             }
+            adapter.notifyDataSetChanged()
         }
         val idnumrequest = ShowPlanRegister(id, responseListener)
         val queue = Volley.newRequestQueue(this@AddPlaceActivity)
