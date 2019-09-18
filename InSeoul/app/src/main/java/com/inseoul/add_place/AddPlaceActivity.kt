@@ -1,5 +1,6 @@
 package com.inseoul.add_place
 
+import android.app.ActionBar
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -30,6 +31,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
+import android.text.Layout
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -89,6 +91,8 @@ class AddPlaceActivity :
     var STATEFLAG = 0     // STATE_HALF_EXPANDED = 0
     // STATE_EXPANDED = 1
     // STATE_COLLAPSED = 2
+
+
     fun initBottomSheet() {
         app_bar.isActivated = true
         sheetBehavior = BottomSheetBehavior.from(add_place_bottom_sheet)
@@ -127,6 +131,7 @@ class AddPlaceActivity :
                 sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 app_bar.setExpanded(true, true)
                 add_place_title.text = ""
+                plantitle_appbar.text = ""
             }
         }
     }
@@ -249,7 +254,7 @@ class AddPlaceActivity :
 
         PlanTitle.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_DONE) {
-                PlanTitle.isFocusableInTouchMode = false
+//                PlanTitle.isFocusableInTouchMode = false
                 PlanTitle.isFocusable = false
                 editPlanTitleBtn.visibility = VISIBLE
                 editPlanTitleComplete.visibility = GONE
@@ -271,7 +276,7 @@ class AddPlaceActivity :
         }
 
         editPlanTitleComplete.setOnClickListener {
-            PlanTitle.isFocusableInTouchMode = false
+//            PlanTitle.isFocusableInTouchMode = false
             PlanTitle.isFocusable = false
             editPlanTitleBtn.visibility = VISIBLE
             editPlanTitleComplete.visibility = GONE
@@ -280,26 +285,6 @@ class AddPlaceActivity :
         }
     }
 
-    fun anim() {
-
-        if (isBtnOpen) {
-            editPlanDateBtn.visibility = INVISIBLE
-            deleteBtn.visibility = INVISIBLE
-            edit_more.startAnimation(rotate_close)
-            editPlanDateBtn.startAnimation(fade_out)
-            deleteBtn.startAnimation(fade_out)
-            editPlanDateBtn.isClickable = false
-            deleteBtn.isClickable = false
-            isBtnOpen = false
-        } else {
-            edit_more.startAnimation(rotate_open)
-            editPlanDateBtn.startAnimation(fade_in)
-            deleteBtn.startAnimation(fade_in)
-            editPlanDateBtn.isClickable = true
-            deleteBtn.isClickable = true
-            isBtnOpen = true
-        }
-    }
 
     ////////////////////날짜 계산해서 개수 만큼 뷰페이저 생성///////////////////////
     fun initRecylcerview(start: String, end: String) {
@@ -437,7 +422,11 @@ class AddPlaceActivity :
                 STATEFLAG = 2
                 sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 app_bar.setExpanded(false, true)
-                add_place_title.text = textview_plandate.text.toString() + "여정"
+                add_place_title.text = textview_plandate.text.toString()
+                if (PlanTitle.text != null) {
+                    plantitle_appbar.text = PlanTitle.text
+                }
+
             } else {
                 mMap.clear()                    // 수정 필요
                 /////////////// 클릭한 지점의 위치 ///////////////
@@ -678,21 +667,50 @@ class AddPlaceActivity :
         val actionBar = supportActionBar
         actionBar!!.setDisplayShowCustomEnabled(true) //커스터마이징 하기 위해 필요
         actionBar.setDisplayShowTitleEnabled(false)
-        actionBar.setTitle("일정 추가하기")
 
         actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
         actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
+        Log.d("alert_back",STATEFLAG.toString())
+        if (STATEFLAG == 2) {
+            STATEFLAG = 0
+            sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            app_bar.setExpanded(true, true)
+            add_place_title.text = ""
+            plantitle_appbar.text = ""
+        } else {
+            if (item.itemId == android.R.id.home) {
                 //뒤로 가기 할때
                 finish()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+
+    /////////////////////Animation///////////////////////
+    fun anim() {
+
+        if (isBtnOpen) {
+            editPlanDateBtn.visibility = INVISIBLE
+            deleteBtn.visibility = INVISIBLE
+            edit_more.startAnimation(rotate_close)
+            editPlanDateBtn.startAnimation(fade_out)
+            deleteBtn.startAnimation(fade_out)
+            editPlanDateBtn.isClickable = false
+            deleteBtn.isClickable = false
+            isBtnOpen = false
+        } else {
+            edit_more.startAnimation(rotate_open)
+            editPlanDateBtn.startAnimation(fade_in)
+            deleteBtn.startAnimation(fade_in)
+            editPlanDateBtn.isClickable = true
+            deleteBtn.isClickable = true
+            isBtnOpen = true
+        }
     }
 
     ////////////////// Compute Distance //////////////////
