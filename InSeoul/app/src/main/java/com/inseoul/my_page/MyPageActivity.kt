@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -12,6 +13,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_my_page.*
@@ -35,6 +37,7 @@ class MyPageActivity : AppCompatActivity() {
         add_schedule.setOnClickListener {
             val intent = Intent(this, MakePlanActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 
@@ -48,7 +51,7 @@ class MyPageActivity : AppCompatActivity() {
         val responseListener = Response.Listener<String> { response ->
             try {
                 test = ArrayList()
-                 Log.d("dd", response);
+                 Log.d("dd", response)
                 var Will:ArrayList<MyPage_Item>
                 var Past:ArrayList<MyPage_Item>
                 var Review:ArrayList<MyPage_Item>
@@ -70,17 +73,17 @@ class MyPageActivity : AppCompatActivity() {
                         `object`.getInt("LIKES"),
                         `object`.getString("Plan"),
                         `object`.getString("MEM"),
-                        "",
+                        `object`.getString("ADDATE"),
                         false
                     )
                     Log.d("d",`object`.toString())
                     val now = System.currentTimeMillis()
                     val date = Date(now)
-                    val sdf = SimpleDateFormat("yyyy-MM-dd")
+                    val dateString = SimpleDateFormat("yyyy-MM-dd")
 
-                    val getTime = sdf.parse(sdf.format(date))
-                    val planTIME = sdf.parse(searchitm.date)
-                    var d= 0
+                    val getTime = dateString.parse(dateString.format(date))
+                    val planTIME = dateString.parse(searchitm.thumbnail)
+
                     if(`object`.getInt("Rebool")==1){
                         Review.add(searchitm)
                     }
@@ -93,7 +96,6 @@ class MyPageActivity : AppCompatActivity() {
                         }
                     }
 
-
                     ///////////////////////////////////////////////////////////////////////
 
                     count++
@@ -102,8 +104,6 @@ class MyPageActivity : AppCompatActivity() {
                 test.add(Past)
                 test.add(Review)
                 initViewPager()
-
-
 
             } catch (e: Exception) {
                 e.printStackTrace()

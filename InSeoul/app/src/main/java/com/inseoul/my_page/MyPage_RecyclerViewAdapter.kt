@@ -61,7 +61,28 @@ class MyPage_RecyclerViewAdapter(
         val data = items!!.get(position)
 
         holder.item_title.text = data.title
-        holder.item_date.text = data.date
+
+        val start_calendar = data.date.split("-")
+        var startDay = start_calendar[2]
+        var startMonth = start_calendar[1]
+        var startYear = start_calendar[0]
+
+        val end_calendar = data.thumbnail!!.split("-")
+        var endDay = end_calendar[2]
+        var endMonth = end_calendar[1]
+        var endYear = end_calendar[0]
+
+        var resultStr:String ?= null
+
+        if(startYear == endYear){
+            resultStr = startYear + "." + startMonth + "." + startDay + " - " + endMonth + "." + endDay
+        }
+        if(startYear == endYear && startMonth == endMonth && startDay == endDay){
+            resultStr = startYear + "." + startMonth + "." + startDay
+        }
+
+
+        holder.item_date.text = resultStr
 
         holder.itemView.setOnClickListener {
             listener!!.onClick(it, position)
