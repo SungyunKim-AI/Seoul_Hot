@@ -132,7 +132,7 @@ class MainActivity :
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("http://newsky2.kma.go.kr/service/")
-            .client(createOkHttpClient())
+//            .client(createOkHttpClient())
             .build()
             .create(RetrofitService::class.java)
             .ShortTermWeather(base_data, base_time, nx, ny, numOfRows, pageNo, _type)

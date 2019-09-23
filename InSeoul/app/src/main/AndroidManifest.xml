@@ -23,6 +23,10 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity
+                android:name=".TempActivity"
+                android:label="@string/title_activity_temp">
+        </activity>
         <activity android:name=".forecast.ForecastActivity">
         </activity>
         <activity android:name=".TestActivity">

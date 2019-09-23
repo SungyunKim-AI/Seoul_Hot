@@ -37,4 +37,8 @@
     <string name="signUp">
         <u>간편 회원가입으로 나만의 여행 일지를 만들어 보세요</u>
     </string>
+    <string name="title_activity_temp">TempActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>
