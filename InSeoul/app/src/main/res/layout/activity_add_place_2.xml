@@ -17,15 +17,6 @@
               android:layout_width="match_parent"
               android:layout_height="350dp"
               tools:context=".make_plan.RecommendPlan"/>
-    <!--<Spinner-->
-            <!--android:id="@+id/theme_spinner"-->
-            <!--android:padding="10dp"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:spinnerMode="dialog"-->
-            <!--android:prompt="@string/spinner_prompt"-->
-            <!--android:entries="@array/theme_array"-->
-    <!--/>-->
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_2"
