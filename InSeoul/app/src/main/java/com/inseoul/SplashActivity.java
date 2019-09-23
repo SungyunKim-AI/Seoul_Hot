@@ -45,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
 //        int width = dm.widthPixels;
 //        int height = dm.heightPixels;
         //Log.d("size",width + "sdf");   //1080
-        //Log.d("size",height + "sdf");  //1920
+        //Log.d("size",height + "sdf");  //1920rla
 
 
 //        TextView textView = (TextView)findViewById(R.id.textView_splash);
