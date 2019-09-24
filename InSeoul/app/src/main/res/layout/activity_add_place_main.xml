@@ -143,5 +143,4 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/activity_add_place_2"/>
-    <include layout="@layout/activity_add_place"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

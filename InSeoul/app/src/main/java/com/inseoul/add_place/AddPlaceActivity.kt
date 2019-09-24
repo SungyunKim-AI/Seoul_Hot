@@ -7,19 +7,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
 import com.inseoul.Server.AddPlaceRegister
 import com.inseoul.search.SearchActivity
 import com.inseoul.search.Search_Item
-import kotlinx.android.synthetic.main.activity_add_place.*
 import kotlinx.android.synthetic.main.activity_add_place_main.*
 import org.json.JSONObject
 import java.util.*
@@ -30,7 +27,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
-import android.util.DisplayMetrics
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -41,7 +37,6 @@ import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
 import kotlinx.android.synthetic.main.activity_add_place_2.*
-import kotlinx.android.synthetic.main.activity_add_place_page.*
 import java.text.SimpleDateFormat
 
 
@@ -75,101 +70,25 @@ class AddPlaceActivity :
     lateinit var searchitm: MyPage_Item
     lateinit var tempItem: Search_Item
 
-    //지도 포커스 변경
-    var map_ready_flag = false
-    var dm: DisplayMetrics? = null
-    var height = 0
-    var move_pix = 0
-    var state_zero = 0
+//    //지도 포커스 변경
+//    var map_ready_flag = false
+//    var dm: DisplayMetrics? = null
+//    var height = 0
+//    var move_pix = 0
+//    var state_zero = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
 
-        dm = applicationContext.resources.displayMetrics
-        height = dm!!.heightPixels
-        move_pix = height / 8 - app_bar.height / 4
+//        dm = applicationContext.resources.displayMetrics
+//        height = dm!!.heightPixels
+//        move_pix = height / 8 - app_bar.height / 4
 
         initToolbar()
-        initBottomSheet()
         init()
         initMap()
 
-    }
-
-    ////////////////////// Bottom Sheet //////////////////////
-    lateinit var sheetBehavior: BottomSheetBehavior<LinearLayout>
-    var STATEFLAG = 0     // STATE_HALF_EXPANDED = 0
-    // STATE_EXPANDED = 1
-    // STATE_COLLAPSED = 2
-
-
-    fun initBottomSheet() {
-        app_bar.isActivated = true
-        sheetBehavior = BottomSheetBehavior.from(add_place_bottom_sheet)
-        sheetBehavior.isFitToContents = true
-        sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        state_zero = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-        sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-            }
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow_white))
-                    state_zero = BottomSheetBehavior.STATE_EXPANDED
-
-                } else if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED) {
-                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
-
-
-                    //카메라 센터 픽셀 재조정 : up
-                    if (map_ready_flag && state_zero == BottomSheetBehavior.STATE_COLLAPSED) {
-                        mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, move_pix.toFloat()))
-                    }
-                    state_zero = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-                } else if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
-                } else {
-                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
-
-
-                    //카메라 센터 픽셀 재조정 : down
-                    if (map_ready_flag && state_zero == BottomSheetBehavior.STATE_HALF_EXPANDED) {
-                        mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, -move_pix.toFloat()))
-                    }
-                    state_zero = BottomSheetBehavior.STATE_COLLAPSED
-
-                }
-
-
-            }
-
-        }
-        )
-
-        bottomSheet_btn.setOnClickListener {
-            if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-                STATEFLAG = 0
-                sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-
-            } else if (sheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED) {
-                STATEFLAG = 1
-                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-            } else {
-                STATEFLAG = 0
-                sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                app_bar.setExpanded(true, true)
-                add_place_title.text = ""
-                plantitle_appbar.text = ""
-            }
-        }
     }
 
 
@@ -402,7 +321,6 @@ class AddPlaceActivity :
 
         if (markerList.size != 0) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dayList[add_place_viewpager.currentItem][0].latLng, 12f))
-            mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, move_pix.toFloat()))
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
         }
@@ -429,22 +347,11 @@ class AddPlaceActivity :
 
         mMap = googleMap
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Default, 13f))
-        mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, move_pix.toFloat()))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
 
         mMap.setOnMapClickListener {
 
-            if (sheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
-                STATEFLAG = 2
-                sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                app_bar.setExpanded(false, true)
-                add_place_title.text = textview_plandate.text.toString()
-                if (PlanTitle.text != null) {
-                    plantitle_appbar.text = PlanTitle.text
-                }
-
-            }
         }
 
         //View Page Change Call Back
@@ -462,7 +369,6 @@ class AddPlaceActivity :
         }
         add_place_viewpager.registerOnPageChangeCallback(PageChangeCallback)
 
-        map_ready_flag = true
     }
 
     //폴리 라인 만들기
@@ -662,19 +568,13 @@ class AddPlaceActivity :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (STATEFLAG == 2) {
-            STATEFLAG = 0
-            sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            app_bar.setExpanded(true, true)
-            add_place_title.text = ""
-            plantitle_appbar.text = ""
-        } else {
-            if (item.itemId == android.R.id.home) {
-                //뒤로 가기 할때
-                finish()
-                return true
-            }
+
+        if (item.itemId == android.R.id.home) {
+            //뒤로 가기 할때
+            finish()
+            return true
         }
+
         return super.onOptionsItemSelected(item)
     }
 
