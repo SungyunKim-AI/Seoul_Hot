@@ -1,6 +1,5 @@
 package com.inseoul.add_place
 
-import android.app.ActionBar
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -31,7 +30,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
-import android.text.Layout
+import android.util.DisplayMetrics
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -41,7 +40,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
-import java.lang.NullPointerException
+import kotlinx.android.synthetic.main.activity_add_place_2.*
+import kotlinx.android.synthetic.main.activity_add_place_page.*
 import java.text.SimpleDateFormat
 
 
@@ -75,9 +75,20 @@ class AddPlaceActivity :
     lateinit var searchitm: MyPage_Item
     lateinit var tempItem: Search_Item
 
+    //지도 포커스 변경
+    var map_ready_flag = false
+    var dm: DisplayMetrics? = null
+    var height = 0
+    var move_pix = 0
+    var state_zero = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
+
+        dm = applicationContext.resources.displayMetrics
+        height = dm!!.heightPixels
+        move_pix = height / 8 - app_bar.height / 4
 
         initToolbar()
         initBottomSheet()
@@ -96,7 +107,9 @@ class AddPlaceActivity :
     fun initBottomSheet() {
         app_bar.isActivated = true
         sheetBehavior = BottomSheetBehavior.from(add_place_bottom_sheet)
+        sheetBehavior.isFitToContents = true
         sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        state_zero = BottomSheetBehavior.STATE_HALF_EXPANDED
 
         sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -107,12 +120,32 @@ class AddPlaceActivity :
 
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow_white))
+                    state_zero = BottomSheetBehavior.STATE_EXPANDED
+
+                } else if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED) {
+                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
+
+
+                    //카메라 센터 픽셀 재조정 : up
+                    if (map_ready_flag && state_zero == BottomSheetBehavior.STATE_COLLAPSED) {
+                        mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, move_pix.toFloat()))
+                    }
+                    state_zero = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+                } else if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
                 } else {
                     bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
+
+
+                    //카메라 센터 픽셀 재조정 : down
+                    if (map_ready_flag && state_zero == BottomSheetBehavior.STATE_HALF_EXPANDED) {
+                        mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, -move_pix.toFloat()))
+                    }
+                    state_zero = BottomSheetBehavior.STATE_COLLAPSED
+
                 }
-                if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
-                }
+
 
             }
 
@@ -123,9 +156,12 @@ class AddPlaceActivity :
             if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 STATEFLAG = 0
                 sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+
             } else if (sheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED) {
                 STATEFLAG = 1
                 sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
             } else {
                 STATEFLAG = 0
                 sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
@@ -366,6 +402,7 @@ class AddPlaceActivity :
 
         if (markerList.size != 0) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dayList[add_place_viewpager.currentItem][0].latLng, 12f))
+            mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, move_pix.toFloat()))
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.552122, 126.988270), 12f))
         }
@@ -392,6 +429,7 @@ class AddPlaceActivity :
 
         mMap = googleMap
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Default, 13f))
+        mMap.animateCamera(CameraUpdateFactory.scrollBy(0f, move_pix.toFloat()))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
 
@@ -406,34 +444,6 @@ class AddPlaceActivity :
                     plantitle_appbar.text = PlanTitle.text
                 }
 
-            } else {
-                mMap.clear()                    // 수정 필요
-                /////////////// 클릭한 지점의 위치 ///////////////
-                val mk = MarkerOptions()
-                mk.title("좌표")
-                val lat = it.latitude
-                val lng = it.longitude
-                //Log.e("position", "$lat, $lng")
-                mk.snippet("$lat, $lng")
-                mk.position(it)
-                mk.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
-
-                mMap.addMarker(mk)
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(it))
-//
-//                //////////////////////////////////////////////////
-//
-//                /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
-//                for (i in 0 until positionArray.size) {
-//                    if (distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1]) < DISTANCE) {
-//                        var marker = MarkerOptions()
-//                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
-//                        marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
-//                        mMap.addMarker(marker)
-//
-//                    }
-//                }
-//                /////////////////////////////////////////////////////////////////////////
             }
         }
 
@@ -452,6 +462,7 @@ class AddPlaceActivity :
         }
         add_place_viewpager.registerOnPageChangeCallback(PageChangeCallback)
 
+        map_ready_flag = true
     }
 
     //폴리 라인 만들기
@@ -511,7 +522,7 @@ class AddPlaceActivity :
 
     override fun onMarkerClick(marker: Marker?): Boolean {
         var center: CameraUpdate = CameraUpdateFactory.newLatLng(marker?.position)
-        mMap.animateCamera(center)
+        //mMap.animateCamera(center)
 
         changeSelectedMarker(marker)
 
@@ -521,7 +532,6 @@ class AddPlaceActivity :
     fun changeSelectedMarker(marker: Marker?) {
         //선택했던 마커 되돌리기
         if (selectedMarker != null) {
-            Log.d("alert_selected2", selectedMarker.toString())
             addMarker(selectedMarker!!, false)
             selectedMarker!!.remove()
         }
@@ -652,7 +662,6 @@ class AddPlaceActivity :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("alert_back",STATEFLAG.toString())
         if (STATEFLAG == 2) {
             STATEFLAG = 0
             sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED

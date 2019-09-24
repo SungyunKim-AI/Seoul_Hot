@@ -1,27 +1,20 @@
 package com.inseoul.add_place
 
 import android.content.Context
-import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import androidx.core.app.ActivityCompat.postponeEnterTransition
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
-import com.inseoul.search.SearchActivity
-import kotlinx.android.synthetic.main.activity_add_place_page.view.*
-import org.w3c.dom.Text
+
 
 class AddPlace_RecyclerViewAdapter(
     val context: Context,
-    var listener:RecyclerViewAdapterEventListener,
-    var items:ArrayList<AddPlaceItem>
+    var listener: RecyclerViewAdapterEventListener,
+    var items: ArrayList<AddPlaceItem>
 
-): RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
         fun onClick(view: View, position: Int)
@@ -41,7 +34,7 @@ class AddPlace_RecyclerViewAdapter(
     }
 
     override fun getItemCount(): Int {
-        if(items==null)
+        if (items == null)
             return 0
         return items.size
     }
@@ -57,23 +50,23 @@ class AddPlace_RecyclerViewAdapter(
         // ContentType
         // 관광지 12   문화시설 14   행사/공연/축제 15   레포츠 28  숙박 32    음식점 39
 
-        when(type){
-            12->{
+        when (type) {
+            12 -> {
                 holder.placeType.text = "관광지"
             }
-            14->{
+            14 -> {
                 holder.placeType.text = "문화시설"
             }
-            15->{
+            15 -> {
                 holder.placeType.text = "행사/공연/축제"
             }
-            28->{
+            28 -> {
                 holder.placeType.text = "레포츠"
             }
-            32->{
+            32 -> {
                 holder.placeType.text = "숙박"
             }
-            39->{
+            39 -> {
                 holder.placeType.text = "음식점"
             }
         }
@@ -81,7 +74,6 @@ class AddPlace_RecyclerViewAdapter(
         holder.itemView.setOnClickListener {
             listener.onClick(it, position)
         }
-
 
     }
 
@@ -96,7 +88,6 @@ class AddPlace_RecyclerViewAdapter(
             placeType = itemView.findViewById(R.id.tv_placeType)
         }
     }
-
 
 
 }

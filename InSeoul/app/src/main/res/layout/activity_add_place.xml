@@ -4,14 +4,13 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/add_place_bottom_sheet"
         android:layout_marginTop="?attr/actionBarSize"
-
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:behavior_peekHeight="24dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
->
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
     <ImageButton
             android:id="@+id/bottomSheet_btn"
             android:src="@drawable/ic_up_arrow"
@@ -29,7 +28,7 @@
                 android:id="@+id/tabLayout_addPlace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabMaxWidth = "2000dp"
+                app:tabMaxWidth="2000dp"
                 app:tabRippleColor="@color/colorPrimary"/>
 
         <androidx.viewpager2.widget.ViewPager2
