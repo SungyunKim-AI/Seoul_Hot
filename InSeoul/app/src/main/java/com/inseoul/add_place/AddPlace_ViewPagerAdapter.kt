@@ -18,16 +18,14 @@ class AddPlace_ViewPagerAdapter(
     val addListener: ViewPagerAdapterEventListener,
     val itemlist:ArrayList<ArrayList<AddPlaceItem>>
 )
-    : RecyclerView.Adapter<AddPlace_ViewPagerAdapter.ViewHolder>(), AddPlace_RecyclerViewAdapter.OnStartDragListener {
-
-    override fun onStartDrag(holder: AddPlace_RecyclerViewAdapter.ViewHolder) {
-        mItemTouchHelper.startDrag(holder)
-    }
+    : RecyclerView.Adapter<AddPlace_ViewPagerAdapter.ViewHolder>() {
 
     val tabList: List<Int> = List(mCount,{i->i})
 
     interface ViewPagerAdapterEventListener {
         fun onClick(view: View, position: Int)
+        fun on_friendBtn_Click(view: View, position: Int)
+        fun on_editPlan_Click(view: View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -54,16 +52,23 @@ class AddPlace_ViewPagerAdapter(
 
         adapter = AddPlace_RecyclerViewAdapter(c, listener,itemlist[position])
 
-        var mCallback = ItemTouchHelperCallback(adapter)
-        val mItemTouchHelper = ItemTouchHelper(mCallback).attachToRecyclerView(holder.recyclerView)
+
+        val callback = ItemTouchHelperCallback(adapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(holder.recyclerView)
 
         holder.recyclerView.adapter = adapter
 
 
         holder.addPlaceBtn.setOnClickListener{
-            addListener!!.onClick(it, position)
+            addListener.onClick(it, position)
         }
-
+        holder.addFriendBtn.setOnClickListener{
+            addListener.on_friendBtn_Click(it,position)
+        }
+        holder.editPlanBtn.setOnClickListener {
+            addListener.on_editPlan_Click(it,position)
+        }
 
     }
 
@@ -72,9 +77,13 @@ class AddPlace_ViewPagerAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var recyclerView: RecyclerView
         var addPlaceBtn: TextView
+        var addFriendBtn:TextView
+        var editPlanBtn : TextView
         init{
             recyclerView = itemView.findViewById(R.id.recyclerView_addPlace)
             addPlaceBtn = itemView.findViewById(R.id.addBtn_recyclerview)
+            addFriendBtn = itemView.findViewById(R.id.shareBtn)
+            editPlanBtn = itemView.findViewById(R.id.editPlan)
         }
     }
 }

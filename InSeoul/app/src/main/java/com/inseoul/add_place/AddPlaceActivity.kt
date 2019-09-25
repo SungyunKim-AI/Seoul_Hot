@@ -27,16 +27,21 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
+import android.content.DialogInterface
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
+import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.load.engine.Resource
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
 import kotlinx.android.synthetic.main.activity_add_place_2.*
+import kotlinx.android.synthetic.main.activity_temp.*
 import java.text.SimpleDateFormat
 
 
@@ -236,10 +241,35 @@ class AddPlaceActivity :
         }
 
         val listener = object : AddPlace_ViewPagerAdapter.ViewPagerAdapterEventListener {
+            //일정 추가 버튼
             override fun onClick(view: View, position: Int) {
                 val intent = Intent(this@AddPlaceActivity, SearchActivity::class.java)
                 intent.putExtra("flag", true)
                 startActivityForResult(intent, 3000)
+            }
+
+            //친구 추가 버튼
+            override fun on_friendBtn_Click(view: View, position: Int) {
+
+                var friend_dialog = AlertDialog.Builder(this@AddPlaceActivity)
+                friend_dialog.setTitle("친구와 함께 일정 만들기")
+                    .setMessage("친구의 아이디를 입력하세요")
+                    .setIcon(R.drawable.ic_group_add_black_24dp)
+                    .setView(R.layout.dialog_edittext)
+                    .setPositiveButton("추가") { dialogInterface, i ->
+
+                        var input = findViewById<EditText>(R.id.addboxdialog)
+
+                        //서버에서 아이디 확인 해서 등록하면 됩니다.
+                    }
+                    .setNeutralButton("취소") { dialogInterface, i ->
+                    }
+                    .show()
+            }
+
+            //편집 버튼
+            override fun on_editPlan_Click(view: View, position: Int) {
+
             }
 
         }
