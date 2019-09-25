@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.inseoul.R
+import org.w3c.dom.Text
 
 class HomeAdapter(val context: Context,
                   var listener:RecyclerViewAdapterEventListener,
@@ -49,6 +51,15 @@ class HomeAdapter(val context: Context,
         Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.thumbnail)
         holder.item_title.text = data.title
         holder.item_content.text = data.content
+        holder.likes.text = data.likes
+//        var m = data.mem.split(",")
+//        var str = ""
+//        for(i in m){
+//            str += i
+//            str += " "
+//        }
+        holder.writer.text = "ⓒ"+ data.mem
+
 
 
         Log.v("In RecyclerView", "Bind Item")
@@ -61,10 +72,16 @@ class HomeAdapter(val context: Context,
         var thumbnail: ImageView
         var item_title: TextView
         var item_content: TextView
+        var likes:TextView
+        var writer:TextView
+        var heart:ToggleButton
         init {
             item_title = itemView.findViewById(R.id.item_title)
             thumbnail = itemView.findViewById(R.id.item_img)
             item_content = itemView.findViewById(R.id.item_content)
+            likes = itemView.findViewById(R.id.likes)
+            writer = itemView.findViewById(R.id.writer)
+            heart = itemView.findViewById(R.id.heart)
         }
     }
 

@@ -2,6 +2,7 @@ package com.inseoul.review
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
@@ -9,8 +10,16 @@ import android.view.MotionEvent
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.inseoul.R
+import com.inseoul.api_manager.RetrofitService
 import com.inseoul.data_model.ReviewDataModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_review.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.collections.ArrayList
 
 class ReviewActivity : AppCompatActivity() {
@@ -24,12 +33,18 @@ class ReviewActivity : AppCompatActivity() {
         toast.setGravity(Gravity.TOP, 0, 50)
         toast.show()
 
-
-        initData()
+        requestServer()
 
         initToolbar()
-        initViewPager()
-
+        init()
+    }
+    fun init(){
+        Handler().postDelayed(
+            {
+                initViewPager()
+            },
+            500
+        )
     }
 
     /////////// Init View Pager ///////////
@@ -48,6 +63,7 @@ class ReviewActivity : AppCompatActivity() {
 
     fun initViewPager(){
 //        initTest()
+        Log.v("http_ok2", itemList.toString())
         adapter = Review_ViewPagerAdapter(supportFragmentManager,this, itemList)
         view_pager2.adapter = adapter
 //        view_pager2.isUserInputEnabled = true
@@ -81,13 +97,51 @@ class ReviewActivity : AppCompatActivity() {
     }
 
     lateinit var itemList:ArrayList<ReviewItem>
-    fun initData(){
+
+    lateinit var rawData:ArrayList<ReviewDataModel.plan>
+    fun createOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        builder.addInterceptor(interceptor)
+        return builder.build()
+    }
+    fun requestServer(){
         itemList = ArrayList()
-        var Plan = intent.extras!!.getString("Plan", "")
+        rawData = ArrayList()
+        var reviewNum = intent.extras!!.getString("review", "")
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://ksun1234.cafe24.com/")
+            .client(createOkHttpClient())
+            .build()
+            .create(RetrofitService::class.java)
+            .getReview(reviewNum)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                Log.e("http_ok", it.response.toString())
+                for(i in 0 until it.response.size) {
+                    val d = it.response[i]
+                    rawData.add(d)
+
+                }
+                initData()
+            },{
+                Log.v("Fail","")
+            })
+
+    }
+
+    fun initData(){
+        Log.v("http_ok", "server complete")
         var TripName = intent.extras!!.getString("TripName", "")
 
         var DPDATE = intent.extras!!.getString("DPDATE", "").split("-")
         var ADDATE = intent.extras!!.getString("ADDATE", "").split("-")
+        var writer = intent.extras!!.getString("Writers")!!.split("&&") as ArrayList<String>?
 
         var range = ""
 
@@ -98,17 +152,15 @@ class ReviewActivity : AppCompatActivity() {
             range = DPDATE[0] + "." + DPDATE[1] + "." + DPDATE[2] + "-" + ADDATE[0] + "." + ADDATE[1] + "." + ADDATE[2]
         }
 
-        var review = intent.extras!!.get("review") as ArrayList<ReviewDataModel.Review>
-        var img = review[0].IMGNAME.split(",") as java.util.ArrayList<String?>?
+        var img = rawData[0].IMGNAME.split(",") as java.util.ArrayList<String?>?
+
         var coverImg = img!![0]
 
         var reviewInfo = reviewInfo(TripName, range, "", coverImg!!)
 
-        var idList = Plan.split(",")
-
-        var count = review.size
-        var cover = ReviewItem(reviewInfo, null, 0, 0, null, null, -1, "", null, img, review[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
-        var summary = ReviewItem(reviewInfo, null, 2, 0, null, null, -1, "", null, img, review[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
+        var count = rawData.size
+        var cover = ReviewItem(reviewInfo, null, 0, 0, null, writer!!, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
+        var summary = ReviewItem(reviewInfo, null, 2, 0, null, null, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
 
         itemList.add(cover)
         for(i in 0 until count){
@@ -120,17 +172,17 @@ class ReviewActivity : AppCompatActivity() {
                 null,
                 null,
                 (i + 1),
-                "",
+                rawData[i].UPSO_NM,
                 null,
-                img,
-                review[i].REVIEW,
-                37.543492,
-                127.077388,
-                "인생",
+                rawData[i].IMGNAME.split(",") as java.util.ArrayList<String?>?,
+                rawData[i].REVIEW,
+                rawData[i].Lat.toDouble(),
+                rawData[i].Lng.toDouble(),
+                rawData[i].Spot_new,
                 "인생넘버",
                 0,
                 0
-                )
+            )
             itemList.add(temp)
         }
         itemList.add(summary)
@@ -138,6 +190,7 @@ class ReviewActivity : AppCompatActivity() {
         itemList[0].type = 0
         itemList[count + 1].type = 2
 
+        adapter.notifyDataSetChanged()
 
     }
     /////////// TEST /////////////

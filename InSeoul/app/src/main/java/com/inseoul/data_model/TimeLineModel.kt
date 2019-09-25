@@ -11,6 +11,7 @@ data class TimeLineModel (
         val ADDATE:String,
         val THEME:String,
         val LIKES:String,
+        val MEM:String,
         val ReviewBool:Int,
         val Review:String?
     )

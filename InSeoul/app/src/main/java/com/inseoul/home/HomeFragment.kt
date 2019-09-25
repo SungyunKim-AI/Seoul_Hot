@@ -28,6 +28,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.recyclerView_addPlace
 import kotlinx.android.synthetic.main.fragment_home.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -90,6 +92,14 @@ class HomeFragment : Fragment() {
 
     // Review 받아오기
 
+    fun createOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        builder.addInterceptor(interceptor)
+        return builder.build()
+    }
+
     fun getReviewFromServer(){
         rawData = ArrayList()
         val retrofit = Retrofit.Builder()
@@ -99,20 +109,21 @@ class HomeFragment : Fragment() {
 //            .client(createOkHttpClient())
             .build()
             .create(RetrofitService::class.java)
-            .getReview()
+            .getTimeLine()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
+                Log.e("http_ok", it.response.toString())
                 for(i in 0 until it.response.size){
                     val d = it.response[i]
                     if(d.ReviewBool == 1){
                         rawData.add(d)
 
-//                        Log.d("main_review", d.toString())
+                        Log.d("main_review", d.toString())
 
                         val thumbnail = d.Review!!
-                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행"))
+                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행", d.MEM, d.LIKES))
                     }
                 }
                 adapter.notifyDataSetChanged()
@@ -135,9 +146,11 @@ class HomeFragment : Fragment() {
 
                 // 기본 정보
 //                intent.putExtra("Plan", rawData[position].Plan)
-//                intent.putExtra("TripName", rawData[position].TripName)
-//                intent.putExtra("DPDATE", rawData[position].DPDATE)
-//                intent.putExtra("ADDATE", rawData[position].ADDATE)
+                intent.putExtra("TripName", rawData[position].TripName)
+                intent.putExtra("DPDATE", rawData[position].DPDATE)
+                intent.putExtra("ADDATE", rawData[position].ADDATE)
+                intent.putExtra("Writers", rawData[position].MEM)
+
 //                intent.putExtra("plan_info", rawData[position].Review!![0].PlaceInfo)
                 Log.e("review_intent", rawData[position].toString())
 

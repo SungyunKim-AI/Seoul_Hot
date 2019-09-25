@@ -32,9 +32,9 @@ class Review_ViewPagerAdapter(
 
         when(holder){
             is ViewHolder1 -> {
-                var size = data.imageList!!.size
+                var size = data.imageList!!.size - 1
 
-                holder.review_img.adapter = Review_ImageViewPagerAdapter(c, data.imageList)
+                holder.review_img.adapter = Review_ImageViewPagerAdapter(c, (data.imageList as java.util.ArrayList<String?>).subList(0, size))
                 val PageChangeCallback = object:ViewPager2.OnPageChangeCallback(){
                     override fun onPageSelected(position: Int) {
                         holder.img_num.text = (position + 1).toString() + "/$size"

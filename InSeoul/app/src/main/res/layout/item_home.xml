@@ -5,51 +5,78 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/ripple_effect_2"
 >
-    <LinearLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:orientation="vertical"
     >
-        <TextView
-                android:id="@+id/item_title"
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="26dp"
-                android:textStyle="bold"
-                android:text="This is Title"
-                android:textColor="@color/black"
-        />
-        <TextView
-                android:id="@+id/item_content"
+                android:padding="10dp"
+                android:orientation="vertical"
+        >
+            <TextView
+                    android:id="@+id/item_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="26dp"
+                    android:textStyle="bold"
+                    android:text="This is Title"
+                    android:textColor="@color/black"
+            />
+            <TextView
+                    android:id="@+id/writer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hsoh0306"
+            />
+
+            <TextView
+                    android:id="@+id/item_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This is Content"
+            />
+        </LinearLayout>
+
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This is Content"
-        />
-    </LinearLayout>
+                android:layout_marginVertical="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+        >
+            <ToggleButton
+                    android:id="@+id/heart"
+                    android:textOff=""
+                    android:textOn=""
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/toggle_selector_heart"
+            />
+
+            <TextView
+                    android:text="0"
+                    android:layout_margin="5dp"
+                    android:id="@+id/likes"
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+            />
+
+        </LinearLayout>
+
+    </RelativeLayout>
     <ImageView
             android:layout_gravity="center_horizontal"
             android:id="@+id/item_img"
             android:layout_width="wrap_content"
             android:layout_height="500dp"
             android:scaleType="centerCrop"
-    />
-    <ToggleButton
-            android:id="@+id/heartBtn"
-            android:layout_marginVertical="10dp"
-            android:layout_marginRight="20dp"
-            android:textOff=""
-            android:textOn=""
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/toggle_selector_heart"
-    />
-
-    <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_effect_2"
     />
 </LinearLayout>
