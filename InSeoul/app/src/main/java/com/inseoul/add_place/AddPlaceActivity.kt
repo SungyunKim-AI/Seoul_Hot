@@ -41,7 +41,10 @@ import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
 import kotlinx.android.synthetic.main.activity_add_place_2.*
+import kotlinx.android.synthetic.main.activity_add_place_main.view.*
+import kotlinx.android.synthetic.main.activity_edit_plan_date.view.*
 import kotlinx.android.synthetic.main.activity_temp.*
+import kotlinx.android.synthetic.main.item_add_place.*
 import java.text.SimpleDateFormat
 
 
@@ -266,12 +269,6 @@ class AddPlaceActivity :
                     }
                     .show()
             }
-
-            //편집 버튼
-            override fun on_editPlan_Click(view: View, position: Int) {
-
-            }
-
         }
 
 

@@ -3,6 +3,8 @@ package com.inseoul.add_place
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -10,6 +12,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import kotlinx.android.synthetic.main.item_add_place.view.*
+import org.w3c.dom.Text
 
 
 class AddPlace_ViewPagerAdapter(
@@ -25,7 +29,6 @@ class AddPlace_ViewPagerAdapter(
     interface ViewPagerAdapterEventListener {
         fun onClick(view: View, position: Int)
         fun on_friendBtn_Click(view: View, position: Int)
-        fun on_editPlan_Click(view: View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,9 +51,10 @@ class AddPlace_ViewPagerAdapter(
             override fun onClick(view: View,position: Int) {
                 Toast.makeText(c,"$position 을 클릭하였습니다.",Toast.LENGTH_SHORT).show()
             }
+
         }
 
-        adapter = AddPlace_RecyclerViewAdapter(c, listener,itemlist[position])
+        adapter = AddPlace_RecyclerViewAdapter(c, listener,itemlist[position], false)
 
 
         val callback = ItemTouchHelperCallback(adapter)
@@ -67,7 +71,30 @@ class AddPlace_ViewPagerAdapter(
             addListener.on_friendBtn_Click(it,position)
         }
         holder.editPlanBtn.setOnClickListener {
-            addListener.on_editPlan_Click(it,position)
+
+            adapter.mflag = true
+            adapter.notifyDataSetChanged()
+
+            holder.editPlan_complete.visibility = VISIBLE
+            holder.editPlanBtn.visibility = GONE
+
+            holder.addPlaceBtn.isEnabled = false
+            holder.addFriendBtn.isEnabled = false
+
+            notifyDataSetChanged()
+        }
+        holder.editPlan_complete.setOnClickListener {
+
+            adapter.mflag = false
+            adapter.notifyDataSetChanged()
+
+            holder.recyclerView.deletebtn.visibility = GONE
+            holder.editPlan_complete.visibility = GONE
+            holder.editPlanBtn.visibility = VISIBLE
+            holder.addPlaceBtn.isEnabled = true
+            holder.addFriendBtn.isEnabled = true
+
+            notifyDataSetChanged()
         }
 
     }
@@ -79,11 +106,13 @@ class AddPlace_ViewPagerAdapter(
         var addPlaceBtn: TextView
         var addFriendBtn:TextView
         var editPlanBtn : TextView
+        var editPlan_complete : TextView
         init{
             recyclerView = itemView.findViewById(R.id.recyclerView_addPlace)
             addPlaceBtn = itemView.findViewById(R.id.addBtn_recyclerview)
             addFriendBtn = itemView.findViewById(R.id.shareBtn)
             editPlanBtn = itemView.findViewById(R.id.editPlan)
+            editPlan_complete = itemView.findViewById(R.id.editPlan_complete)
         }
     }
 }
