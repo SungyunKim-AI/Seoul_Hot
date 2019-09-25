@@ -256,7 +256,7 @@ class AddPlaceActivity :
             if (i == EditorInfo.IME_ACTION_DONE) {
 //                PlanTitle.isFocusableInTouchMode = false
                 PlanTitle.isFocusable = false
-                editPlanTitleBtn.visibility = VISIBLE
+//                editPlanTitleBtn.visibility = VISIBLE
                 editPlanTitleComplete.visibility = GONE
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
@@ -266,19 +266,19 @@ class AddPlaceActivity :
             }
         }
 
-        editPlanTitleBtn.setOnClickListener {
-            PlanTitle.isFocusableInTouchMode = true
-            PlanTitle.requestFocus()
-            editPlanTitleBtn.visibility = GONE
-            editPlanTitleComplete.visibility = VISIBLE
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(PlanTitle, 0)
-        }
+//        editPlanTitleBtn.setOnClickListener {
+//            PlanTitle.isFocusableInTouchMode = true
+//            PlanTitle.requestFocus()
+//            editPlanTitleBtn.visibility = GONE
+//            editPlanTitleComplete.visibility = VISIBLE
+//            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//            imm.showSoftInput(PlanTitle, 0)
+//        }
 
         editPlanTitleComplete.setOnClickListener {
 //            PlanTitle.isFocusableInTouchMode = false
             PlanTitle.isFocusable = false
-            editPlanTitleBtn.visibility = VISIBLE
+//            editPlanTitleBtn.visibility = VISIBLE
             editPlanTitleComplete.visibility = GONE
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)

@@ -100,5 +100,5 @@ interface RetrofitService {
     // 리뷰 받아오기
 
     @GET("ShowPlan.php")
-    fun getReview(): Observable<ReviewDataModel>
+    fun getReview(): Observable<TimeLineModel>
 }

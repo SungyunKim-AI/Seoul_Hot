@@ -22,26 +22,32 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.inseoul.api_manager.RetrofitService
 import com.inseoul.data_model.ReviewDataModel
 import com.inseoul.forecast.ForecastActivity
+import com.inseoul.forecast.ForecastFragment
 import com.inseoul.forecast.Forecast_shortTermItem
 import com.inseoul.home.HomeAdapter
+import com.inseoul.home.HomeFragment
 import com.inseoul.home.HomeItem
 import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.manage_member.SignInActivity
 import com.inseoul.manage_member.SignUpActivity
 import com.inseoul.my_page.MyPageActivity
+import com.inseoul.my_page.MyPageFragment
 import com.inseoul.review.ReviewActivity
 import com.inseoul.search.SearchActivity
 import com.inseoul.timeline.TimeLineActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_add_place_main.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_test.*
@@ -56,22 +62,14 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivity :
-    AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener {
+    AppCompatActivity()
+{
+
 
     val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
 
     lateinit var backPressCloseHandler: BackPressCloseHandler
 
-    var isFabOpen: Boolean = false
-    lateinit var fab_open1: Animation
-    lateinit var fab_open2: Animation
-    lateinit var fab_open3: Animation
-    lateinit var fab_close1: Animation
-    lateinit var fab_close2: Animation
-    lateinit var fab_close3: Animation
-    lateinit var fab_rotate: Animation
-    lateinit var fab_rotate_close: Animation
 
     lateinit var model_shortTerm: ArrayList<Forecast_shortTermItem>
 
@@ -84,6 +82,7 @@ class MainActivity :
     }
 
     lateinit var w_intent:Intent
+    /*
     fun ForecastAPI_ShortTerm(){
         w_intent = Intent(this, ForecastActivity::class.java)
 
@@ -219,214 +218,34 @@ class MainActivity :
                 Log.v("Fail","")
             })
     }
+    */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        ForecastAPI_ShortTerm()
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        setSupportActionBar(toolbar)
-
-        initNav()
-
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setHomeButtonEnabled(true)
-
+//        ForecastAPI_ShortTerm()
 
         /////////////////////////////////////////////////////
         initPermission()
         initBtn()
-//        initTest()
+        // Bottom Navigation
+        val navView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
+        navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-        getReviewFromServer()
-        initRecyclerView()
-        initFloating()
-
+        attachHome()
     }
 
-    ////////////////FloatingButton Setting////////////////////
-    private fun initFloating() {
-
-        fab_rotate = AnimationUtils.loadAnimation(applicationContext, R.anim.rotate_anim)
-        fab_rotate_close = AnimationUtils.loadAnimation(applicationContext,R.anim.rotate_anim_close)
-        fab_open1 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
-        fab_open2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
-        fab_open2.duration = 500
-        fab_open3 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
-        fab_open3.duration = 750
-
-        fab_close1 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
-        fab_close2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
-        fab_close2.duration = 550
-        fab_close3 = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
-        fab_close3.duration = 800
-
-
-
-        fab.setOnClickListener {
-            anim()
-        }
-        fab1.setOnClickListener {
-            anim()
+    fun initBtn(){
+        floating_button.setOnClickListener {
             val intent = Intent(this, MakePlanActivity::class.java)
             startActivity(intent)
-        }
-        fab2.setOnClickListener {
-            anim()
-            if (!loginCheck())
-                loginDialog()
-            else {
-                val intent = Intent(this, MyPageActivity::class.java)
-                startActivity(intent)
-            }
-        }
-        fab3.setOnClickListener {
-            anim()
-            val intent = Intent(this, TimeLineActivity::class.java)
-            startActivity(intent)
-        }
-
-
-        appbarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset < -linearlayout_size.height) {
-                    fab.show()
-                }
-                else {
-                    fab.hide()
-                    if(isFabOpen == true){
-                        anim()
-                    }
-                }
-
-            }
-        })
-    }
-
-    fun anim() {
-
-        if (isFabOpen) {
-            fab.startAnimation(fab_rotate_close)
-            fab1.startAnimation(fab_close3)
-            fab2.startAnimation(fab_close2)
-            fab3.startAnimation(fab_close1)
-            fab1.isClickable = false
-            fab2.isClickable = false
-            fab3.isClickable = false
-            isFabOpen = false
-        } else {
-            fab.startAnimation(fab_rotate)
-            fab1.startAnimation(fab_open1)
-            fab2.startAnimation(fab_open2)
-            fab3.startAnimation(fab_open3)
-            fab1.isClickable = true
-            fab2.isClickable = true
-            fab3.isClickable = true
-            isFabOpen = true
         }
     }
 
 
     ///////////////Navigation Drawer Setting/////////////////
-    fun initNav() {
 
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-
-        license_btn.setOnClickListener {
-            licenseDialog()
-        }
-
-
-
-        if (SaveSharedPreference.getUserID(this) != "") {
-            nav_view.removeHeaderView(nav_view.getHeaderView(0))
-            nav_view.inflateHeaderView(R.layout.nav_header_main_login)
-        } else {
-            nav_view.removeHeaderView(nav_view.getHeaderView(0))
-            nav_view.inflateHeaderView(R.layout.nav_header_main)
-        }
-        val navView: NavigationView = findViewById(R.id.nav_view)
-
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        navView.setNavigationItemSelectedListener(this)
-
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(this)
-
-        val header = navigationView.getHeaderView(0)
-
-        //nav_header_main_login
-        if (SaveSharedPreference.getUserID(this) != "") {
-            //회원 정보 출력
-            var nameText = header.findViewById<TextView>(R.id.tvId)
-            nameText.text = SaveSharedPreference.getUserName(this)
-
-            //로그 아웃
-            var logoutBtn = header.findViewById<Button>(R.id.login_status_on)
-            logoutBtn.setOnClickListener {
-
-                SaveSharedPreference.clearUserID(this)
-
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                }
-                //initNav()
-                Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(0, 0)
-                finish()
-
-            }
-            //마이 페이지
-            var myPageBtn = header.findViewById<Button>(R.id.myPage_on)
-            myPageBtn.setOnClickListener {
-                val intent = Intent(this, MyPageActivity::class.java)
-                startActivity(intent)
-            }
-
-            //FAQ
-
-            //일정 관리 tv_plan_count
-
-        } else {
-            //nav_header_main
-            //로그인  login_status
-            var loginBtn = header.findViewById<Button>(R.id.login_status)
-            loginBtn.setOnClickListener {
-                val intent = Intent(this, SignInActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-
-            //FAQ faq
-
-            //마이 페이지 myPage
-            var myPageBtn = header.findViewById<Button>(R.id.myPage)
-            myPageBtn.setOnClickListener {
-                if (!loginCheck())
-                    loginDialog()
-            }
-            //회원가입 텍스트  tv_signUp
-            var signUpBtn = header.findViewById<TextView>(R.id.tv_signUp)
-            signUpBtn.setOnClickListener {
-                val intent = Intent(this, SignUpActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-
-        }
-
-
-    }
 
     fun licenseDialog(){
         val builder = AlertDialog.Builder(this)
@@ -462,156 +281,12 @@ class MainActivity :
         alert.show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-
-        }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        drawerLayout.closeDrawer(GravityCompat.START)
-
-        return true
-    }
-
-
-    ///////////////// Toolbar Searching////////////////////
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.search -> {
-                val intent = Intent(this, SearchActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
-
-    ////////////////// Button //////////////////
-    fun initBtn() {
-        toolbar.navigationIcon = getDrawable(R.drawable.hamburger)
-
-
-        // 날씨
-        weather.setOnClickListener {
-            startActivity(w_intent)
-        }
-
-        /////////backpress//////////
-        backPressCloseHandler = BackPressCloseHandler(this)
-
-
-
-
-        MkPlanBtn.setOnClickListener {
-            val intent = Intent(this, MakePlanActivity::class.java)
-            startActivity(intent)
-
-        }
-
-        HistoryBtn.setOnClickListener {
-            if (SaveSharedPreference.getUserID(this) != "") {
-                val intent = Intent(this, MyPageActivity::class.java)
-                startActivity(intent)
-            } else {
-                if (!loginCheck())
-                    loginDialog()
-            }
-        }
-        TimeLineBtn.setOnClickListener {
-            val intent = Intent(this, TimeLineActivity::class.java)
-            startActivity(intent)
-        }
-
-    }
-
-    ////////////////// Recycler View //////////////////
-    private val itemList = ArrayList<HomeItem>()
-    lateinit var layoutManager: RecyclerView.LayoutManager
-    lateinit var adapter: HomeAdapter
-
-    lateinit var rawData: ArrayList<ReviewDataModel.plan>
-
-    // Review 받아오기
-
-    fun getReviewFromServer(){
-        rawData = ArrayList()
-        val retrofit = Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("http://ksun1234.cafe24.com/")
-            .client(createOkHttpClient())
-            .build()
-            .create(RetrofitService::class.java)
-            .getReview()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-
-                for(i in 0 until it.response.size){
-                    val d = it.response[i]
-                    if(d.ReviewBool == 1){
-                        rawData.add(d)
-
-//                        Log.d("main_review", d.toString())
-
-                        val thumbnail = d.Review!![0].IMGNAME.split(",")[0]
-                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행"))
-                    }
-                }
-                adapter.notifyDataSetChanged()
-            },{
-                Log.v("Fail","")
-            })
-
-    }
-    fun initTest() {
-
-        for (i in 0..10) {
-//            test.add(HomeItem("This is Title" + i.toString(), "This is Content" + i.toString()))
-        }
-    }
-
-    fun initRecyclerView() {
-        layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        recyclerView_addPlace.layoutManager = layoutManager
-        val listener = object : HomeAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick(view: View, position:Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                val intent = Intent(applicationContext, ReviewActivity::class.java)
-
-                // Review전달
-                var temp = ArrayList<ReviewDataModel.Review>()
-                temp = rawData[position].Review!!
-                intent.putExtra("review",temp)
-
-                // 기본 정보
-                intent.putExtra("Plan", rawData[position].Plan)
-                intent.putExtra("TripName", rawData[position].TripName)
-                intent.putExtra("DPDATE", rawData[position].DPDATE)
-                intent.putExtra("ADDATE", rawData[position].ADDATE)
-
-                Log.e("review_intent", rawData[position].toString())
-
-                startActivity(intent)
-            }
-        }
-
-        adapter = HomeAdapter(this, listener, itemList)
-        recyclerView_addPlace.adapter = adapter
-        recyclerView_addPlace.addItemDecoration(DividerItemDecoration(this, 1))
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//
+//        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
 
 
     /////////////// Permission Check ///////////////
@@ -694,19 +369,6 @@ class MainActivity :
         }
     } // onRequestPermissionsResult
 
-
-    ///////////Back 버튼///////////////
-    override fun onBackPressed() {
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            //super.onBackPressed()
-            backPressCloseHandler.onBackPressed()
-        }
-    }
-
-
     ///////////////Activity LifeCycle//////////////////
     override fun onDestroy() {
         super.onDestroy()
@@ -715,6 +377,97 @@ class MainActivity :
             if (SaveSharedPreference.getUserID(this) != "")
                 SaveSharedPreference.clearUserID(this)
         }
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Bottom Navigation
+    ///////////////////////////////////////////////////////////////////////////////
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.navigation_home -> {
+//                textMessage.setText(R.string.title_home)
+                attachHome()
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_dashboard -> {
+//                textMessage.setText(R.string.title_dashboard)
+//                attachMakePlan()
+                attachForecast()
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_notifications -> {
+//                textMessage.setText(R.string.title_notifications)
+                attachMyPage()
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
+    }
+
+    ///////////////// Toolbar Searching////////////////////
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        return when (item.itemId) {
+//            R.id.search -> {
+//                val intent = Intent(this, SearchActivity::class.java)
+//                startActivity(intent)
+//                true
+//            }
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//        return true
+//    }
+    ///////////////////////////////////////////////////////////////////////////////
+    // Fragment
+    ///////////////////////////////////////////////////////////////////////////////
+
+    fun attachHome(){
+        val frag = supportFragmentManager.findFragmentByTag("home")
+        val tagStr = frag?.tag.toString()
+        if(tagStr == "home"){
+
+        } else{
+            val homeTransaction = supportFragmentManager.beginTransaction()
+            val homeFrag = HomeFragment()
+            homeTransaction.replace(R.id.frame, homeFrag)
+            val clear = supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            homeTransaction.commit()
+        }
+    }
+
+    fun attachForecast(){
+        val frag = supportFragmentManager.findFragmentByTag("forecast")
+        val tagStr = frag?.tag.toString()
+        if(tagStr == "forecast"){
+
+        } else{
+            val ForecastTransaction = supportFragmentManager.beginTransaction()
+            val forecast = ForecastFragment()
+            ForecastTransaction.replace(R.id.frame, forecast)
+            val clear = supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            ForecastTransaction.commit()
+
+        }
+
+    }
+
+    fun attachMyPage(){
+        val frag = supportFragmentManager.findFragmentByTag("mypage")
+        val tagStr = frag?.tag.toString()
+        if(tagStr == "mypage"){
+
+        } else{
+            val MyPageTransaction = supportFragmentManager.beginTransaction()
+            val MyPageFrag = MyPageFragment()
+            MyPageTransaction.replace(R.id.frame, MyPageFrag)
+            val clear = supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            MyPageTransaction.commit()
+
+        }
+
     }
 
 

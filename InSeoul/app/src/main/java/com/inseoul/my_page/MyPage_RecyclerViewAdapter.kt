@@ -29,17 +29,17 @@ class MyPage_RecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         when(viewType){
             0 ->{
-                val v = LayoutInflater.from(parent.context)
+                val v = LayoutInflater.from(context)
                     .inflate(R.layout.activity_my_page_item, parent, false)
                 return ViewHolder(v)
             }
             1->{
-                val v = LayoutInflater.from(parent.context)
+                val v = LayoutInflater.from(context)
                     .inflate(R.layout.activity_my_page_item_review, parent, false)
                 return ViewHolder(v)
             }
         }
-        val v = LayoutInflater.from(parent.context)
+        val v = LayoutInflater.from(context)
             .inflate(R.layout.activity_my_page_item, parent, false)
         return ViewHolder(v)
     }

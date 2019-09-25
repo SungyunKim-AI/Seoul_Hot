@@ -1,6 +1,7 @@
 package com.inseoul.my_page
 
 import android.app.Activity
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -37,6 +38,7 @@ class MyPage_ViewPagerAdapter(
 
         var layoutManager: RecyclerView.LayoutManager
         var adapter: MyPage_RecyclerViewAdapter
+        Log.v("hsoh0306_test", itemlist.toString())
         layoutManager = LinearLayoutManager(c, RecyclerView.VERTICAL, false)
         holder.recyclerView.layoutManager = layoutManager
 

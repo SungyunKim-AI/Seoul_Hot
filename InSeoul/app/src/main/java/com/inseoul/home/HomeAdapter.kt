@@ -42,8 +42,9 @@ class HomeAdapter(val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = items!!.get(position)
 
+        val imgName = data.thumbnail.split(",")
 //        holder.thumbnail.setImageResource(R.drawable.sample2)
-        val url = "http://ksun1234.cafe24.com/" + data.thumbnail
+        val url = "http://ksun1234.cafe24.com/" + imgName[0]
         Log.d("thumbnail url", url)
         Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.thumbnail)
         holder.item_title.text = data.title
