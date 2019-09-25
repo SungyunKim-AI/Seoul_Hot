@@ -79,13 +79,29 @@
                         android:textColor="@color/c7"/>
 
             </LinearLayout>
-            <ImageView
+
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_more_vert_black_24dp"
-                    android:id="@+id/imageView2"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="7dp"/>
+                    android:layout_gravity="center_vertical">
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/hamburger"
+                        android:id="@+id/movebtn"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="7dp"/>
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_cancel"
+                        android:id="@+id/deletebtn"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="7dp"/>
+
+            </LinearLayout>
+
 
 
         </LinearLayout>

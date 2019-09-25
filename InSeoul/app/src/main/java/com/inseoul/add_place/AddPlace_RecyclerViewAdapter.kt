@@ -2,19 +2,40 @@ package com.inseoul.add_place
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AddPlace_RecyclerViewAdapter(
     val context: Context,
     var listener: RecyclerViewAdapterEventListener,
-    var items: ArrayList<AddPlaceItem>
+    var items: ArrayList<AddPlaceItem>,
+    startDragListener: OnStartDragListener
 
-) : RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>(), ItemTouchHelperCallback.OnItemMoveListener {
+
+
+    var mStartDragListener = startDragListener
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        Collections.swap(items,fromPosition,toPosition)
+        notifyItemMoved(fromPosition,toPosition)
+
+        return true
+    }
+
+    interface OnStartDragListener{
+        fun onStartDrag(holder: ViewHolder)
+    }
+
 
     interface RecyclerViewAdapterEventListener {
         fun onClick(view: View, position: Int)
@@ -75,17 +96,26 @@ class AddPlace_RecyclerViewAdapter(
             listener.onClick(it, position)
         }
 
+        holder.movebtn.setOnTouchListener { view, motionEvent ->
+            if(motionEvent.actionMasked == MotionEvent.ACTION_DOWN)
+                mStartDragListener.onStartDrag(holder)
+            return@setOnTouchListener false
+        }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var placeCount: TextView
         var placeNm: TextView
         var placeType: TextView
+        var movebtn :Button
+        var deletebtn :Button
 
         init {
             placeCount = itemView.findViewById(R.id.tv_placeCount)
             placeNm = itemView.findViewById(R.id.tv_placeNm)
             placeType = itemView.findViewById(R.id.tv_placeType)
+            movebtn = itemView.findViewById(R.id.movebtn)
+            deletebtn = itemView.findViewById(R.id.deletebtn)
         }
     }
 

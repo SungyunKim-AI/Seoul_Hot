@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
@@ -17,7 +18,11 @@ class AddPlace_ViewPagerAdapter(
     val addListener: ViewPagerAdapterEventListener,
     val itemlist:ArrayList<ArrayList<AddPlaceItem>>
 )
-    : RecyclerView.Adapter<AddPlace_ViewPagerAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<AddPlace_ViewPagerAdapter.ViewHolder>(), AddPlace_RecyclerViewAdapter.OnStartDragListener {
+
+    override fun onStartDrag(holder: AddPlace_RecyclerViewAdapter.ViewHolder) {
+        mItemTouchHelper.startDrag(holder)
+    }
 
     val tabList: List<Int> = List(mCount,{i->i})
 
@@ -48,6 +53,10 @@ class AddPlace_ViewPagerAdapter(
         }
 
         adapter = AddPlace_RecyclerViewAdapter(c, listener,itemlist[position])
+
+        var mCallback = ItemTouchHelperCallback(adapter)
+        val mItemTouchHelper = ItemTouchHelper(mCallback).attachToRecyclerView(holder.recyclerView)
+
         holder.recyclerView.adapter = adapter
 
 
