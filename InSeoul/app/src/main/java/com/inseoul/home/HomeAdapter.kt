@@ -9,8 +9,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Response
+import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
+import com.google.android.gms.maps.model.LatLng
 import com.inseoul.R
+import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.add_place.AddPlaceItem
+import com.inseoul.my_page.MyPage_Item
+import kotlinx.android.synthetic.main.activity_add_place.*
+import kotlinx.android.synthetic.main.activity_add_place_main.*
+import org.json.JSONObject
 import org.w3c.dom.Text
 
 class HomeAdapter(val context: Context,
@@ -59,6 +68,14 @@ class HomeAdapter(val context: Context,
 //            str += " "
 //        }
         holder.writer.text = "ⓒ"+ data.mem
+        holder.heart.setOnClickListener {
+            val responseListener = Response.Listener<String> { response ->
+
+            }
+            //val idnumrequest = ShowPlanRegister(id, responseListener)
+            //val queue = Volley.newRequestQueue()
+            //queue.add(idnumrequest)
+        }
 
 
 
