@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide
 import com.inseoul.R
 import com.inseoul.Server.DisLikeRequest
 import com.inseoul.Server.LikeRequest
+import com.inseoul.manage_member.SaveSharedPreference
+import org.json.JSONObject
 
 class HomeAdapter(val context: Context,
                   var listener:RecyclerViewAdapterEventListener,
