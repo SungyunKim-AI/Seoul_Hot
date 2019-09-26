@@ -5,6 +5,8 @@ data class HomeItem(
     val title:String,
     val content:String,
     val mem:String,
-    val likes:String
+    val likes:String,
+    val reviewID:String
+
 ) {
 }

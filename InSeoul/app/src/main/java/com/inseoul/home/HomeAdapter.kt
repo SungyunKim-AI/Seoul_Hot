@@ -14,6 +14,8 @@ import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
 import com.inseoul.R
+import com.inseoul.Server.DisLikeRequest
+import com.inseoul.Server.LikeRequest
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.add_place.AddPlaceItem
 import com.inseoul.my_page.MyPage_Item
@@ -64,17 +66,31 @@ class HomeAdapter(val context: Context,
 //        var m = data.mem.split(",")
 //        var str = ""
 //        for(i in m){
-//            str += i
+//            str += i노원
 //            str += " "
 //        }
         holder.writer.text = "ⓒ"+ data.mem
         holder.heart.setOnClickListener {
-            val responseListener = Response.Listener<String> { response ->
+            if(holder.heart.isChecked){
+                val responseListener = Response.Listener<String> { response ->
+                    holder.likes.text = Integer.toString(Integer.parseInt(data.likes)+1)
+                    holder.likes
+
+                }
+                val idnumrequest = LikeRequest(data.reviewID, responseListener)
+                val queue = Volley.newRequestQueue(this.context)
+                queue.add(idnumrequest)
+            }
+            else{
+                val responseListener = Response.Listener<String> { response ->
+                    holder.likes.text = Integer.toString(Integer.parseInt(data.likes))
+
+                }
+                val idnumrequest = DisLikeRequest(data.reviewID, responseListener)
+                val queue = Volley.newRequestQueue(this.context)
+                queue.add(idnumrequest)
 
             }
-            //val idnumrequest = ShowPlanRegister(id, responseListener)
-            //val queue = Volley.newRequestQueue()
-            //queue.add(idnumrequest)
         }
 
 
@@ -92,6 +108,7 @@ class HomeAdapter(val context: Context,
         var likes:TextView
         var writer:TextView
         var heart:ToggleButton
+
         init {
             item_title = itemView.findViewById(R.id.item_title)
             thumbnail = itemView.findViewById(R.id.item_img)

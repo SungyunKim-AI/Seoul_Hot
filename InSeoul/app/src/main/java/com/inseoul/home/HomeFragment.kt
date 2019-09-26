@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
                         Log.d("main_review", d.toString())
 
                         val thumbnail = d.Review!!
-                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행", d.MEM, d.LIKES))
+                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행", d.MEM, d.LIKES,d.H))
                     }
                 }
                 adapter.notifyDataSetChanged()
