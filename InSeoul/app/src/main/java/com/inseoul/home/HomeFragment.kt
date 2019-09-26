@@ -113,7 +113,7 @@ class HomeFragment : Fragment() {
                         val writer = d.MEM.split("&&") as ArrayList<String>?
                         var u = (writer!![0] + " 외 " + (writer!!.size - 2).toString()) + "명"
                         val thumbnail = d.Review!!
-                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행", u, d.LIKES))
+                        itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행", d.MEM, d.LIKES,d.H))
                     }
                 }
                 adapter.notifyDataSetChanged()
