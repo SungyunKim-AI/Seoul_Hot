@@ -1,6 +1,5 @@
 package com.inseoul.add_place
 
-import android.app.ActionBar
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -8,19 +7,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.inseoul.R
 import com.inseoul.Server.AddPlaceRegister
 import com.inseoul.search.SearchActivity
 import com.inseoul.search.Search_Item
-import kotlinx.android.synthetic.main.activity_add_place.*
 import kotlinx.android.synthetic.main.activity_add_place_main.*
 import org.json.JSONObject
 import java.util.*
@@ -31,7 +27,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
-import android.text.Layout
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -41,7 +36,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
-import java.lang.NullPointerException
+import kotlinx.android.synthetic.main.activity_add_place_2.*
 import java.text.SimpleDateFormat
 
 
@@ -75,65 +70,25 @@ class AddPlaceActivity :
     lateinit var searchitm: MyPage_Item
     lateinit var tempItem: Search_Item
 
+//    //지도 포커스 변경
+//    var map_ready_flag = false
+//    var dm: DisplayMetrics? = null
+//    var height = 0
+//    var move_pix = 0
+//    var state_zero = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
 
+//        dm = applicationContext.resources.displayMetrics
+//        height = dm!!.heightPixels
+//        move_pix = height / 8 - app_bar.height / 4
+
         initToolbar()
-        initBottomSheet()
         init()
         initMap()
 
-    }
-
-    ////////////////////// Bottom Sheet //////////////////////
-    lateinit var sheetBehavior: BottomSheetBehavior<LinearLayout>
-    var STATEFLAG = 0     // STATE_HALF_EXPANDED = 0
-    // STATE_EXPANDED = 1
-    // STATE_COLLAPSED = 2
-
-
-    fun initBottomSheet() {
-        app_bar.isActivated = true
-        sheetBehavior = BottomSheetBehavior.from(add_place_bottom_sheet)
-        sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-        sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-            }
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_down_arrow_white))
-                } else {
-                    bottomSheet_btn.setImageDrawable(getDrawable(R.drawable.ic_up_arrow))
-                }
-                if (newState == BottomSheetBehavior.STATE_DRAGGING && STATEFLAG == 0) {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
-                }
-
-            }
-
-        }
-        )
-
-        bottomSheet_btn.setOnClickListener {
-            if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-                STATEFLAG = 0
-                sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            } else if (sheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED) {
-                STATEFLAG = 1
-                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            } else {
-                STATEFLAG = 0
-                sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                app_bar.setExpanded(true, true)
-                add_place_title.text = ""
-                plantitle_appbar.text = ""
-            }
-        }
     }
 
 
@@ -254,10 +209,7 @@ class AddPlaceActivity :
 
         PlanTitle.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_DONE) {
-//                PlanTitle.isFocusableInTouchMode = false
-                PlanTitle.isFocusable = false
-//                editPlanTitleBtn.visibility = VISIBLE
-                editPlanTitleComplete.visibility = GONE
+
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
                 true
@@ -266,23 +218,7 @@ class AddPlaceActivity :
             }
         }
 
-//        editPlanTitleBtn.setOnClickListener {
-//            PlanTitle.isFocusableInTouchMode = true
-//            PlanTitle.requestFocus()
-//            editPlanTitleBtn.visibility = GONE
-//            editPlanTitleComplete.visibility = VISIBLE
-//            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//            imm.showSoftInput(PlanTitle, 0)
-//        }
 
-        editPlanTitleComplete.setOnClickListener {
-//            PlanTitle.isFocusableInTouchMode = false
-            PlanTitle.isFocusable = false
-//            editPlanTitleBtn.visibility = VISIBLE
-            editPlanTitleComplete.visibility = GONE
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
-        }
     }
 
 
@@ -418,44 +354,6 @@ class AddPlaceActivity :
 
         mMap.setOnMapClickListener {
 
-            if (sheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
-                STATEFLAG = 2
-                sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                app_bar.setExpanded(false, true)
-                add_place_title.text = textview_plandate.text.toString()
-                if (PlanTitle.text != null) {
-                    plantitle_appbar.text = PlanTitle.text
-                }
-
-            } else {
-                mMap.clear()                    // 수정 필요
-                /////////////// 클릭한 지점의 위치 ///////////////
-                val mk = MarkerOptions()
-                mk.title("좌표")
-                val lat = it.latitude
-                val lng = it.longitude
-                //Log.e("position", "$lat, $lng")
-                mk.snippet("$lat, $lng")
-                mk.position(it)
-                mk.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
-
-                mMap.addMarker(mk)
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(it))
-//
-//                //////////////////////////////////////////////////
-//
-//                /////////////// 반경 1km(DISTANCE) 내의 데이터 마커로 표시 ///////////////
-//                for (i in 0 until positionArray.size) {
-//                    if (distance(it.latitude, positionArray[i][0], it.longitude, positionArray[i][1]) < DISTANCE) {
-//                        var marker = MarkerOptions()
-//                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.default_marker))
-//                        marker.position(LatLng(positionArray[i][0], positionArray[i][1]))
-//                        mMap.addMarker(marker)
-//
-//                    }
-//                }
-//                /////////////////////////////////////////////////////////////////////////
-            }
         }
 
         //View Page Change Call Back
@@ -532,7 +430,7 @@ class AddPlaceActivity :
 
     override fun onMarkerClick(marker: Marker?): Boolean {
         var center: CameraUpdate = CameraUpdateFactory.newLatLng(marker?.position)
-        mMap.animateCamera(center)
+        //mMap.animateCamera(center)
 
         changeSelectedMarker(marker)
 
@@ -542,7 +440,6 @@ class AddPlaceActivity :
     fun changeSelectedMarker(marker: Marker?) {
         //선택했던 마커 되돌리기
         if (selectedMarker != null) {
-            Log.d("alert_selected2", selectedMarker.toString())
             addMarker(selectedMarker!!, false)
             selectedMarker!!.remove()
         }
@@ -673,20 +570,13 @@ class AddPlaceActivity :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("alert_back",STATEFLAG.toString())
-        if (STATEFLAG == 2) {
-            STATEFLAG = 0
-            sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            app_bar.setExpanded(true, true)
-            add_place_title.text = ""
-            plantitle_appbar.text = ""
-        } else {
-            if (item.itemId == android.R.id.home) {
-                //뒤로 가기 할때
-                finish()
-                return true
-            }
+
+        if (item.itemId == android.R.id.home) {
+            //뒤로 가기 할때
+            finish()
+            return true
         }
+
         return super.onOptionsItemSelected(item)
     }
 
