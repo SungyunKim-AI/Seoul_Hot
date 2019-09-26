@@ -110,6 +110,7 @@ class ReviewActivity : AppCompatActivity() {
         itemList = ArrayList()
         rawData = ArrayList()
         var reviewNum = intent.extras!!.getString("review", "")
+        Log.v("ReviewID", reviewNum)
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())

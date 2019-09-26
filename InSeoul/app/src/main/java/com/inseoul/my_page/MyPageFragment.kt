@@ -159,11 +159,16 @@ class MyPageFragment : Fragment() {
 
             }
 
-            override fun goReview(view: View, position: Int, PlanID:Int) {
+            override fun goReview(view: View, position: Int, PlanID:Int, TripName:String, DPDATE:String, ADDATE:String, MEM:String) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
                 val intent = Intent(context, ReviewActivity::class.java)
-                intent.putExtra("PlanID", PlanID)
+//                Log.v("reviewID_", PlanID.toString())
+                intent.putExtra("review", PlanID.toString())
+                intent.putExtra("TripName", TripName)
+                intent.putExtra("DPDATE", DPDATE)
+                intent.putExtra("ADDATE", ADDATE)
+                intent.putExtra("Writers", MEM)
                 startActivity(intent)
 
             }
