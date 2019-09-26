@@ -35,7 +35,9 @@
                 android:id="@+id/recyclerView_addPlace"
                 android:layout_width="match_parent"
                 android:layout_height="650dp"
-                android:background="@color/white"/>
+                android:background="@color/white"
+                android:layout_marginBottom="48dp"
+        />
 
     </LinearLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton

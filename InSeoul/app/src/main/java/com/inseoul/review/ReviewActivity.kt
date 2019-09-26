@@ -142,6 +142,13 @@ class ReviewActivity : AppCompatActivity() {
         var DPDATE = intent.extras!!.getString("DPDATE", "").split("-")
         var ADDATE = intent.extras!!.getString("ADDATE", "").split("-")
         var writer = intent.extras!!.getString("Writers")!!.split("&&") as ArrayList<String>?
+        var u = ""
+        for(i in 0 until writer!!.size - 1){
+            u += writer[i]
+            if(i != writer.size - 2){
+                u += ", "
+            }
+        }
 
         var range = ""
 
@@ -156,11 +163,11 @@ class ReviewActivity : AppCompatActivity() {
 
         var coverImg = img!![0]
 
-        var reviewInfo = reviewInfo(TripName, range, "", coverImg!!)
+        var reviewInfo = reviewInfo(TripName, range, u, coverImg!!)
 
         var count = rawData.size
         var cover = ReviewItem(reviewInfo, null, 0, 0, null, writer!!, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
-        var summary = ReviewItem(reviewInfo, null, 2, 0, null, null, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
+//        var summary = ReviewItem(reviewInfo, null, 2, 0, null, null, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
 
         itemList.add(cover)
         for(i in 0 until count){
@@ -176,8 +183,8 @@ class ReviewActivity : AppCompatActivity() {
                 null,
                 rawData[i].IMGNAME.split(",") as java.util.ArrayList<String?>?,
                 rawData[i].REVIEW,
-                rawData[i].Lat.toDouble(),
                 rawData[i].Lng.toDouble(),
+                rawData[i].Lat.toDouble(),
                 rawData[i].Spot_new,
                 "인생넘버",
                 0,
@@ -185,7 +192,7 @@ class ReviewActivity : AppCompatActivity() {
             )
             itemList.add(temp)
         }
-        itemList.add(summary)
+//        itemList.add(summary)
 
         itemList[0].type = 0
         itemList[count + 1].type = 2

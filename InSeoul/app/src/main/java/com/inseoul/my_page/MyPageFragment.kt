@@ -1,6 +1,7 @@
 package com.inseoul.my_page
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,10 +17,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.R
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.SettingActivity
+import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.manage_member.SaveSharedPreference
-import kotlinx.android.synthetic.main.activity_my_page.*
-import kotlinx.android.synthetic.main.activity_my_page.my_page_viewpager
-import kotlinx.android.synthetic.main.activity_my_page.tabLayout
+import com.inseoul.register_review.RegisterReviewActivity
+import com.inseoul.review.ReviewActivity
 import kotlinx.android.synthetic.main.fragment_my_page.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -138,7 +139,36 @@ class MyPageFragment : Fragment() {
     lateinit var adapter:MyPage_ViewPagerAdapter
     fun initViewPager(){
         Log.v("mypage_response", test.toString())
-        adapter = MyPage_ViewPagerAdapter(activity!!.applicationContext, test)
+
+        val listener = object: MyPage_ViewPagerAdapter.MyPageEventListener{
+            override fun goAddPlace(view: View, position: Int, flag_key:Int, PlanID:Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                val intent = Intent(context, AddPlaceActivity::class.java)
+                intent.putExtra("flag_key",flag_key)
+                intent.putExtra("PlanID",PlanID)
+                startActivity(intent)
+
+            }
+
+            override fun goRegisterReview(view: View, position: Int, item:MyPage_Item) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                val intent = Intent(context, RegisterReviewActivity::class.java)
+                intent.putExtra("item",item)
+                startActivity(intent)
+
+            }
+
+            override fun goReview(view: View, position: Int, PlanID:Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                val intent = Intent(context, ReviewActivity::class.java)
+                intent.putExtra("PlanID", PlanID)
+                startActivity(intent)
+
+            }
+        }
+        adapter = MyPage_ViewPagerAdapter(activity!!.applicationContext, test, listener)
         my_page_viewpager.adapter = adapter
 
         TabLayoutMediator(tabLayout, my_page_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {

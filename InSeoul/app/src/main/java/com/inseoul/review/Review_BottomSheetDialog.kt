@@ -3,6 +3,7 @@ package com.inseoul.review
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.InflateException
 import android.view.LayoutInflater
 import android.view.View
@@ -52,9 +53,12 @@ class Review_BottomSheetDialog(
 
         mapFragment = activity!!.supportFragmentManager
             .findFragmentById(com.inseoul.R.id.bottom_sheet_map) as SupportMapFragment
+//        var x = fragmentManager!!.findFragmentById(com.inseoul.R.id.bottom_sheet_map)
+//        mapFragment = fragmentManager!!.findFragmentById(com.inseoul.R.id.bottom_sheet_map) as SupportMapFragment
 //        bottom_sheet_map
         mapFragment.getMapAsync(this)
 
+        Log.e("position", "$posX, $posY")
         mView.location.text = location
         mView.call.text = call
         var vlike = ""
