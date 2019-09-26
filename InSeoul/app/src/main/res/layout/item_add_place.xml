@@ -92,7 +92,7 @@
                         android:id="@+id/movebtn"
                         android:layout_gravity="center"
                         android:layout_marginRight="7dp"
-                        android:visibility="gone"/>
+                        android:background="@drawable/ripple_effect_5_default"/>
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                         android:id="@+id/deletebtn"
                         android:layout_gravity="center"
                         android:layout_marginRight="7dp"
-                        android:visibility="gone"/>
+                        android:background="@drawable/ripple_effect_5_default"/>
 
             </LinearLayout>
 

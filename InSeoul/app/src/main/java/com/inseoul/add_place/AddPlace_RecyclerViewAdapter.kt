@@ -3,14 +3,14 @@ package com.inseoul.add_place
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import kotlinx.android.synthetic.main.item_add_place.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -19,36 +19,50 @@ class AddPlace_RecyclerViewAdapter(
     val context: Context,
     var listener: RecyclerViewAdapterEventListener,
     var items: ArrayList<AddPlaceItem>,
-    var mflag:Boolean
-
-) : RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>(), ItemTouchHelperCallback.ItemTouchHelperAdapter {
-
+    var startDragListener: OnStartDragListener
+) : RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>(), ItemTouchHelperCallback.OnItemMoveListener {
 
 
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+    interface OnStartDragListener{
+        fun onStartDarg(dragHolder: ViewHolder)
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int, viewHolder: RecyclerView.ViewHolder): Boolean {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 Collections.swap(items, i, i + 1)
+//                Log.d("alert_itemchange",items.toString())
+
+
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
                 Collections.swap(items, i, i - 1)
+//                Log.d("alert_itemchange",items.toString())
             }
         }
+
+        for(i in 0 until items.size){
+            items[i].count = i+1
+        }
+//        Log.d("alert_itemchange_last",items.toString())
+
         notifyItemMoved(fromPosition, toPosition)
         notifyDataSetChanged()
+        listener.onChangeCallback(viewHolder.itemView, items)
         return true
     }
 
-    override fun onItemDismiss(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
-        notifyDataSetChanged()
-    }
+
+//    override fun onItemDismiss(position: Int) {
+//        items.removeAt(position)
+//        notifyItemRemoved(position)
+//        notifyDataSetChanged()
+//    }
 
 
     interface RecyclerViewAdapterEventListener {
-        fun onClick(view: View, position: Int)
+        fun onChangeCallback(view: View, items: ArrayList<AddPlaceItem>)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -74,6 +88,7 @@ class AddPlace_RecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        val mStartDragListener = startDragListener
 
         val data = items.get(position)
 
@@ -104,16 +119,23 @@ class AddPlace_RecyclerViewAdapter(
             }
         }
 
-        if(!mflag){
-            holder.movebtn.visibility = GONE
-            holder.deletebtn.visibility = GONE
-        }else{
-            holder.movebtn.visibility = VISIBLE
-            holder.deletebtn.visibility = VISIBLE
+        holder.itemView.movebtn.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN){
+                mStartDragListener.onStartDarg(holder)
+            }
+            return@setOnTouchListener false
         }
 
-        holder.itemView.setOnClickListener {
-            listener.onClick(it, position)
+        holder.itemView.deletebtn.setOnClickListener {
+            items.removeAt(position)
+            notifyItemRemoved(position)
+
+            for(i in 0 until items.size){
+                items[i].count = i+1
+            }
+            listener.onChangeCallback(it, items)
+            notifyDataSetChanged()
+//            Log.d("alert_item",items.toString())
         }
 
     }
@@ -134,4 +156,6 @@ class AddPlace_RecyclerViewAdapter(
             deletebtn = itemView.findViewById(R.id.deletebtn)
         }
     }
+
+
 }

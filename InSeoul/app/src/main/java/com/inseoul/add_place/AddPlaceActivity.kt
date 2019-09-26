@@ -27,24 +27,18 @@ import kotlin.math.cos
 import kotlin.math.sin
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
-import android.content.DialogInterface
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
-import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.load.engine.Resource
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
+import com.inseoul.testData
 import kotlinx.android.synthetic.main.activity_add_place_2.*
-import kotlinx.android.synthetic.main.activity_add_place_main.view.*
-import kotlinx.android.synthetic.main.activity_edit_plan_date.view.*
-import kotlinx.android.synthetic.main.activity_temp.*
-import kotlinx.android.synthetic.main.item_add_place.*
 import java.text.SimpleDateFormat
 
 
@@ -78,20 +72,10 @@ class AddPlaceActivity :
     lateinit var searchitm: MyPage_Item
     lateinit var tempItem: Search_Item
 
-//    //지도 포커스 변경
-//    var map_ready_flag = false
-//    var dm: DisplayMetrics? = null
-//    var height = 0
-//    var move_pix = 0
-//    var state_zero = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
-
-//        dm = applicationContext.resources.displayMetrics
-//        height = dm!!.heightPixels
-//        move_pix = height / 8 - app_bar.height / 4
 
         initToolbar()
         init()
@@ -244,6 +228,11 @@ class AddPlaceActivity :
         }
 
         val listener = object : AddPlace_ViewPagerAdapter.ViewPagerAdapterEventListener {
+            override fun onChangeCallback2(view: View, itemlist: ArrayList<ArrayList<AddPlaceItem>>) {
+                dayList = itemlist
+                initMarker()
+            }
+
             //일정 추가 버튼
             override fun onClick(view: View, position: Int) {
                 val intent = Intent(this@AddPlaceActivity, SearchActivity::class.java)

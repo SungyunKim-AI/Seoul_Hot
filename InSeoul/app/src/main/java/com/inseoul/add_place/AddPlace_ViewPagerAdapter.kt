@@ -1,6 +1,7 @@
 package com.inseoul.add_place
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -22,13 +23,21 @@ class AddPlace_ViewPagerAdapter(
     val addListener: ViewPagerAdapterEventListener,
     val itemlist:ArrayList<ArrayList<AddPlaceItem>>
 )
-    : RecyclerView.Adapter<AddPlace_ViewPagerAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<AddPlace_ViewPagerAdapter.ViewHolder>(), AddPlace_RecyclerViewAdapter.OnStartDragListener {
+
+    lateinit var mCallback: ItemTouchHelperCallback
+    lateinit var mItemTouchHelper : ItemTouchHelper
+
+    override fun onStartDarg(dragHolder: AddPlace_RecyclerViewAdapter.ViewHolder) {
+        mItemTouchHelper.startDrag(dragHolder)
+    }
 
     val tabList: List<Int> = List(mCount,{i->i})
 
     interface ViewPagerAdapterEventListener {
         fun onClick(view: View, position: Int)
         fun on_friendBtn_Click(view: View, position: Int)
+        fun onChangeCallback2(view: View, itemlist: ArrayList<ArrayList<AddPlaceItem>>)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,19 +56,19 @@ class AddPlace_ViewPagerAdapter(
         holder.recyclerView.layoutManager = layoutManager
 
         val listener = object: AddPlace_RecyclerViewAdapter.RecyclerViewAdapterEventListener{
-
-            override fun onClick(view: View,position: Int) {
-                Toast.makeText(c,"$position 을 클릭하였습니다.",Toast.LENGTH_SHORT).show()
+            override fun onChangeCallback(view: View, items: ArrayList<AddPlaceItem>) {
+                addListener.onChangeCallback2(view, itemlist)
             }
+
 
         }
 
-        adapter = AddPlace_RecyclerViewAdapter(c, listener,itemlist[position], false)
+        adapter = AddPlace_RecyclerViewAdapter(c, listener,itemlist[position], this)
 
 
-        val callback = ItemTouchHelperCallback(adapter)
-        val touchHelper = ItemTouchHelper(callback)
-        touchHelper.attachToRecyclerView(holder.recyclerView)
+        mCallback = ItemTouchHelperCallback(adapter)
+        mItemTouchHelper = ItemTouchHelper(mCallback)
+        mItemTouchHelper.attachToRecyclerView(holder.recyclerView)
 
         holder.recyclerView.adapter = adapter
 
@@ -72,8 +81,9 @@ class AddPlace_ViewPagerAdapter(
         }
         holder.editPlanBtn.setOnClickListener {
 
-            adapter.mflag = true
+//            adapter.mflag = true
             adapter.notifyDataSetChanged()
+            Log.d("alert_items",adapter.items.toString())
 
             holder.editPlan_complete.visibility = VISIBLE
             holder.editPlanBtn.visibility = GONE
@@ -85,10 +95,10 @@ class AddPlace_ViewPagerAdapter(
         }
         holder.editPlan_complete.setOnClickListener {
 
-            adapter.mflag = false
+//            adapter.mflag = false
             adapter.notifyDataSetChanged()
+            Log.d("alert_items",adapter.items.toString())
 
-            holder.recyclerView.deletebtn.visibility = GONE
             holder.editPlan_complete.visibility = GONE
             holder.editPlanBtn.visibility = VISIBLE
             holder.addPlaceBtn.isEnabled = true
