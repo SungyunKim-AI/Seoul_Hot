@@ -79,33 +79,7 @@ class AddPlace_ViewPagerAdapter(
         holder.addFriendBtn.setOnClickListener{
             addListener.on_friendBtn_Click(it,position)
         }
-        holder.editPlanBtn.setOnClickListener {
-
-//            adapter.mflag = true
-            adapter.notifyDataSetChanged()
-            Log.d("alert_items",adapter.items.toString())
-
-            holder.editPlan_complete.visibility = VISIBLE
-            holder.editPlanBtn.visibility = GONE
-
-            holder.addPlaceBtn.isEnabled = false
-            holder.addFriendBtn.isEnabled = false
-
-            notifyDataSetChanged()
-        }
-        holder.editPlan_complete.setOnClickListener {
-
-//            adapter.mflag = false
-            adapter.notifyDataSetChanged()
-            Log.d("alert_items",adapter.items.toString())
-
-            holder.editPlan_complete.visibility = GONE
-            holder.editPlanBtn.visibility = VISIBLE
-            holder.addPlaceBtn.isEnabled = true
-            holder.addFriendBtn.isEnabled = true
-
-            notifyDataSetChanged()
-        }
+ 
 
     }
 
@@ -115,14 +89,10 @@ class AddPlace_ViewPagerAdapter(
         var recyclerView: RecyclerView
         var addPlaceBtn: TextView
         var addFriendBtn:TextView
-        var editPlanBtn : TextView
-        var editPlan_complete : TextView
         init{
             recyclerView = itemView.findViewById(R.id.recyclerView_addPlace)
             addPlaceBtn = itemView.findViewById(R.id.addBtn_recyclerview)
             addFriendBtn = itemView.findViewById(R.id.shareBtn)
-            editPlanBtn = itemView.findViewById(R.id.editPlan)
-            editPlan_complete = itemView.findViewById(R.id.editPlan_complete)
         }
     }
 }
