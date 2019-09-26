@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
 import com.inseoul.timeline.TimeLineAdapter
@@ -27,18 +28,6 @@ class MyPage_RecyclerViewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        when(viewType){
-            0 ->{
-                val v = LayoutInflater.from(context)
-                    .inflate(R.layout.activity_my_page_item, parent, false)
-                return ViewHolder(v)
-            }
-            1->{
-                val v = LayoutInflater.from(context)
-                    .inflate(R.layout.activity_my_page_item_review, parent, false)
-                return ViewHolder(v)
-            }
-        }
         val v = LayoutInflater.from(context)
             .inflate(R.layout.activity_my_page_item, parent, false)
         return ViewHolder(v)
@@ -58,6 +47,7 @@ class MyPage_RecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         val data = items!!.get(position)
 
         holder.item_title.text = data.title
@@ -90,14 +80,13 @@ class MyPage_RecyclerViewAdapter(
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var thumbnail: ImageView
         var item_title: TextView
         var item_date: TextView
 
         init {
             item_title = itemView.findViewById(R.id.textview_recyclerview_title)
-            thumbnail = itemView.findViewById(R.id.thumbnail)
             item_date = itemView.findViewById(R.id.textview_recyclerview_date)
         }
     }
+
 }
