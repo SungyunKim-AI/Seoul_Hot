@@ -6,26 +6,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.animation.AnimationUtils
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.AppBarLayout
 import com.inseoul.R
 import com.inseoul.api_manager.RetrofitService
-import com.inseoul.data_model.ReviewDataModel
 import com.inseoul.data_model.TimeLineModel
-import com.inseoul.make_plan.MakePlanActivity
-import com.inseoul.my_page.MyPageActivity
 import com.inseoul.review.ReviewActivity
 import com.inseoul.search.SearchActivity
-import com.inseoul.timeline.TimeLineActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.recyclerView_addPlace
 import kotlinx.android.synthetic.main.fragment_home.*
 import okhttp3.OkHttpClient
@@ -121,7 +110,8 @@ class HomeFragment : Fragment() {
                         rawData.add(d)
 
                         Log.d("main_review", d.toString())
-
+                        val writer = d.MEM.split("&&") as ArrayList<String>?
+                        var u = (writer!![0] + " 외 " + (writer!!.size - 2).toString()) + "명"
                         val thumbnail = d.Review!!
                         itemList.add(HomeItem(thumbnail, d.TripName, d.ADDATE + "여행", d.MEM, d.LIKES,d.H))
                     }

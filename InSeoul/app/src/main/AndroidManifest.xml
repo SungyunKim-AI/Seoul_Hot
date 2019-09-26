@@ -33,7 +33,6 @@
         </activity>
         <activity android:name=".TestActivity">
         </activity>
-        <activity android:name=".my_page.MyPageActivity"/>
         <activity android:name=".add_place.EditPlanDate">
         </activity>
         <activity android:name=".review.ReviewActivity"/>
