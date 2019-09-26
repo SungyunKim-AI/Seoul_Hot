@@ -10,11 +10,12 @@ public class LikeRequest extends StringRequest {
     final static private String URL= "http://ksun1234.cafe24.com/Like.php";
     private Map<String, String> parameters;
 
-    public LikeRequest(String userID,   Response.Listener<String> listener){
+    public LikeRequest(String userID,String id  , Response.Listener<String> listener){
 
         super(Method.POST, URL, listener, null);
         parameters=new HashMap<>();
         parameters.put("ReviewID", userID);
+        parameters.put("UserID", id);
 
 
 

@@ -28,7 +28,7 @@ class MyPage_ViewPagerAdapter(
     interface MyPageEventListener{
         fun goAddPlace(view: View, position: Int, flag_key:Int, PlanID:Int)
         fun goRegisterReview(view: View, position: Int, item:MyPage_Item)
-        fun goReview(view: View, position: Int, PlanID:Int)
+        fun goReview(view: View, position: Int, PlanID:Int, TripName:String, DPDATE:String, ADDATE:String, MEM:String)
     }
 
 
@@ -65,7 +65,21 @@ class MyPage_ViewPagerAdapter(
                     }
                     2->{
                         // 내가 쓴 리뷰로
-                        listener.goReview(view, position, itemlist[0][p].Num)
+//(view: View, position: Int, PlanID:Int, TripName:String, DPDATE:String, ADDATE:String, MEM:String)
+
+                        val start_calendar = itemlist[2][p].date.split("-")
+                        var startDay = start_calendar[2]
+                        var startMonth = start_calendar[1]
+                        var startYear = start_calendar[0]
+                        var d = startYear+"-"+startMonth+"-"+startDay
+
+                        val end_calendar = itemlist[2][p].thumbnail!!.split("-")
+                        var endDay = end_calendar[2]
+                        var endMonth = end_calendar[1]
+                        var endYear = end_calendar[0]
+                        var e = endYear+"-"+endMonth+"-"+endDay
+                        Log.v("dateee", d + " " + e)
+                        listener.goReview(view, position, itemlist[2][p].Num, itemlist[2][p].title, d,e, itemlist[2][p].mem)
                     }
                 }
 
