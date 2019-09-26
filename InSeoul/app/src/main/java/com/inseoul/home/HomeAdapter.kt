@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
@@ -18,8 +19,9 @@ import com.inseoul.Server.DisLikeRequest
 import com.inseoul.Server.LikeRequest
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.add_place.AddPlaceItem
+import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
-import kotlinx.android.synthetic.main.activity_add_place.*
+
 import kotlinx.android.synthetic.main.activity_add_place_main.*
 import org.json.JSONObject
 import org.w3c.dom.Text
@@ -69,24 +71,35 @@ class HomeAdapter(val context: Context,
 //            str += i노원
 //            str += " "
 //        }
+        val userID = SaveSharedPreference.getUserID(this.context)
         holder.writer.text = "ⓒ"+ data.mem
         holder.heart.setOnClickListener {
             if(holder.heart.isChecked){
                 val responseListener = Response.Listener<String> { response ->
-                    holder.likes.text = Integer.toString(Integer.parseInt(data.likes)+1)
-                    holder.likes
+
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getBoolean("success")
+                    if(success){
+                        holder.likes.text = jsonResponse.getString("likes")
+                    }
+                    else{
+                        Toast.makeText(this.context, "이미 좋아요를 눌렀습니다.", Toast.LENGTH_LONG).show()
+                    }
 
                 }
-                val idnumrequest = LikeRequest(data.reviewID, responseListener)
+                val idnumrequest = LikeRequest(data.reviewID,userID, responseListener)
                 val queue = Volley.newRequestQueue(this.context)
                 queue.add(idnumrequest)
             }
             else{
                 val responseListener = Response.Listener<String> { response ->
-                    holder.likes.text = Integer.toString(Integer.parseInt(data.likes))
+                    Log.v("d",response)
+                    val jsonResponse = JSONObject(response)
+                    val success = jsonResponse.getString("success")
+                    holder.likes.text = success.toString()
 
                 }
-                val idnumrequest = DisLikeRequest(data.reviewID, responseListener)
+                val idnumrequest = DisLikeRequest(data.reviewID,userID, responseListener)
                 val queue = Volley.newRequestQueue(this.context)
                 queue.add(idnumrequest)
 
