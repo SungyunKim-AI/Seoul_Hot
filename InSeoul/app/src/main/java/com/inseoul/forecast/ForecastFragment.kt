@@ -1,17 +1,16 @@
 package com.inseoul.forecast
 
-import android.app.Dialog
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
+
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
-import androidx.appcompat.widget.Toolbar
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 import com.inseoul.R
 import com.inseoul.api_manager.RetrofitService
 import com.inseoul.data_model.ForecastModel_MiddleTemperature
@@ -28,35 +27,51 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-class ForecastActivity : AppCompatActivity() {
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
 
-    lateinit var model_default:ForecastModel_default.items
-    lateinit var model_weather:ForecastModel_MiddleWeather.item
-    lateinit var model_temp:ForecastModel_MiddleTemperature.item
+/**
+ * A simple [Fragment] subclass.
+ *
+ */
+class ForecastFragment : Fragment() {
+
+
+    lateinit var model_default: ForecastModel_default.items
+    lateinit var model_weather: ForecastModel_MiddleWeather.item
+    lateinit var model_temp: ForecastModel_MiddleTemperature.item
 
     var now = System.currentTimeMillis()
-    lateinit var date:Date
+    lateinit var date: Date
     lateinit var format:String
     lateinit var year:String
     lateinit var month:String
     lateinit var day:String
     lateinit var time:String
-    lateinit var yDate:Date
+    lateinit var yDate: Date
     lateinit var yFormat:String
 
     lateinit var r_date:String
     lateinit var tDate:String
     lateinit var ttDate:String
-    lateinit var retrofit:RetrofitService
+    lateinit var retrofit: RetrofitService
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_forecast)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_forecast, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         init()
-        initToolbar()
+        ForecastAPI_ShortTerm()
         ForecastAPI_default()
         var tmFc:Long = 0
         if(time.toInt() >= 18) {
@@ -111,29 +126,9 @@ class ForecastActivity : AppCompatActivity() {
 
 
         // 날씨 정보 재활용
-        val data = getIntent().getParcelableExtra<Forecast_shortTermItem>("today_weather")
+//        val data = getIntent().getParcelableExtra<Forecast_shortTermItem>("today_weather")
 
-        Log.e("data_weather", data.toString())
-        when(data.SKY){
-            1->{
-                now_weather_icon.setImageResource(R.drawable.w_sun)
-            }
-            3, 4->{
-                when(data.PTY){
-                    0->{
-                        now_weather_icon.setImageResource(R.drawable.w_cloud)
-                    }
-                    1,2,4->{
-                        now_weather_icon.setImageResource(R.drawable.w_rain)
-                    }
-                    3->{
-                        now_weather_icon.setImageResource(R.drawable.w_snow)
-                    }
-                }
-            }
-        }
-        now_temp.text = data.T1H.toString() + "º"
-        now_date.text = month + "월" + day + "일"
+
 //        Log.d("hsoh0306", format + "\n" + yFormat)
     }
     lateinit var itemList:ArrayList<Forecast_item>
@@ -156,8 +151,8 @@ class ForecastActivity : AppCompatActivity() {
     lateinit var adapter:Forecast_adapter
     fun initRecyclerView(){
         var layoutManager: RecyclerView.LayoutManager? = null
-        layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        adapter = Forecast_adapter(this, itemList)
+        layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        adapter = Forecast_adapter(context!!, itemList)
         recyclerview.layoutManager = layoutManager
         recyclerview.adapter = adapter
     }
@@ -333,46 +328,6 @@ class ForecastActivity : AppCompatActivity() {
             })
     }
 
-    lateinit var model_shortTerm: ArrayList<ForecastModel_ShortTerm.item>
-    fun ForecastAPI_ShortTerm(){
-
-        model_shortTerm = ArrayList()
-        val regId = "11B00000"  // 서울 지역 코드
-        val _type = "json"
-        val numOfRows = 10
-        val pageNo = 1
-        var base_data = 1
-        var base_time ="a0"
-        val nx = 1
-        val ny = 1
-
-
-        val s_now = System.currentTimeMillis()
-        val s_date = Date(s_now)
-        val s_format = SimpleDateFormat("yyyyMMdd").format(s_date).toInt()
-        val s_time = SimpleDateFormat("HH").format(s_date).toInt()
-        val s_minute = SimpleDateFormat("mm").format(s_date).toInt()
-
-        if(s_time >= 6) {
-            if(s_minute < 45){
-                base_time = (s_time - 1).toString() + "30"
-            }
-        }
-
-
-        retrofit
-            .ShortTermWeather(base_data, base_time, nx, ny, numOfRows, pageNo, _type)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.e("shortTerm", it.toString())
-                for(i in 0 until it.response.body.items.item.size){
-                    model_shortTerm.add(it.response.body.items.item[i])
-                }
-            },{
-                Log.v("Fail","")
-            })
-    }
     fun ForecastAPI_temperature(tmFc:Long){
         val regId = "11B10101"      // 서울 지역 코드
         val _type = "json"
@@ -393,6 +348,176 @@ class ForecastActivity : AppCompatActivity() {
                 Log.v("Fail","")
             })
     }
+
+    lateinit var model_shortTerm: ArrayList<Forecast_shortTermItem>
+
+    fun ForecastAPI_ShortTerm(){
+
+        model_shortTerm = ArrayList()
+
+        val _type = "json"
+        val numOfRows = 40
+        val pageNo = 1
+        var base_data = 1
+        var base_time =""
+        val nx = 60
+        val ny = 127
+
+        val s_now = System.currentTimeMillis()
+        val s_date = Date(s_now)
+        val s_format = SimpleDateFormat("yyyyMMdd").format(s_date).toInt()
+        val s_month = SimpleDateFormat("MM").format(s_date).toInt()
+        val s_day = SimpleDateFormat("dd").format(s_date).toInt()
+
+        val s_time = SimpleDateFormat("HH").format(s_date).toInt()
+        val s_minute = SimpleDateFormat("mm").format(s_date).toInt()
+
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+        model_shortTerm.add(Forecast_shortTermItem(s_month, s_day, null, null, null,null,null))
+
+
+        base_data = s_format
+        if(s_minute >= 45){
+            base_time = (s_time).toString() + "30"
+        } else if (s_minute in 30..45) {
+            base_time = (s_time).toString() + "00"
+        } else {
+            base_time = (s_time - 1).toString() + "30"
+        }
+//        base_time = s_time.toString() + s_minute.toString()
+
+        Log.e("time_d", s_format.toString())
+        Log.e("time_t", s_time.toString())
+        Log.e("time_m", s_minute.toString())
+        Log.e("time_base",base_time)
+
+
+        val retrofit = Retrofit.Builder()
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://newsky2.kma.go.kr/service/")
+            .client(createOkHttpClient())
+            .build()
+            .create(RetrofitService::class.java)
+            .ShortTermWeather(base_data, base_time, nx, ny, numOfRows, pageNo, _type)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e("shortTerm", it.toString())
+                for(i in 0 until it.response.body.items.item.size) {
+                    when(it.response.body.items.item[i].category){
+                        "T1H"->{
+                            model_shortTerm[i % 4].T1H = it.response.body.items.item[i].fcstValue
+
+                        }
+                        "PTY"->{
+                            model_shortTerm[i % 4].PTY = it.response.body.items.item[i].fcstValue.toInt()
+                        }
+                        "SKY"->{
+                            model_shortTerm[i % 4].SKY = it.response.body.items.item[i].fcstValue.toInt()
+                        }
+                    }
+                }
+                model_shortTerm[0].date = it.response.body.items.item[0].fcstDate
+                model_shortTerm[0].time = it.response.body.items.item[0].fcstTime
+
+                model_shortTerm[1].date = it.response.body.items.item[1].fcstDate
+                model_shortTerm[1].time = it.response.body.items.item[1].fcstTime
+
+                model_shortTerm[2].date = it.response.body.items.item[2].fcstDate
+                model_shortTerm[2].time = it.response.body.items.item[2].fcstTime
+
+                model_shortTerm[3].date = it.response.body.items.item[3].fcstDate
+                model_shortTerm[3].time = it.response.body.items.item[3].fcstTime
+
+
+                var index = 0
+                for(i in 0..3){
+                    if(model_shortTerm[i].SKY != null && model_shortTerm[i].PTY != null){
+//                        w_intent.putExtra("today_weather", model_shortTerm[i])
+                        index = i
+                        break;
+                    }
+                }
+                when(model_shortTerm[index].SKY){
+                    1->{
+                        now_weather_icon.setImageResource(R.drawable.w_sun)
+//                                home_weather_icon.setImageResource(R.drawable.w_sun)
+//                                home_status.text = "맑음"
+                    }
+                    3, 4->{
+                        when(model_shortTerm[index].PTY){
+                            0->{
+                                now_weather_icon.setImageResource(R.drawable.w_cloud)
+
+//                                        home_weather_icon.setImageResource(R.drawable.w_cloud)
+//                                        home_status.text = "흐림"
+                            }
+                            1,2,4->{
+                                now_weather_icon.setImageResource(R.drawable.w_cloud)
+
+//                                        home_weather_icon.setImageResource(R.drawable.w_rain)
+//                                        home_status.text = "비"
+                            }
+                            3->{
+                                now_weather_icon.setImageResource(R.drawable.w_snow)
+//                                        home_weather_icon.setImageResource(R.drawable.w_snow)
+//                                        home_status.text = "눈"
+                            }
+                        }
+                    }
+                }
+//                        home_date.text = model_shortTerm[i].month.toString() + "/" + model_shortTerm[i].day.toString()
+                if(model_shortTerm[index].T1H == null){
+//                            home_temp.text = "점검중.."
+                    now_temp.text = "점검중.."
+
+                } else {
+                    now_temp.text = model_shortTerm[index].T1H.toString() + "º"
+                    now_date.text = month + "월" + day + "일"
+
+//                            home_temp.text = model_shortTerm[i].T1H.toString() + "º"
+                }
+
+
+                var str = "\n"
+                str += model_shortTerm[0].toString()
+                str += "\n"
+                str += model_shortTerm[1].toString()
+                str += "\n"
+                str += model_shortTerm[2].toString()
+                str += "\n"
+                str += model_shortTerm[3].toString()
+                Log.e("hsoh0306", str)
+//                test.text = str
+//                when(data.SKY){
+//                    1->{
+//                        now_weather_icon.setImageResource(R.drawable.w_sun)
+//                    }
+//                    3, 4->{
+//                        when(data.PTY){
+//                            0->{
+//                                now_weather_icon.setImageResource(R.drawable.w_cloud)
+//                            }
+//                            1,2,4->{
+//                                now_weather_icon.setImageResource(R.drawable.w_rain)
+//                            }
+//                            3->{
+//                                now_weather_icon.setImageResource(R.drawable.w_snow)
+//                            }
+//                        }
+//                    }
+//                }
+//                now_temp.text = data.T1H.toString() + "º"
+//                now_date.text = month + "월" + day + "일"
+
+            },{
+                Log.v("Fail","")
+            })
+    }
+
     fun createOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
         val interceptor = HttpLoggingInterceptor()
@@ -400,32 +525,4 @@ class ForecastActivity : AppCompatActivity() {
         builder.addInterceptor(interceptor)
         return builder.build()
     }
-
-    fun initToolbar(){
-        //toolbar 커스텀 코드
-        val mtoolbar = findViewById(R.id.toolbar_forecast) as Toolbar
-        setSupportActionBar(mtoolbar)
-        // Get the ActionBar here to configure the way it behaves.
-        val actionBar = supportActionBar
-        actionBar!!.setDisplayShowCustomEnabled(true) //커스터마이징 하기 위해 필요
-        actionBar.setDisplayShowTitleEnabled(false)
-
-        actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-
-
-        ///////////////////////////////////////////////////////
-
-    }
-    ///////////////toolbar에서 back 버튼
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
 }

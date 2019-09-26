@@ -209,6 +209,7 @@ class AddPlaceActivity :
 
         PlanTitle.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_DONE) {
+
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(PlanTitle.windowToken, 0)
                 true
@@ -216,6 +217,7 @@ class AddPlaceActivity :
                 false
             }
         }
+
 
     }
 

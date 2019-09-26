@@ -1,57 +1,76 @@
 package com.inseoul.my_page
 
+
+import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.widget.Toolbar
+import android.view.ViewGroup
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+
 import com.inseoul.R
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.SettingActivity
 import com.inseoul.add_place.AddPlaceActivity
-import com.inseoul.make_plan.MakePlanActivity
 import com.inseoul.manage_member.SaveSharedPreference
-import kotlinx.android.synthetic.main.activity_my_page.*
+import com.inseoul.register_review.RegisterReviewActivity
+import com.inseoul.review.ReviewActivity
+import kotlinx.android.synthetic.main.fragment_my_page.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
 
-class MyPageActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my_page)
-        initToolbar()
-        initData()
-        initBtn()
-    }
-
-    fun initBtn(){
-        add_schedule.setOnClickListener {
-            val intent = Intent(this, MakePlanActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-    }
-
+/**
+ * A simple [Fragment] subclass.
+ *
+ */
+class MyPageFragment : Fragment() {
 
     lateinit var test:ArrayList<ArrayList<MyPage_Item>>
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_my_page, container, false)
+        return view
+    }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        test = ArrayList()
+        initBtn()
+        initData()
+    }
+    fun initBtn(){
+//        add_schedule.setOnClickListener {
+//            val intent = Intent(context, MakePlanActivity::class.java)
+//            startActivity(intent)
+//        }
+        setting.setOnClickListener {
+            val intent = Intent(context, SettingActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
     fun initData(){
-        val id = SaveSharedPreference.getUserID(this)
+        val id = SaveSharedPreference.getUserID(context)
         val responseListener = Response.Listener<String> { response ->
             try {
-                test = ArrayList()
-                 Log.d("dd", response)
+                Log.d("mypage", response)
                 var Will:ArrayList<MyPage_Item>
                 var Past:ArrayList<MyPage_Item>
                 var Review:ArrayList<MyPage_Item>
@@ -106,20 +125,50 @@ class MyPageActivity : AppCompatActivity() {
                 initViewPager()
 
             } catch (e: Exception) {
+                Log.v("Error", e.toString())
                 e.printStackTrace()
             }
         }
         val idnumrequest = ShowPlanRegister(id,responseListener)
-        val queue = Volley.newRequestQueue(this@MyPageActivity)
+        val queue = Volley.newRequestQueue(context)
         queue.add(idnumrequest)
+
     }
 
 
     lateinit var adapter:MyPage_ViewPagerAdapter
     fun initViewPager(){
+        Log.v("mypage_response", test.toString())
 
+        val listener = object: MyPage_ViewPagerAdapter.MyPageEventListener{
+            override fun goAddPlace(view: View, position: Int, flag_key:Int, PlanID:Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                val intent = Intent(context, AddPlaceActivity::class.java)
+                intent.putExtra("flag_key",flag_key)
+                intent.putExtra("PlanID",PlanID)
+                startActivity(intent)
 
-        adapter = MyPage_ViewPagerAdapter(this, test)
+            }
+
+            override fun goRegisterReview(view: View, position: Int, item:MyPage_Item) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                val intent = Intent(context, RegisterReviewActivity::class.java)
+                intent.putExtra("item",item)
+                startActivity(intent)
+
+            }
+
+            override fun goReview(view: View, position: Int, PlanID:Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                val intent = Intent(context, ReviewActivity::class.java)
+                intent.putExtra("PlanID", PlanID)
+                startActivity(intent)
+
+            }
+        }
+        adapter = MyPage_ViewPagerAdapter(activity!!.applicationContext, test, listener)
         my_page_viewpager.adapter = adapter
 
         TabLayoutMediator(tabLayout, my_page_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
@@ -141,29 +190,4 @@ class MyPageActivity : AppCompatActivity() {
 
     }
 
-    fun initToolbar(){
-        //toolbar 커스텀 코드
-        val mtoolbar = findViewById(R.id.toolbar_my_page) as Toolbar
-        setSupportActionBar(mtoolbar)
-        // Get the ActionBar here to configure the way it behaves.
-        val actionBar = supportActionBar
-        actionBar!!.setDisplayShowCustomEnabled(true) //커스터마이징 하기 위해 필요
-        actionBar.setDisplayShowTitleEnabled(false)
-
-        actionBar.setDisplayHomeAsUpEnabled(true) // 뒤로가기 버튼, 디폴트로 true만 해도 백버튼이 생김
-        actionBar.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-
-    }
-
-
-    ///////////////toolbar에서 back 버튼
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }
