@@ -34,6 +34,22 @@
                 app:goIcon="@drawable/search"
         />
     </androidx.appcompat.widget.Toolbar>
+
+    <ProgressBar
+            android:id="@+id/progressBarHorizontal"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="false"
+            android:max="100"
+            android:minHeight="3dp"
+            android:minWidth="200dp"
+            android:progress="1"
+            android:progressBackgroundTint="@android:color/darker_gray"
+            android:progressTint="@color/colorPrimary"
+            android:visibility="invisible"/>
+
+
     <com.google.android.material.tabs.TabLayout
             android:id="@+id/search_tabLayout"
             android:layout_width="match_parent"

@@ -6,9 +6,12 @@ import android.content.Intent
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -63,6 +66,7 @@ class SearchActivity : AppCompatActivity() {
             // Submit
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 //Log.d("Submit",p0)
+                initProgressBar()
                 //////////////////////// DB Connect & Query ////////////////////////
                 tour.clear()
                 hotel.clear()
@@ -299,6 +303,28 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
+    //progressBar
+    var progressStatus = 0
+    var handler: Handler? = null
+
+    fun initProgressBar(){
+//        progressBarHorizontal.visibility = VISIBLE
+//        handler = Handler(Handler.Callback {
+//            if (isStarted) {
+//                progressStatus++
+//            }
+//            progressBarHorizontal.progress = progressStatus
+//            handler?.sendEmptyMessageDelayed(0, 100)
+//
+//            true
+//        })
+//
+//        handler?.sendEmptyMessage(0)
+        
+    }
+
+
+
     //toolbar에서 back 버튼
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -309,4 +335,6 @@ class SearchActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 }
