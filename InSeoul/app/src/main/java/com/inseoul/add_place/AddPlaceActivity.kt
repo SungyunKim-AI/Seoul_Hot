@@ -30,12 +30,14 @@ import android.content.Context
 import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
+import com.inseoul.testData
 import kotlinx.android.synthetic.main.activity_add_place_2.*
 import java.text.SimpleDateFormat
 
@@ -70,20 +72,10 @@ class AddPlaceActivity :
     lateinit var searchitm: MyPage_Item
     lateinit var tempItem: Search_Item
 
-//    //지도 포커스 변경
-//    var map_ready_flag = false
-//    var dm: DisplayMetrics? = null
-//    var height = 0
-//    var move_pix = 0
-//    var state_zero = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
-
-//        dm = applicationContext.resources.displayMetrics
-//        height = dm!!.heightPixels
-//        move_pix = height / 8 - app_bar.height / 4
 
         initToolbar()
         init()
@@ -238,12 +230,36 @@ class AddPlaceActivity :
         }
 
         val listener = object : AddPlace_ViewPagerAdapter.ViewPagerAdapterEventListener {
+            override fun onChangeCallback2(view: View, itemlist: ArrayList<ArrayList<AddPlaceItem>>) {
+                dayList = itemlist
+                initMarker()
+            }
+
+            //일정 추가 버튼
             override fun onClick(view: View, position: Int) {
                 val intent = Intent(this@AddPlaceActivity, SearchActivity::class.java)
                 intent.putExtra("flag", true)
                 startActivityForResult(intent, 3000)
             }
 
+            //친구 추가 버튼
+            override fun on_friendBtn_Click(view: View, position: Int) {
+
+                var friend_dialog = AlertDialog.Builder(this@AddPlaceActivity)
+                friend_dialog.setTitle("친구와 함께 일정 만들기")
+                    .setMessage("친구의 아이디를 입력하세요")
+                    .setIcon(R.drawable.ic_group_add_black_24dp)
+                    .setView(R.layout.dialog_edittext)
+                    .setPositiveButton("추가") { dialogInterface, i ->
+
+                        var input = findViewById<EditText>(R.id.addboxdialog)
+
+                        //서버에서 아이디 확인 해서 등록하면 됩니다.
+                    }
+                    .setNeutralButton("취소") { dialogInterface, i ->
+                    }
+                    .show()
+            }
         }
 
 
