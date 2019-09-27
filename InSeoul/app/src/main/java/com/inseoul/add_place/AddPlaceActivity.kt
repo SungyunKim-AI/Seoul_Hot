@@ -34,6 +34,7 @@ import android.widget.EditText
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.inseoul.Server.DeletePlanRequest
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
@@ -61,7 +62,8 @@ class AddPlaceActivity :
     private var DPDATE = ""
     private var ADDATE = ""
     private var THEME = ""
-
+    private var PLANID =0
+    private var MEM=""
 
     lateinit var fade_out: Animation
     lateinit var fade_in: Animation
@@ -76,7 +78,7 @@ class AddPlaceActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
-
+        MEM = SaveSharedPreference.getUserID(this)
         initToolbar()
         init()
         initMap()
@@ -105,13 +107,13 @@ class AddPlaceActivity :
             textview_plandate.text = date
         } else {
             //from MyPageActivity
-            val planID = extras!!.getInt("PlanID")
+            PLANID = extras!!.getInt("PlanID")
 
             if (flag == 3) {
                 tempItem = extras.getParcelable("placeData")!!
             }
 
-            RequestPlanItem(planID, flag)
+            RequestPlanItem(PLANID, flag)
 
         }
 
@@ -147,7 +149,11 @@ class AddPlaceActivity :
             for (i in dayList)
                 for (c in i)
                     PLAN = PLAN + c.placeID + ","
-            Log.d("dd", PlanName + DPDATE + ADDATE + THEME + PLAN + SaveSharedPreference.getUserID(this).toString())
+            var day=""
+            for(i in dayList){
+                day+=i.lastIndex.toString()+","
+            }
+            Log.d("dd", PlanName + DPDATE + ADDATE + THEME + PLAN +day+ SaveSharedPreference.getUserID(this).toString())
             val registerRequest =
                 AddPlaceRegister(
                     PlanName,
@@ -155,6 +161,7 @@ class AddPlaceActivity :
                     ADDATE,
                     THEME,
                     PLAN,
+                    day,
                     SaveSharedPreference.getUserID(this).toString() + "&&",
                     responseListener
                 )
@@ -190,7 +197,16 @@ class AddPlaceActivity :
             builder.setPositiveButton("확인") { dialog, id ->
                 anim()
 
-                //순재가 할일 1
+                //순재가 할일 1///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                if(flag ==2){
+                    val responseListener = Response.Listener<String> { response ->
+
+                    }
+                    val idnumrequest = DeletePlanRequest(PLANID.toString(), responseListener)
+                    val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+                    queue.add(idnumrequest)
+
+                }
 
 
                 val intent = Intent()
@@ -260,8 +276,8 @@ class AddPlaceActivity :
                     .setPositiveButton("추가") { dialogInterface, i ->
 
                         var input = findViewById<EditText>(R.id.addboxdialog)
-
-                        //순재가 할일 3
+                        MEM+="&"+input
+                        //순재가 할일 3////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     }
                     .setNeutralButton("취소") { dialogInterface, i ->
                     }
