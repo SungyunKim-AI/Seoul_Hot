@@ -82,9 +82,9 @@ class MakePlanActivity : AppCompatActivity() {
 
         calendar_view.currentDayIconRes = R.drawable.ic_down_arrow
 
-        calendar_view.selectedDayBackgroundStartColor = Color.parseColor("#B6E3E9")
-        calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#B6E3E9")
-        calendar_view.selectedDayBackgroundColor = Color.parseColor("#D9F1F1")
+        calendar_view.selectedDayBackgroundStartColor = Color.parseColor("#0d357a")
+        calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#0d357a")
+        calendar_view.selectedDayBackgroundColor = Color.parseColor("#245598")
 
     }
 
