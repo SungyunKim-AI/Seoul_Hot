@@ -25,14 +25,10 @@
             android:usesCleartextTraffic="true">
         <activity android:name=".manage_member.SettingActivity">
         </activity>
-        <activity
-                android:name=".TempActivity"
-                android:label="@string/title_activity_temp">
-        </activity>
+
         <activity android:name=".forecast.ForecastActivity">
         </activity>
-        <activity android:name=".TestActivity">
-        </activity>
+
         <activity android:name=".add_place.EditPlanDate">
         </activity>
         <activity android:name=".review.ReviewActivity"/>
@@ -56,10 +52,7 @@
                     android:resource="@xml/file_paths"/>
         </provider>
 
-        <activity android:name=".make_plan.RecommendPlan">
-        </activity>
-        <activity android:name=".Server_mapdata.Mapdata_Activity">
-        </activity>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -79,10 +72,6 @@
         <activity android:name=".search.SearchDetail">
         </activity>
         <activity android:name=".register_review.RegisterReviewActivity">
-        </activity>
-        <activity android:name=".manage_schedules.my_schedule">
-        </activity>
-        <activity android:name=".timeline.TimeLineActivity">
         </activity>
         <activity
                 android:name=".add_place.AddPlaceActivity"
