@@ -1,10 +1,6 @@
 package com.inseoul.api_manager
 
 import com.inseoul.data_model.*
-import com.inseoul.testData
-import com.inseoul.testData2
-import com.inseoul.testData3
-import com.inseoul.testData4
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query

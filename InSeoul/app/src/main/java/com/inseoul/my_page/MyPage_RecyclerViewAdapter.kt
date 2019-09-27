@@ -9,8 +9,6 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
-import com.inseoul.timeline.TimeLineAdapter
-import com.inseoul.timeline.TimeLineItem
 
 class MyPage_RecyclerViewAdapter(
     val context: Context,

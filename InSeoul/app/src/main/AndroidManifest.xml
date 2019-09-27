@@ -23,7 +23,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".SettingActivity">
+        <activity android:name=".manage_member.SettingActivity">
         </activity>
         <activity
                 android:name=".TempActivity"

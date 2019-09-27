@@ -1,7 +1,6 @@
 package com.inseoul.my_page
 
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +15,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 import com.inseoul.R
 import com.inseoul.Server.ShowPlanRegister
-import com.inseoul.SettingActivity
+import com.inseoul.manage_member.SettingActivity
 import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.register_review.RegisterReviewActivity

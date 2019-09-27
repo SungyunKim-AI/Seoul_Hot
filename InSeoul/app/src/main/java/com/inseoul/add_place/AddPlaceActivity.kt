@@ -37,7 +37,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPage_Item
-import com.inseoul.testData
 import kotlinx.android.synthetic.main.activity_add_place_2.*
 import java.text.SimpleDateFormat
 

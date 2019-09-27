@@ -1,4 +1,4 @@
-package com.inseoul
+package com.inseoul.manage_member
 
 import android.content.Intent
 import android.net.Uri
@@ -8,9 +8,8 @@ import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AlertDialog
-import com.inseoul.manage_member.SaveSharedPreference
+import com.inseoul.R
 import kotlinx.android.synthetic.main.activity_setting.*
-import java.io.FileInputStream
 
 class SettingActivity : AppCompatActivity() {
     lateinit var licenceText:String

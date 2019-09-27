@@ -3,7 +3,6 @@ package com.inseoul.search
 
 import android.app.Activity
 import android.content.Intent
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -243,8 +242,7 @@ class SearchActivity : AppCompatActivity() {
 
                 adapter.notifyDataSetChanged()
                 if (success.length() == 0) {
-                    val layout = findViewById(R.id.first_layout) as LinearLayout
-                    layout.visibility = View.VISIBLE
+
                 } else {
 
                 }
