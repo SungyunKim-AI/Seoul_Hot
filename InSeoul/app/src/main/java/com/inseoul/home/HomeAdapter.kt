@@ -14,10 +14,14 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.inseoul.R
+import com.inseoul.Server.CheckLikeRequest
 import com.inseoul.Server.DisLikeRequest
 import com.inseoul.Server.LikeRequest
 import com.inseoul.manage_member.SaveSharedPreference
 import org.json.JSONObject
+import org.w3c.dom.Text
+import java.lang.Boolean.FALSE
+import java.lang.Boolean.TRUE
 
 class HomeAdapter(val context: Context,
                   var listener:RecyclerViewAdapterEventListener,
@@ -66,6 +70,23 @@ class HomeAdapter(val context: Context,
 //        }
         val userID = SaveSharedPreference.getUserID(this.context)
         holder.writer.text = "ⓒ"+ data.mem
+
+        val responseListener = Response.Listener<String> { response ->
+
+            Log.e("heartshaker", response)
+            val jsonResponse = JSONObject(response)
+            val success = jsonResponse.getBoolean("success")
+            if(success){
+                holder.heart.isChecked = TRUE
+            }
+            else{
+                holder.heart.isChecked = FALSE
+            }
+        }
+        val idnumrequest = CheckLikeRequest(data.reviewID,userID, responseListener)
+        val queue = Volley.newRequestQueue(this.context)
+        queue.add(idnumrequest)
+
         holder.heart.setOnClickListener {
             if(holder.heart.isChecked){
                 val responseListener = Response.Listener<String> { response ->
