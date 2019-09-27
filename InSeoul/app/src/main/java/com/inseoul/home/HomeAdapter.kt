@@ -75,12 +75,12 @@ class HomeAdapter(val context: Context,
 
             Log.e("heartshaker", response)
             val jsonResponse = JSONObject(response)
-            val success = jsonResponse.getInt("success")
-            if(success == 0){
-                holder.heart.isChecked = FALSE
+            val success = jsonResponse.getBoolean("success")
+            if(success){
+                holder.heart.isChecked = TRUE
             }
             else{
-                holder.heart.isChecked = TRUE
+                holder.heart.isChecked = FALSE
             }
         }
         val idnumrequest = CheckLikeRequest(data.reviewID,userID, responseListener)
