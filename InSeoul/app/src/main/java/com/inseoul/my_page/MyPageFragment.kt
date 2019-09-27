@@ -1,6 +1,7 @@
 package com.inseoul.my_page
 
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -39,6 +40,8 @@ class MyPageFragment : Fragment() {
 
     lateinit var test:ArrayList<ArrayList<MyPage_Item>>
 
+    val REQ_CODE = 9534
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +57,16 @@ class MyPageFragment : Fragment() {
         initBtn()
         initData()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("alert_","not ok")
+        if(resultCode == RESULT_OK){
+            if(requestCode == -1){
+                adapter.notifyDataSetChanged()
+            }
+        }
+    }
+
     fun initBtn(){
 //        add_schedule.setOnClickListener {
 //            val intent = Intent(context, MakePlanActivity::class.java)
@@ -146,7 +159,8 @@ class MyPageFragment : Fragment() {
                 val intent = Intent(context, AddPlaceActivity::class.java)
                 intent.putExtra("flag_key",flag_key)
                 intent.putExtra("PlanID",PlanID)
-                startActivity(intent)
+                Log.v("mypage_tlqkf", activity.toString())
+                activity!!.startActivityForResult(intent,REQ_CODE)
 
             }
 

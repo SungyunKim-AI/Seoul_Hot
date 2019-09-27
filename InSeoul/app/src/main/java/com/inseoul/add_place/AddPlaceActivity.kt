@@ -31,13 +31,17 @@ import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inseoul.BackPressCloseHandler
+import com.inseoul.MainActivity
 import com.inseoul.Server.DeletePlanRequest
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.home.HomeFragment
 import com.inseoul.manage_member.SaveSharedPreference
+import com.inseoul.my_page.MyPageFragment
 import com.inseoul.my_page.MyPage_Item
 import kotlinx.android.synthetic.main.activity_add_place_2.*
 import java.text.SimpleDateFormat
@@ -91,11 +95,12 @@ class AddPlaceActivity :
 
     ////////////////////////////////////////////////////////////////////////////////////////
     lateinit var adapter: AddPlace_ViewPagerAdapter
+    var flag: Int = 1234
 
     fun init() {
 
         val extras = intent.extras
-        var flag = extras!!.getInt("flag_key", -1)
+        flag = extras!!.getInt("flag_key", -1)
 
         // from MakePlanActivity
         if (flag == 1) {
@@ -133,12 +138,11 @@ class AddPlaceActivity :
 
                         //순재가 할일 2
 
-                        Toast.makeText(this@AddPlaceActivity, "정상적 등록 완료", Toast.LENGTH_SHORT).show()
-                        //finish()
+                        Toast.makeText(this@AddPlaceActivity, "정상적으로 등록 완료 되었습니다.", Toast.LENGTH_SHORT).show()
+                        finish()
 
                     } else {
-                        Toast.makeText(this@AddPlaceActivity, "등록 실패", Toast.LENGTH_SHORT).show()
-                        //finish()
+                        Toast.makeText(this@AddPlaceActivity, "등록을 실패 하였습니다", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -210,11 +214,19 @@ class AddPlaceActivity :
                     queue.add(idnumrequest)
 
 
+                if(flag==2){
+                    val intent = Intent()
+                    Log.v("add_place_tlqkf", "tlqkf")
+                    intent.putExtra("result", 1)    // TEST CODE
+                    setResult(RESULT_OK, intent)
+//                    val f = supportFragmentManager.findFragmentByTag("mypage")
+//                    val MyPageTransaction = supportFragmentManager.beginTransaction()
+//                    MyPageTransaction.detach(f!!).attach(f).commit()
+                    finish()
+                }else{
+                    finish()
+                }
 
-                val intent = Intent()
-                intent.putExtra("result", 1)    // TEST CODE
-                setResult(Activity.RESULT_OK, intent)
-                finish()
             }
             builder.setNegativeButton("취소") { dialog, id ->
                 anim()
