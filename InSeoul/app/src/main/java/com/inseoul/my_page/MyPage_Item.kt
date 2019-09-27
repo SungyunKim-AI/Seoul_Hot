@@ -26,8 +26,7 @@ data class MyPage_Item(
         parcel.readString()!!,
         parcel.readValue(Boolean::class.java.classLoader) as Boolean,
         parcel.readString()!!
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(Num)
@@ -39,6 +38,7 @@ data class MyPage_Item(
         parcel.writeString(mem)
         parcel.writeString(thumbnail)
         parcel.writeValue(review)
+        parcel.writeValue(day)
     }
 
     override fun describeContents(): Int {
