@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
 import com.inseoul.api_manager.RetrofitService
 import com.inseoul.data_model.TimeLineModel
+import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.review.ReviewActivity
 import com.inseoul.search.SearchActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -64,7 +65,7 @@ class HomeFragment : Fragment() {
 //        return true
 //    }
 
-    fun initBtn(){
+    fun initBtn() {
         search_btn.setOnClickListener {
             val intent = Intent(context, SearchActivity::class.java)
             startActivity(intent)
@@ -89,7 +90,7 @@ class HomeFragment : Fragment() {
         return builder.build()
     }
 
-    fun getReviewFromServer(){
+    fun getReviewFromServer() {
         rawData = ArrayList()
         val retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -104,9 +105,9 @@ class HomeFragment : Fragment() {
             .subscribe({
 
                 Log.e("http_ok", it.response.toString())
-                for(i in 0 until it.response.size){
+                for (i in 0 until it.response.size) {
                     val d = it.response[i]
-                    if(d.ReviewBool == 1){
+                    if (d.ReviewBool == 1) {
                         rawData.add(d)
 
                         Log.d("main_review", d.toString())
@@ -116,12 +117,12 @@ class HomeFragment : Fragment() {
 
                         var temp = d.ADDATE.split("-")
                         var date = temp[0] + "." + temp[1] + "." + temp[2]
-                        itemList.add(HomeItem(thumbnail, d.TripName, date + "여행", u, d.LIKES,d.H))
+                        itemList.add(HomeItem(thumbnail, d.TripName, date + "여행", u, d.LIKES, d.H))
                     }
                 }
                 adapter.notifyDataSetChanged()
-            },{
-                Log.v("Fail","")
+            }, {
+                Log.v("Fail", "")
             })
 
     }
@@ -130,12 +131,12 @@ class HomeFragment : Fragment() {
         layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView_addPlace.layoutManager = layoutManager
         val listener = object : HomeAdapter.RecyclerViewAdapterEventListener {
-            override fun onClick(view: View, position:Int) {
+            override fun onClick(view: View, position: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 val intent = Intent(context, ReviewActivity::class.java)
 
                 // Review전달
-                intent.putExtra("review",rawData[position].H)
+                intent.putExtra("review", rawData[position].H)
 
                 // 기본 정보
 //                intent.putExtra("Plan", rawData[position].Plan)
@@ -153,7 +154,7 @@ class HomeFragment : Fragment() {
 
         adapter = HomeAdapter(context!!, listener, itemList)
         recyclerView_addPlace.adapter = adapter
-//        recyclerView_addPlace.addItemDecoration(DividerItemDecoration(context, 1))
+
     }
 
     ////////////////FloatingButton Setting////////////////////
