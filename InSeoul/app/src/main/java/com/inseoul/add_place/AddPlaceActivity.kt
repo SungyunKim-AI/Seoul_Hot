@@ -125,6 +125,9 @@ class AddPlaceActivity :
                     val jsonResponse = JSONObject(response)
                     val success = jsonResponse.getBoolean("success")
                     if (success) {
+
+                        //순재가 할일 2
+
                         Toast.makeText(this@AddPlaceActivity, "정상적 등록 완료", Toast.LENGTH_SHORT).show()
                         //finish()
 
@@ -186,6 +189,10 @@ class AddPlaceActivity :
 
             builder.setPositiveButton("확인") { dialog, id ->
                 anim()
+
+                //순재가 할일 1
+
+
                 val intent = Intent()
                 intent.putExtra("result", 1)    // TEST CODE
                 setResult(Activity.RESULT_OK, intent)
@@ -254,7 +261,7 @@ class AddPlaceActivity :
 
                         var input = findViewById<EditText>(R.id.addboxdialog)
 
-                        //서버에서 아이디 확인 해서 등록하면 됩니다.
+                        //순재가 할일 3
                     }
                     .setNeutralButton("취소") { dialogInterface, i ->
                     }

@@ -29,7 +29,7 @@
                 android:layout_marginTop="25dp"
                 android:textSize="12dp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:id="@+id/tv_placeCount"
                 android:background="@drawable/circular_textview"/>
 
@@ -85,6 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical">
 
+
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -92,12 +93,24 @@
                         android:id="@+id/movebtn"
                         android:layout_gravity="center"
                         android:layout_marginRight="7dp"
-                        android:background="@drawable/ripple_effect_5_default"/>
+                        android:background="@drawable/ripple_effect_5_default"
+                        android:visibility="gone"/>
+
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_delete_forever_black_24dp"
-                        android:id="@+id/deletebtn"
+                        app:srcCompat="@drawable/ic_sync_black_24dp"
+                        android:id="@+id/syncbtn"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="7dp"
+                        android:background="@drawable/ripple_effect_5_default"
+                        android:visibility="gone"/>
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editbtn"
+                        app:srcCompat = "@drawable/ic_more_vert_black_24dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="7dp"
                         android:background="@drawable/ripple_effect_5_default"/>

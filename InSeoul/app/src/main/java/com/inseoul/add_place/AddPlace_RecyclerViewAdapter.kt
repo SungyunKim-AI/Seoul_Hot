@@ -1,12 +1,13 @@
 package com.inseoul.add_place
 
 import android.content.Context
+import android.media.Image
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
@@ -23,7 +24,7 @@ class AddPlace_RecyclerViewAdapter(
 ) : RecyclerView.Adapter<AddPlace_RecyclerViewAdapter.ViewHolder>(), ItemTouchHelperCallback.OnItemMoveListener {
 
 
-    interface OnStartDragListener{
+    interface OnStartDragListener {
         fun onStartDarg(dragHolder: ViewHolder)
     }
 
@@ -42,8 +43,8 @@ class AddPlace_RecyclerViewAdapter(
             }
         }
 
-        for(i in 0 until items.size){
-            items[i].count = i+1
+        for (i in 0 until items.size) {
+            items[i].count = i + 1
         }
 //        Log.d("alert_itemchange_last",items.toString())
 
@@ -120,22 +121,17 @@ class AddPlace_RecyclerViewAdapter(
         }
 
         holder.itemView.movebtn.setOnTouchListener { view, motionEvent ->
-            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN){
+            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
                 mStartDragListener.onStartDarg(holder)
             }
             return@setOnTouchListener false
         }
 
-        holder.itemView.deletebtn.setOnClickListener {
-            items.removeAt(position)
-            notifyItemRemoved(position)
+        holder.itemView.syncbtn.setOnClickListener {
+            holder.itemView.movebtn.visibility = GONE
+            holder.itemView.syncbtn.visibility = GONE
 
-            for(i in 0 until items.size){
-                items[i].count = i+1
-            }
-            listener.onChangeCallback(it, items)
-            notifyDataSetChanged()
-//            Log.d("alert_item",items.toString())
+            holder.itemView.editbtn.visibility = VISIBLE
         }
 
     }
@@ -146,15 +142,67 @@ class AddPlace_RecyclerViewAdapter(
         var placeNm: TextView
         var placeType: TextView
         var movebtn: ImageView
-        var deletebtn: ImageView
+        var syncbtn : ImageView
+        var editbtn : ImageView
 
         init {
             placeCount = itemView.findViewById(R.id.tv_placeCount)
             placeNm = itemView.findViewById(R.id.tv_placeNm)
             placeType = itemView.findViewById(R.id.tv_placeType)
             movebtn = itemView.findViewById(R.id.movebtn)
-            deletebtn = itemView.findViewById(R.id.deletebtn)
+            syncbtn = itemView.findViewById(R.id.syncbtn)
+            editbtn = itemView.findViewById(R.id.editbtn)
+
+
+            itemView.editbtn.setOnClickListener {
+                val popupMenu = PopupMenu(context, it)
+                popupMenu.setOnMenuItemClickListener {
+                    when(it.itemId){
+                        R.id.edit_order ->{
+
+                            itemView.movebtn.visibility = VISIBLE
+                            itemView.syncbtn.visibility = VISIBLE
+
+                            true
+                        }
+                        R.id.deletePlace ->{
+
+                            items.removeAt(adapterPosition)
+                            notifyItemRemoved(adapterPosition)
+
+                            for (i in 0 until items.size) {
+                                items[i].count = i + 1
+                            }
+                            listener.onChangeCallback(itemView, items)
+                            notifyDataSetChanged()
+//            Log.d("alert_item",items.toString())
+
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popupMenu.inflate(R.menu.edit_add_place)
+
+                try {
+                    val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+                    fieldMPopup.isAccessible = true
+                    val mPopup = fieldMPopup.get(popupMenu)
+                    mPopup.javaClass
+                        .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                        .invoke(mPopup, true)
+                } catch (e: Exception){
+                    Log.e("Main", "Error showing menu icons.", e)
+                } finally {
+                    popupMenu.show()
+                }
+            }
+
         }
+
+
+
+
     }
 
 
