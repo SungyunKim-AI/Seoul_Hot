@@ -32,7 +32,6 @@ class MainActivity :
 
     lateinit var backPressCloseHandler: BackPressCloseHandler
 
-
     lateinit var model_shortTerm: ArrayList<Forecast_shortTermItem>
 
     fun createOkHttpClient(): OkHttpClient {
@@ -189,6 +188,7 @@ class MainActivity :
 //        ForecastAPI_ShortTerm()
 
         /////////////////////////////////////////////////////
+        initBackHandler()
         initPermission()
         initBtn()
         // Bottom Navigation
@@ -196,6 +196,14 @@ class MainActivity :
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
         attachHome()
+    }
+
+    //Back버튼 두번 눌러 종료하기
+    fun initBackHandler(){
+        backPressCloseHandler = BackPressCloseHandler(this)
+    }
+    override fun onBackPressed() {
+        backPressCloseHandler.onBackPressed()
     }
 
     fun initBtn(){

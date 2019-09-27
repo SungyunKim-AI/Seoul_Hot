@@ -34,6 +34,7 @@ import android.widget.EditText
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.inseoul.BackPressCloseHandler
 import com.inseoul.Server.DeletePlanRequest
 import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.manage_member.SaveSharedPreference
@@ -45,6 +46,8 @@ import java.text.SimpleDateFormat
 class AddPlaceActivity :
     AppCompatActivity(),
     OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
+
+    lateinit var backPressCloseHandler: BackPressCloseHandler
 
     lateinit var mMap: GoogleMap
     var selectedMarker: Marker? = null
@@ -78,6 +81,7 @@ class AddPlaceActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
         MEM = SaveSharedPreference.getUserID(this)
+        initBackHandler()
         initToolbar()
         init()
         initMap()
@@ -440,7 +444,7 @@ class AddPlaceActivity :
         var markerOptions = MarkerOptions()
         markerOptions.position(placePosition!!)
         markerOptions.title(placeNm)
-        markerOptions.snippet(mCount.toString())
+        markerOptions.snippet(mCount.toString()+"번째 일정")
 
         if (isSelectedMarker) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
@@ -561,13 +565,9 @@ class AddPlaceActivity :
             textview_plandate.text = date
 
             if (flag == 2) {
-
-                ////////////////////////
-
-                //서버에 날짜 넣어주세요 순재씨
+                //from my_page
 
 
-                ////////////////////////
 
             } else if (flag == 3) {
                 //from SearchDetail
@@ -611,7 +611,7 @@ class AddPlaceActivity :
 
         if (item.itemId == android.R.id.home) {
             //뒤로 가기 할때
-            finish()
+            backPressCloseHandler.onBackPressed_addPlace()
             return true
         }
 
@@ -662,4 +662,15 @@ class AddPlaceActivity :
         return (rad * 180 / PI)
     }
     //////////////////////////////////////////////////////
+
+    //Back버튼 두번 눌러 종료하기
+    fun initBackHandler(){
+        backPressCloseHandler = BackPressCloseHandler(this)
+    }
+    override fun onBackPressed() {
+        var flag = backPressCloseHandler.onBackPressed_addPlace()
+        if (flag == 2){
+            //저장 버튼 활성화
+        }
+    }
 }
