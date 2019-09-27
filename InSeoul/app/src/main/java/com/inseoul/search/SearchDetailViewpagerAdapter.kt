@@ -34,7 +34,7 @@ class SearchDetailViewpagerAdapter(
         var data = itemlist[position]
         val url = data.replace("\\","")
         Log.v("Thumbnail", url)
-        Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.img)
+        Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.no_image).into(holder.img)
 
 
     }

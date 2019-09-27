@@ -38,14 +38,10 @@ interface RetrofitService {
     // 이미지
     @GET("detailImage?ServiceKey=V3TPLc8KikVyK235xNyOorabnl1eDnekQJSTWtpl4eQXyE3MWxAUjlZXJo6PIxrmLZGlixdOVWTSs8PmCfb4nQ%3D%3D&imageYN=Y")
     fun searchDetailImage(
-//        @Query("ServiceKey") key:String,
         @Query("contentId") contentId:Int,
-//        @Query("contentType") contentType:Int,
-//        @Query("areaCode") areaCode:Int,
         @Query("MobileOS") OS:String,
         @Query("MobileApp") App:String,
         @Query("_type") type:String
-
     ): Observable<DetailImageModel>
 
     // 오늘 날씨

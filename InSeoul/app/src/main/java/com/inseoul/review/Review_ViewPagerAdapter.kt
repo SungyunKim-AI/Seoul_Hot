@@ -2,6 +2,7 @@ package com.inseoul.review
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.inseoul.R
 import me.relex.circleindicator.CircleIndicator3
+import java.lang.Boolean.FALSE
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -25,6 +27,7 @@ class Review_ViewPagerAdapter(
     val itemlist:ArrayList<ReviewItem>
 ):RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
+
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -75,10 +78,18 @@ class Review_ViewPagerAdapter(
                 holder.indicator.setViewPager(holder.review_img);
 
                 // Bottom Sheet
+                var mLastClickTime:Long = 0
                 holder.more_info_btn.setOnClickListener {
+                    // mis-clicking prevention, using threshold of 1000 ms
+                    if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+                        return@setOnClickListener
+                    }
+                    mLastClickTime = SystemClock.elapsedRealtime();
+
                     val bs = Review_BottomSheetDialog(c, data.posX, data.posY, data.location, data.call, data.like, data.dislike)
                     bs.getInstance()
                     bs.show(fm, "bottomSheet")
+
                 }
 
                 // relative

@@ -31,12 +31,17 @@ import android.view.View.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.inseoul.BackPressCloseHandler
+import com.inseoul.MainActivity
 import com.inseoul.Server.DeletePlanRequest
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.home.HomeFragment
 import com.inseoul.manage_member.SaveSharedPreference
+import com.inseoul.my_page.MyPageFragment
 import com.inseoul.my_page.MyPage_Item
 import kotlinx.android.synthetic.main.activity_add_place_2.*
 import java.text.SimpleDateFormat
@@ -45,6 +50,8 @@ import java.text.SimpleDateFormat
 class AddPlaceActivity :
     AppCompatActivity(),
     OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
+
+    lateinit var backPressCloseHandler: BackPressCloseHandler
 
     lateinit var mMap: GoogleMap
     var selectedMarker: Marker? = null
@@ -78,6 +85,7 @@ class AddPlaceActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_place_main)
         MEM = SaveSharedPreference.getUserID(this)
+        initBackHandler()
         initToolbar()
         init()
         initMap()
@@ -87,11 +95,12 @@ class AddPlaceActivity :
 
     ////////////////////////////////////////////////////////////////////////////////////////
     lateinit var adapter: AddPlace_ViewPagerAdapter
+    var flag: Int = 1234
 
     fun init() {
 
         val extras = intent.extras
-        var flag = extras!!.getInt("flag_key", -1)
+        flag = extras!!.getInt("flag_key", -1)
 
         // from MakePlanActivity
         if (flag == 1) {
@@ -129,12 +138,11 @@ class AddPlaceActivity :
 
                         //순재가 할일 2
 
-                        Toast.makeText(this@AddPlaceActivity, "정상적 등록 완료", Toast.LENGTH_SHORT).show()
-                        //finish()
+                        Toast.makeText(this@AddPlaceActivity, "정상적으로 등록 완료 되었습니다.", Toast.LENGTH_SHORT).show()
+                        finish()
 
                     } else {
-                        Toast.makeText(this@AddPlaceActivity, "등록 실패", Toast.LENGTH_SHORT).show()
-                        //finish()
+                        Toast.makeText(this@AddPlaceActivity, "등록을 실패 하였습니다", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -206,11 +214,19 @@ class AddPlaceActivity :
                     queue.add(idnumrequest)
 
 
+                if(flag==2){
+                    val intent = Intent()
+                    Log.v("add_place_tlqkf", "tlqkf")
+                    intent.putExtra("result", 1)    // TEST CODE
+                    setResult(RESULT_OK, intent)
+//                    val f = supportFragmentManager.findFragmentByTag("mypage")
+//                    val MyPageTransaction = supportFragmentManager.beginTransaction()
+//                    MyPageTransaction.detach(f!!).attach(f).commit()
+                    finish()
+                }else{
+                    finish()
+                }
 
-                val intent = Intent()
-                intent.putExtra("result", 1)    // TEST CODE
-                setResult(Activity.RESULT_OK, intent)
-                finish()
             }
             builder.setNegativeButton("취소") { dialog, id ->
                 anim()
@@ -439,7 +455,7 @@ class AddPlaceActivity :
         var markerOptions = MarkerOptions()
         markerOptions.position(placePosition!!)
         markerOptions.title(placeNm)
-        markerOptions.snippet(mCount.toString())
+        markerOptions.snippet(mCount.toString()+"번째 일정")
 
         if (isSelectedMarker) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
@@ -561,6 +577,8 @@ class AddPlaceActivity :
             textview_plandate.text = date
 
             if (flag == 2) {
+                //from my_page
+
 
                 ////////////////////////
 
@@ -571,6 +589,7 @@ class AddPlaceActivity :
 
 
                 ////////////////////////
+
 
             } else if (flag == 3) {
                 //from SearchDetail
@@ -614,7 +633,7 @@ class AddPlaceActivity :
 
         if (item.itemId == android.R.id.home) {
             //뒤로 가기 할때
-            finish()
+            backPressCloseHandler.onBackPressed_addPlace()
             return true
         }
 
@@ -665,4 +684,15 @@ class AddPlaceActivity :
         return (rad * 180 / PI)
     }
     //////////////////////////////////////////////////////
+
+    //Back버튼 두번 눌러 종료하기
+    fun initBackHandler(){
+        backPressCloseHandler = BackPressCloseHandler(this)
+    }
+    override fun onBackPressed() {
+        var flag = backPressCloseHandler.onBackPressed_addPlace()
+        if (flag == 2){
+            //저장 버튼 활성화
+        }
+    }
 }

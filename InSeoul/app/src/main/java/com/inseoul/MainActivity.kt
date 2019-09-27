@@ -1,14 +1,17 @@
 package com.inseoul
 
 import android.Manifest
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.inseoul.forecast.ForecastFragment
@@ -31,7 +34,6 @@ class MainActivity :
     val key = "4d4956476768736f3131397547724879" // 서울시 데이터 API Key
 
     lateinit var backPressCloseHandler: BackPressCloseHandler
-
 
     lateinit var model_shortTerm: ArrayList<Forecast_shortTermItem>
 
@@ -189,6 +191,7 @@ class MainActivity :
 //        ForecastAPI_ShortTerm()
 
         /////////////////////////////////////////////////////
+        initBackHandler()
         initPermission()
         initBtn()
         // Bottom Navigation
@@ -198,10 +201,24 @@ class MainActivity :
         attachHome()
     }
 
+    //Back버튼 두번 눌러 종료하기
+    fun initBackHandler(){
+        backPressCloseHandler = BackPressCloseHandler(this)
+    }
+    override fun onBackPressed() {
+        backPressCloseHandler.onBackPressed()
+    }
+
+    val REQ_CODE_ADD_PLACE = 7893
     fun initBtn(){
         floating_button.setOnClickListener {
-            val intent = Intent(this, MakePlanActivity::class.java)
-            startActivity(intent)
+            if(loginCheck()){
+                val intent = Intent(this, MakePlanActivity::class.java)
+                startActivityForResult(intent, REQ_CODE_ADD_PLACE)
+            }else{
+                loginDialog()
+            }
+
         }
     }
 
@@ -345,6 +362,7 @@ class MainActivity :
     ///////////////////////////////////////////////////////////////////////////////
     // Bottom Navigation
     ///////////////////////////////////////////////////////////////////////////////
+
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
@@ -360,7 +378,12 @@ class MainActivity :
             }
             R.id.navigation_notifications -> {
 //                textMessage.setText(R.string.title_notifications)
-                attachMyPage()
+                if(loginCheck()){
+                    attachMyPage()
+                }else{
+                    loginDialog()
+                }
+
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -386,6 +409,8 @@ class MainActivity :
     // Fragment
     ///////////////////////////////////////////////////////////////////////////////
 
+    lateinit var current_status:String
+
     fun attachHome(){
         val frag = supportFragmentManager.findFragmentByTag("home")
         val tagStr = frag?.tag.toString()
@@ -397,6 +422,7 @@ class MainActivity :
             homeTransaction.replace(R.id.frame, homeFrag)
             val clear = supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             homeTransaction.commit()
+            current_status = "home"
         }
     }
 
@@ -411,26 +437,45 @@ class MainActivity :
             ForecastTransaction.replace(R.id.frame, forecast)
             val clear = supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             ForecastTransaction.commit()
-
+            current_status = "forecast"
         }
 
     }
 
+    lateinit var MyPageFrag: Fragment
     fun attachMyPage(){
         val frag = supportFragmentManager.findFragmentByTag("mypage")
         val tagStr = frag?.tag.toString()
         if(tagStr == "mypage"){
 
         } else{
-            val MyPageTransaction = supportFragmentManager.beginTransaction()
-            val MyPageFrag = MyPageFragment()
-            MyPageTransaction.replace(R.id.frame, MyPageFrag)
-            val clear = supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            MyPageTransaction.commit()
+//            val clear = supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
+            val MyPageTransaction = supportFragmentManager.beginTransaction()
+            MyPageFrag = MyPageFragment()
+            MyPageTransaction.replace(R.id.frame, MyPageFrag)
+            MyPageTransaction.commit()
+            current_status = "mypage"
         }
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == RESULT_OK){
+            if(requestCode == REQ_CODE_ADD_PLACE){
+                Log.v("start_tlqkf", current_status)
+                if(current_status == "mypage"){
+                    Log.v("chtlqkf","tldldldlqkf")
+                    attachMyPage()
+                } else {
+                    Log.v("no_tlqkf","tldldldlqkf")
+                }
+            } else {
+                attachMyPage()
+            }
+        }
+//        MyPageFrag.onActivityResult(requestCode, resultCode, data)
 
+    }
 }
