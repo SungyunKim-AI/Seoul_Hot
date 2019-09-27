@@ -1,6 +1,8 @@
 package com.inseoul.home
 
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -18,18 +22,20 @@ import com.inseoul.Server.CheckLikeRequest
 import com.inseoul.Server.DisLikeRequest
 import com.inseoul.Server.LikeRequest
 import com.inseoul.manage_member.SaveSharedPreference
+import com.inseoul.manage_member.SignInActivity
 import org.json.JSONObject
 import org.w3c.dom.Text
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
 
-class HomeAdapter(val context: Context,
-                  var listener:RecyclerViewAdapterEventListener,
-                  var items:ArrayList<HomeItem>
-): RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter(
+    val context: Context,
+    var listener: RecyclerViewAdapterEventListener,
+    var items: ArrayList<HomeItem>
+) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     interface RecyclerViewAdapterEventListener {
-        fun onClick(view: View, position:Int)
+        fun onClick(view: View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,7 +52,7 @@ class HomeAdapter(val context: Context,
     }
 
     override fun getItemCount(): Int {
-        if(items==null)
+        if (items == null)
             return 0
         return items.size
     }
@@ -69,55 +75,62 @@ class HomeAdapter(val context: Context,
 //            str += " "
 //        }
         val userID = SaveSharedPreference.getUserID(this.context)
-        holder.writer.text = "ⓒ"+ data.mem
+        holder.writer.text = "ⓒ" + data.mem
 
-        val responseListener = Response.Listener<String> { response ->
 
-            Log.e("heartshaker", response)
-            val jsonResponse = JSONObject(response)
-            val success = jsonResponse.getBoolean("success")
-            if(success){
-                holder.heart.isChecked = TRUE
+        if (userID != "") {
+            val responseListener = Response.Listener<String> { response ->
+
+                Log.e("heartshaker", response)
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getBoolean("success")
+                if (success) {
+                    holder.heart.isChecked = TRUE
+                } else {
+                    holder.heart.isChecked = FALSE
+                }
             }
-            else{
-                holder.heart.isChecked = FALSE
-            }
-        }
-        val idnumrequest = CheckLikeRequest(data.reviewID,userID, responseListener)
-        val queue = Volley.newRequestQueue(this.context)
-        queue.add(idnumrequest)
 
-        holder.heart.setOnClickListener {
-            if(holder.heart.isChecked){
-                val responseListener = Response.Listener<String> { response ->
+            val idnumrequest = CheckLikeRequest(data.reviewID, userID, responseListener)
+            val queue = Volley.newRequestQueue(this.context)
+            queue.add(idnumrequest)
 
-                    val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getBoolean("success")
-                    if(success){
-                        holder.likes.text = jsonResponse.getString("likes")
+
+            holder.heart.setOnClickListener {
+
+                if (holder.heart.isChecked) {
+                    val responseListener = Response.Listener<String> { response ->
+
+                        val jsonResponse = JSONObject(response)
+                        val success = jsonResponse.getBoolean("success")
+                        if (success) {
+                            holder.likes.text = jsonResponse.getString("likes")
+                        } else {
+                            Toast.makeText(this.context, "이미 좋아요를 눌렀습니다.", Toast.LENGTH_LONG).show()
+                        }
+
                     }
-                    else{
-                        Toast.makeText(this.context, "이미 좋아요를 눌렀습니다.", Toast.LENGTH_LONG).show()
+                    val idnumrequest = LikeRequest(data.reviewID, userID, responseListener)
+                    val queue = Volley.newRequestQueue(this.context)
+                    queue.add(idnumrequest)
+                } else {
+                    val responseListener = Response.Listener<String> { response ->
+                        Log.v("d", response)
+                        val jsonResponse = JSONObject(response)
+                        val success = jsonResponse.getString("success")
+                        holder.likes.text = success.toString()
+
                     }
+                    val idnumrequest = DisLikeRequest(data.reviewID, userID, responseListener)
+                    val queue = Volley.newRequestQueue(this.context)
+                    queue.add(idnumrequest)
 
                 }
-                val idnumrequest = LikeRequest(data.reviewID,userID, responseListener)
-                val queue = Volley.newRequestQueue(this.context)
-                queue.add(idnumrequest)
-            }
-            else{
-                val responseListener = Response.Listener<String> { response ->
-                    Log.v("d",response)
-                    val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getString("success")
-                    holder.likes.text = success.toString()
-
-                }
-                val idnumrequest = DisLikeRequest(data.reviewID,userID, responseListener)
-                val queue = Volley.newRequestQueue(this.context)
-                queue.add(idnumrequest)
 
             }
+        }else{
+            //로그인 안되어있을때 토글 버튼 false
+            holder.heart.isEnabled = false
         }
 
 
@@ -132,9 +145,9 @@ class HomeAdapter(val context: Context,
         var thumbnail: ImageView
         var item_title: TextView
         var item_content: TextView
-        var likes:TextView
-        var writer:TextView
-        var heart:ToggleButton
+        var likes: TextView
+        var writer: TextView
+        var heart: ToggleButton
 
         init {
             item_title = itemView.findViewById(R.id.item_title)
@@ -145,7 +158,6 @@ class HomeAdapter(val context: Context,
             heart = itemView.findViewById(R.id.heart)
         }
     }
-
 
 
 }

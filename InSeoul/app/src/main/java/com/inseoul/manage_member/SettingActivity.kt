@@ -1,9 +1,11 @@
 package com.inseoul.manage_member
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -40,6 +42,7 @@ class SettingActivity : AppCompatActivity() {
             user_name.text = SaveSharedPreference.getUserID(this)
             sign_in.visibility = GONE
             sign_out.visibility = VISIBLE
+
         } else {
             user_name.text = "로그인을 해주세요"
             sign_in.visibility = VISIBLE
@@ -60,10 +63,26 @@ class SettingActivity : AppCompatActivity() {
             startActivity(intent)
         }
         sign_in.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("로그인 하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", DialogInterface.OnClickListener { dialog, id ->
+                    val intent = Intent(this, SignInActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                })
+                .setNegativeButton("취소", DialogInterface.OnClickListener { dialog, id ->
+                    dialog.cancel()
+                })
 
+            val alert = builder.create()
+            alert.setTitle("로그인이 필요한 서비스 입니다.")
+            alert.show()
         }
         sign_out.setOnClickListener {
-
+            Log.d("alert_click","click")
+            SaveSharedPreference.clearUserID(this)
+            finish()
         }
 
     }
