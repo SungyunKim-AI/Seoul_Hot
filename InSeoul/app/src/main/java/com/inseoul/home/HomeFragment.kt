@@ -111,7 +111,12 @@ class HomeFragment : Fragment() {
 
                         Log.d("main_review", d.toString())
                         val writer = d.MEM.split("&&") as ArrayList<String>?
-                        var u = (writer!![0] + " 외 " + (writer!!.size - 2).toString()) + "명"
+                        var u = ""
+                        if(writer!!.size == 2){
+                            u = writer!![0]
+                        } else {
+                            u = (writer!![0] + " 외 " + (writer!!.size - 2).toString()) + "명"
+                        }
                         val thumbnail = d.Review!!
 
                         var temp = d.ADDATE.split("-")

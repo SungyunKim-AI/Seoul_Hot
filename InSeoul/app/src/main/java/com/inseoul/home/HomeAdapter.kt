@@ -123,7 +123,7 @@ class HomeAdapter(val context: Context,
 
 
         Log.v("In RecyclerView", "Bind Item")
-        holder.itemView.setOnClickListener {
+        holder.thumbnail.setOnClickListener {
             listener!!.onClick(it, position)
         }
     }
