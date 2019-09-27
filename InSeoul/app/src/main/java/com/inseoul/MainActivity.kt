@@ -208,8 +208,13 @@ class MainActivity :
 
     fun initBtn(){
         floating_button.setOnClickListener {
-            val intent = Intent(this, MakePlanActivity::class.java)
-            startActivity(intent)
+            if(loginCheck()){
+                val intent = Intent(this, MakePlanActivity::class.java)
+                startActivity(intent)
+            }else{
+                loginDialog()
+            }
+
         }
     }
 
@@ -368,7 +373,12 @@ class MainActivity :
             }
             R.id.navigation_notifications -> {
 //                textMessage.setText(R.string.title_notifications)
-                attachMyPage()
+                if(loginCheck()){
+                    attachMyPage()
+                }else{
+                    loginDialog()
+                }
+
                 return@OnNavigationItemSelectedListener true
             }
         }
