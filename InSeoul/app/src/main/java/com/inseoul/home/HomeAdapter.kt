@@ -25,6 +25,8 @@ import com.inseoul.my_page.MyPage_Item
 import kotlinx.android.synthetic.main.activity_add_place_main.*
 import org.json.JSONObject
 import org.w3c.dom.Text
+import java.lang.Boolean.FALSE
+import java.lang.Boolean.TRUE
 
 class HomeAdapter(val context: Context,
                   var listener:RecyclerViewAdapterEventListener,
@@ -73,6 +75,33 @@ class HomeAdapter(val context: Context,
 //        }
         val userID = SaveSharedPreference.getUserID(this.context)
         holder.writer.text = "ⓒ"+ data.mem
+
+        val responseListener1 = Response.Listener<String> { response ->
+
+            Log.e("heartshaker", response)
+            val jsonResponse = JSONObject(response)
+            val success = jsonResponse.getBoolean("success")
+            if(success){
+                holder.heart.isChecked = FALSE
+            }
+            else{
+                holder.heart.isChecked = TRUE
+            }
+        }
+        val responseListener2 = Response.Listener<String> { response ->
+            Log.v("d",response)
+            val jsonResponse = JSONObject(response)
+            val success = jsonResponse.getString("success")
+            holder.likes.text = success.toString()
+
+        }
+        val idnumrequest1 = LikeRequest(data.reviewID,userID, responseListener1)
+        val idnumrequest2 = DisLikeRequest(data.reviewID,userID, responseListener2)
+        val queue1 = Volley.newRequestQueue(this.context)
+        queue1.add(idnumrequest1)
+        queue1.add(idnumrequest2)
+
+
         holder.heart.setOnClickListener {
             if(holder.heart.isChecked){
                 val responseListener = Response.Listener<String> { response ->
