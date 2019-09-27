@@ -580,6 +580,15 @@ class AddPlaceActivity :
                 //from my_page
 
 
+                ////////////////////////
+
+                //날짜 받아오기
+
+                
+
+
+
+                ////////////////////////
 
 
             } else if (flag == 3) {
