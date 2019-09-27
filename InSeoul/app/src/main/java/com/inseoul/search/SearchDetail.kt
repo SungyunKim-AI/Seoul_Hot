@@ -9,7 +9,10 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View.GONE
+import android.view.View.VISIBLE
+import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -62,8 +65,28 @@ class SearchDetail :
         initView()
         initMap()
         initPlanList()
+
+
+        Handler().postDelayed(
+            {
+                decideColor()
+                adapter.notifyDataSetChanged()
+
+            },
+            500
+        )
     }
 
+    fun decideColor(){
+        if (imgList.size == 0) {
+            detail_title.setTextColor(Color.BLACK)
+            add_my_list.setImageDrawable(getDrawable(R.drawable.ic_bookmark_black))
+            supportActionBar!!.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
+            no_image.visibility = VISIBLE
+        } else {
+            detail_title.setTextColor(Color.WHITE)
+        }
+    }
     fun loadDetailImg() {
         val MobileOS = "AND"
         val MobileApp = "InSeuol"
@@ -98,7 +121,6 @@ class SearchDetail :
                     }
                 }
                 detail_image_view_pager.registerOnPageChangeCallback(PageChangeCallback)
-                adapter.notifyDataSetChanged()
                 detail_indicator.setViewPager(detail_image_view_pager);
 
             }, {
@@ -120,14 +142,6 @@ class SearchDetail :
         flag = intent.getBooleanExtra("flag",false)
         if(flag)  add_my_list.visibility = GONE
 
-        if (data.servertype == 1) {
-            detail_title.setTextColor(Color.BLACK)
-            add_my_list.setImageDrawable(getDrawable(R.drawable.ic_bookmark_black))
-            supportActionBar!!.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
-
-        } else {
-            detail_title.setTextColor(Color.WHITE)
-        }
         loadDetailImg()
     }
 
@@ -135,6 +149,29 @@ class SearchDetail :
     fun initView() {
         detail_title.text = data.title
         detail_address.text = "주소: " + data.addr1
+
+        if(data.tel == "02-120" || data.tel == "전환번호 미등록" || data.tel == "none"){
+            detail_tel.text = "전화 번호 미등록..."
+        } else {
+            detail_tel.text = "전화 번호: " + data.tel
+        }
+
+        when(data.type){
+            39 -> {
+                detail_type.text = "#맛집"
+            }
+            12-> {
+                detail_type.text = "#명소"
+            }
+            14, 15, 28, 38 -> {
+                detail_type.text = "#문화"
+            }
+            32 -> {
+                detail_type.text = "#숙소"
+            }
+
+        }
+
     }
 
 

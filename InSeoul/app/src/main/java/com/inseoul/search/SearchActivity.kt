@@ -67,9 +67,8 @@ class SearchActivity : AppCompatActivity() {
                 hotel.clear()
                 food.clear()
                 culture.clear()
-                searchKeyword(p0!!)
+//                searchKeyword(p0!!)
                 initData(p0)
-                initViewPager()
                 /////////////////////////////////////////////////////////////////////
                 return false
             }
@@ -104,47 +103,47 @@ class SearchActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-
-                for (i in 0..it.response.body.items.item.size - 1) {
-                    val data = it.response.body.items.item[i]
-//                    Log.v("tlqkf",data.firstimage2.toString())
-
-                    var searchitem = Search_Item(
-                        data.contentid,
-                        data.title,
-                        data.firstimage2.toString(),
-                        data.contenttypeid,
-                        data.mapx,
-                        data.mapy,
-                        data.addr1,
-                        data.addr2,
-                        data.tel,
-                        0
-
-                    )
-                    when (data.contenttypeid) {
-                        12 -> {
-                            tour.add(searchitem)
-                        }
-                        14, 15, 28, 38 -> {
-                            culture.add(searchitem)
-                        }
-                        39 -> {
-                            food.add(searchitem)
-                        }
-                        32 -> {
-                            hotel.add(searchitem)
-                        }
-                    }
-
-                }
-                adapter.itemlist[0] = tour
-                adapter.itemlist[1] = culture
-                adapter.itemlist[2] = food
-                adapter.itemlist[3] = hotel
-
-                adapter.notifyDataSetChanged()
-//                test_text.text = str
+//
+//                for (i in 0..it.response.body.items.item.size - 1) {
+//                    val data = it.response.body.items.item[i]
+////                    Log.v("tlqkf",data.firstimage2.toString())
+//
+//                    var searchitem = Search_Item(
+//                        data.contentid,
+//                        data.title,
+//                        data.firstimage2.toString(),
+//                        data.contenttypeid,
+//                        data.mapx,
+//                        data.mapy,
+//                        data.addr1,
+//                        data.addr2,
+//                        data.tel,
+//                        0
+//
+//                    )
+//                    when (data.contenttypeid) {
+//                        12 -> {
+//                            tour.add(searchitem)
+//                        }
+//                        14, 15, 28, 38 -> {
+//                            culture.add(searchitem)
+//                        }
+//                        39 -> {
+//                            food.add(searchitem)
+//                        }
+//                        32 -> {
+//                            hotel.add(searchitem)
+//                        }
+//                    }
+//
+//                }
+//                adapter.itemlist[0] = tour
+//                adapter.itemlist[1] = culture
+//                adapter.itemlist[2] = food
+//                adapter.itemlist[3] = hotel
+//
+//                adapter.notifyDataSetChanged()
+////                test_text.text = str
 
             }, {
                 //                Log.v("Fail","")
@@ -204,37 +203,46 @@ class SearchActivity : AppCompatActivity() {
                         "명소" -> {
                             d=14
                         }
+                        else -> {
+                            d = `object`.getInt("class")
+                        }
 
                     }
                     var searchitm = Search_Item(
                         `object`.getInt("IDNUM"),
                         `object`.getString("NAME"),
-                        `object`.getString("IMGURL"),
                         d,
                         `object`.getDouble("Lat"),
                         `object`.getDouble("Lng"),
                         `object`.getString("Spot_new"),
                         null,
                         `object`.getString("PH"),
-                        1
+                        1,
+                        `object`.getString("IMGURL")
                     )
                     when (`object`.getString("class")) {
-                        "맛집" -> {
+                        "맛집", "39" -> {
                             food.add(searchitm)
                         }
-                        "쇼핑"-> {
+                        "쇼핑", "12"-> {
                             tour.add(searchitm)
                         }
-                        "명소" -> {
+                        "명소", "14", "15", "28", "38" -> {
                             culture.add(searchitm)
+                        }
+                        "32" -> {
+                            hotel.add(searchitm)
                         }
 
                     }
+                    Log.v("superTlqkf", searchitm.toString())
 
                     ///////////////////////////////////////////////////////////////////////
 
                     count++
                 }
+
+//                Log.v("superTlqkf", tour.toString())
                 adapter.itemlist[0] = tour
                 adapter.itemlist[1] = culture
                 adapter.itemlist[2] = food

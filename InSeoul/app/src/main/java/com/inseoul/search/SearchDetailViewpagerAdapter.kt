@@ -19,7 +19,7 @@ class SearchDetailViewpagerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchDetailViewpagerAdapter.ViewHolder {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.review_img, parent, false)
+            .inflate(R.layout.search_detail_img, parent, false)
         return ViewHolder(v)
     }
 
@@ -34,14 +34,14 @@ class SearchDetailViewpagerAdapter(
         var data = itemlist[position]
         val url = data.replace("\\","")
         Log.v("Thumbnail", url)
-        Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.no_image).into(holder.img)
+        Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.img)
 
 
     }
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var img: ImageView
         init{
-            img = itemView.findViewById(R.id.review_image_item)
+            img = itemView.findViewById(R.id.search_detail_img)
         }
     }
 }

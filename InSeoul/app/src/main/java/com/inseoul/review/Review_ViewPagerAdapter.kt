@@ -101,7 +101,7 @@ class Review_ViewPagerAdapter(
 //                holder.image.setImageResource(R.drawable.sample2)
                 val url = "http://ksun1234.cafe24.com/" + img
                 Log.d("thumbnail url", url)
-                Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.coverImg)
+                Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.no_image).into(holder.coverImg)
 //                holder.coverImg.setImageDrawable(data.info!!.coverImg)
 
 //                val animSlide = AnimationUtils.loadAnimation(c, R.anim.slide)

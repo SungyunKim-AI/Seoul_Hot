@@ -43,25 +43,23 @@ class SearchAdapter(val context: Context,
     }
 
     override fun getItemCount(): Int {
-        if(items==null)
-            return 0
         return items.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = items!!.get(position)
+        val data = items.get(position)
+//        val url = data.url!!.replace("\\","")
+        val url = data.url
+        Log.v("Thumbnail", data.toString())
+//        Glide.with(context).load(url).placeholder(R.drawable.logo).into(holder.thumbnail)
 
-        if(data != null){
-            if(data.url != null){
-                val url = data.url!!.replace("\\","")
- //               Log.v("Thumbnail", url)
-                Glide.with(context).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.thumbnail)
-            } else {
-                Glide.with(context).load(R.drawable.logo).into(holder.thumbnail)
- //               Log.v("Thumbnail2", "null")
-            }
-
-        }
+//        if(data != null){
+//            if(data.url != null){
+//            } else {
+//                Glide.with(context).load(R.drawable.logo).into(holder.thumbnail)
+//                Log.v("Thumbnail2", "null")
+//            }
+//        }
         holder.item_title.text = data.title
 
 
@@ -82,7 +80,7 @@ class SearchAdapter(val context: Context,
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var thumbnail: RoundedImageView
+        var thumbnail: ImageView
         var item_title: TextView
         var selectBtn: TextView
         init {

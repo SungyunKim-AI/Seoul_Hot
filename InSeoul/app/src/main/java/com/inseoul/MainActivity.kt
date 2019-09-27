@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -192,7 +193,6 @@ class MainActivity :
 
         /////////////////////////////////////////////////////
         initBackHandler()
-        initPermission()
         initBtn()
         // Bottom Navigation
         val navView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
@@ -274,38 +274,25 @@ class MainActivity :
     val REQ_READ_GALLERY = 1001
     val REQ_WRITE_GALLERY = 1002
 
+
+    val PERMISSION = 10003
     fun initPermission() {
-        if (!checkAppPermission(
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            )
-        ) {
-        } else {
-//            Toast . makeText ( getApplicationContext (),
-//                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
+
+        val permissions = ArrayList<String>()
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
-        if (!checkAppPermission(
-                arrayOf(
-                    Manifest.permission.CAMERA
-                )
-            )
-        ) {
-        } else {
-//            Toast . makeText ( getApplicationContext (),
-//                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.CAMERA)
         }
 
-        if (!checkAppPermission(
-                arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            )
-        ) {
-        } else {
-//            Toast . makeText ( getApplicationContext (),
-//                "권한이 승인되었습니다." , Toast . LENGTH_SHORT ). show ();
-        }
     }
 
     fun checkAppPermission(requestPermission: Array<String>): Boolean {
@@ -325,7 +312,6 @@ class MainActivity :
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-
             REQ_CAMERA -> if (checkAppPermission(permissions)) { //퍼미션 동의했을 때 할 일
                 Toast.makeText(this, "권한이 승인됨", Toast.LENGTH_SHORT).show()
             } else {
@@ -466,10 +452,7 @@ class MainActivity :
             if(requestCode == REQ_CODE_ADD_PLACE){
                 Log.v("start_tlqkf", current_status)
                 if(current_status == "mypage"){
-                    Log.v("chtlqkf","tldldldlqkf")
                     attachMyPage()
-                } else {
-                    Log.v("no_tlqkf","tldldldlqkf")
                 }
             } else {
                 attachMyPage()

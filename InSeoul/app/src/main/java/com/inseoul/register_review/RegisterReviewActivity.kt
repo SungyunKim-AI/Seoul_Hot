@@ -1,8 +1,10 @@
 package com.inseoul.register_review
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
@@ -21,7 +23,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -147,6 +151,101 @@ class RegisterReviewActivity : AppCompatActivity()  {
 
 
 
+    val REQ_CAMERA = 1000
+    val REQ_READ_GALLERY = 1001
+    val REQ_WRITE_GALLERY = 1002
+
+
+    val PERMISSION = 10003
+
+    fun cameraPermission(){
+        val cameraPermission = ContextCompat.checkSelfPermission(this,
+            Manifest.permission.CAMERA)
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.CAMERA
+                )
+            ) else{
+                var strArr = Array<String>(100, { Manifest.permission.CAMERA })
+                ActivityCompat.requestPermissions(
+                    this,
+                    strArr,
+                    REQ_CAMERA
+                )
+            }
+        }
+    }
+    fun readStoragePermission(){
+        val readStoragePermission = ContextCompat.checkSelfPermission(this,
+            Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+            ) else{
+                var strArr = Array<String>(100, { Manifest.permission.READ_EXTERNAL_STORAGE })
+                ActivityCompat.requestPermissions(
+                    this,
+                    strArr,
+                    REQ_READ_GALLERY
+                )
+            }
+        }
+    }
+    fun writeStoragePermission(){
+
+        val writeStoragePermission = ContextCompat.checkSelfPermission(this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        if (writeStoragePermission != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            ) else{
+                var strArr = Array<String>(100, { Manifest.permission.WRITE_EXTERNAL_STORAGE })
+                ActivityCompat.requestPermissions(
+                    this,
+                    strArr,
+                    REQ_WRITE_GALLERY
+                )
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            REQ_CAMERA-> {
+                if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                } else{
+
+                }
+                return
+            }
+            REQ_READ_GALLERY-> {
+                if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                } else{
+
+                }
+                return
+            }
+            REQ_WRITE_GALLERY-> {
+                if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                } else{
+
+                }
+                return
+            }
+        }
+    }
+
     private fun initViewPager() {
 
   //      initTest()
@@ -156,11 +255,14 @@ class RegisterReviewActivity : AppCompatActivity()  {
         val listener = object: RegisterReviewViewPagerAdapter.EventListener{
             override fun addPhotoOnClick(view: View, position: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                cameraPermission()
+                writeStoragePermission()
                 camera(position)
             }
 
             override fun addGalleryOnClick(view: View, positon: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                readStoragePermission()
                 storage(positon)
             }
 

@@ -6,27 +6,27 @@ import android.os.Parcelable
 data class Search_Item(
     val id: Int,
     val title: String,
-    val url: String?,
     val type: Int,
     val posX: Double?,
     val posY: Double?,
     val addr1: String?,
     val addr2: String?,
     val tel: String?,
-    val servertype: Int
+    val servertype: Int,
+    val url: String
 ) : Parcelable{
 
     constructor(source: Parcel) : this(
     source.readInt(),
     source.readString()!!,
-    source.readString(),
     source.readInt(),
-    source.readValue(Double::class.java.classLoader) as Double?,
-    source.readValue(Double::class.java.classLoader) as Double?,
-    source.readString(),
-    source.readString(),
-    source.readString(),
-        source.readInt()
+        source.readValue(Double::class.java.classLoader) as Double?,
+        source.readValue(Double::class.java.classLoader) as Double?,
+        source.readString(),
+        source.readString(),
+        source.readString(),
+        source.readInt(),
+        source.readString()!!
     )
 
     override fun describeContents() = 0
@@ -34,7 +34,6 @@ data class Search_Item(
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(id)
         writeString(title)
-        writeString(url)
         writeInt(type)
         writeValue(posX)
         writeValue(posY)
@@ -42,6 +41,7 @@ data class Search_Item(
         writeString(addr2)
         writeString(tel)
         writeInt(servertype)
+        writeString(url)
     }
 
     companion object {
