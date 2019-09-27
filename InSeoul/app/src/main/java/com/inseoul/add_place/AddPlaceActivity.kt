@@ -197,15 +197,14 @@ class AddPlaceActivity :
                 anim()
 
                 //순재가 할일 1///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                if(flag ==2){
-                    val responseListener = Response.Listener<String> { response ->
 
+                    val responseListener = Response.Listener<String> { response ->
+                        Log.d("delkdet", PLANID.toString())
                     }
                     val idnumrequest = DeletePlanRequest(PLANID.toString(), responseListener)
                     val queue = Volley.newRequestQueue(this@AddPlaceActivity)
                     queue.add(idnumrequest)
 
-                }
 
 
                 val intent = Intent()
@@ -522,7 +521,8 @@ class AddPlaceActivity :
                             `object`.getString("Plan"), // 플랜 리스트
                             `object`.getString("MEM"), // 멤버
                             `object`.getString("ADDATE"),
-                            false
+                            false,
+                            `object`.getString("Day")
                         )
                         break
                     }
@@ -564,7 +564,10 @@ class AddPlaceActivity :
 
                 ////////////////////////
 
-                //서버에 날짜 넣어주세요 순재씨
+                //날짜 받아오기
+
+
+                
 
 
                 ////////////////////////

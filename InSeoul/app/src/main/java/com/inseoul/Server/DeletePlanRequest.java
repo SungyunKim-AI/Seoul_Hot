@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DeletePlanRequest extends StringRequest {
-    final static private String URL= "http://ksun1234.cafe24.com/UserReview.php";
+    final static private String URL= "http://ksun1234.cafe24.com/DeletePlan.php";
     private Map<String, String> parameters;
 
     public  DeletePlanRequest(String userID,  Response.Listener<String> listener){

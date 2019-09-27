@@ -92,7 +92,8 @@ class MyPageFragment : Fragment() {
                         `object`.getString("Plan"),
                         `object`.getString("MEM"),
                         `object`.getString("ADDATE"),
-                        false
+                        false,
+                        ""
                     )
                     Log.d("d",`object`.toString())
                     val now = System.currentTimeMillis()
