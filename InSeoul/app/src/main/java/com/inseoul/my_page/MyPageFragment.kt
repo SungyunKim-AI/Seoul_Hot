@@ -40,7 +40,7 @@ class MyPageFragment : Fragment() {
 
     lateinit var test:ArrayList<ArrayList<MyPage_Item>>
 
-    val REQ_CODE = -1
+    val REQ_CODE = 9534
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +59,6 @@ class MyPageFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         Log.d("alert_","not ok")
         if(resultCode == RESULT_OK){
             if(requestCode == -1){
@@ -160,6 +159,7 @@ class MyPageFragment : Fragment() {
                 val intent = Intent(context, AddPlaceActivity::class.java)
                 intent.putExtra("flag_key",flag_key)
                 intent.putExtra("PlanID",PlanID)
+                Log.v("mypage_tlqkf", activity.toString())
                 activity!!.startActivityForResult(intent,REQ_CODE)
 
             }
