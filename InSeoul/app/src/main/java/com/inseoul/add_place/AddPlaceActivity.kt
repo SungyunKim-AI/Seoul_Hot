@@ -39,6 +39,7 @@ import com.inseoul.BackPressCloseHandler
 import com.inseoul.MainActivity
 import com.inseoul.Server.DeletePlanRequest
 import com.inseoul.Server.ShowPlanRegister
+import com.inseoul.Server.UpdatePlanRequest
 import com.inseoul.home.HomeFragment
 import com.inseoul.manage_member.SaveSharedPreference
 import com.inseoul.my_page.MyPageFragment
@@ -101,6 +102,8 @@ class AddPlaceActivity :
 
         val extras = intent.extras
         flag = extras!!.getInt("flag_key", -1)
+        DPDATE = extras!!.getString("startDate", "2222-22-22")
+        ADDATE = extras!!.getString("endDate", "2222-22-22")
 
         // from MakePlanActivity
         if (flag == 1) {
@@ -150,15 +153,15 @@ class AddPlaceActivity :
             }
 
             PlanName = PlanTitle.text.toString()
-            DPDATE = extras!!.getString("startDate", "2222-22-22")
-            ADDATE = extras!!.getString("endDate", "2222-22-22")
+
             THEME = "NOTHEME"
             for (i in dayList)
                 for (c in i)
                     PLAN = PLAN + c.placeID + ","
             var day=""
-            for(i in dayList){
-                day+=i.lastIndex.toString()+","
+            for(i in 0..dayList.lastIndex-1){
+                Log.d("dd",dayList[i].toString())
+                day+=(dayList[i].lastIndex+1).toString()+","
             }
             Log.d("dd", PlanName + DPDATE + ADDATE + THEME + PLAN +day+ SaveSharedPreference.getUserID(this).toString())
             val registerRequest =
@@ -169,16 +172,26 @@ class AddPlaceActivity :
                     THEME,
                     PLAN,
                     day,
-                    SaveSharedPreference.getUserID(this).toString() + "&&",
+                    MEM,
                     responseListener
                 )
-
-            val queue = Volley.newRequestQueue(this@AddPlaceActivity)
-            queue.add(registerRequest)
-            val intent = Intent()
-            intent.putExtra("result", 1)    // TEST CODE
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+            if(flag==2){
+                val r2egisterRequest = UpdatePlanRequest(PlanName,PLANID.toString(),PLAN,day,MEM,responseListener)
+                val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+                queue.add(r2egisterRequest)
+                val intent = Intent()
+                intent.putExtra("result", 1)    // TEST CODE
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
+            else {
+                val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+                queue.add(registerRequest)
+                val intent = Intent()
+                intent.putExtra("result", 1)    // TEST CODE
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
         }
 
         fade_out = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_morebtn_anim)
@@ -514,7 +527,8 @@ class AddPlaceActivity :
     fun RequestPlanItem(PlanID: Int, flag: Int) {
 
         val id = SaveSharedPreference.getUserID(this)
-
+        var placearr : ArrayList<AddPlaceItem>
+        placearr = ArrayList()
         val responseListener = Response.Listener<String> { response ->
             try {
                 Log.d("dd", response)
@@ -526,20 +540,47 @@ class AddPlaceActivity :
                     val `object` = success.getJSONObject(count)
 
                     if (`object`.getInt("#") == PlanID) {
-
+                        DPDATE= `object`.getString("DPDATE")
+                        ADDATE=`object`.getString("ADDATE")
+                        MEM=`object`.getString("MEM")
                         searchitm = MyPage_Item(
                             `object`.getInt("#"), // planID
                             `object`.getString("TripName"), // Plan 이름
-                            `object`.getString("DPDATE"), // 출발 날짜 도착날짜는  "ADDATE"
+                            (DPDATE), // 출발 날짜 도착날짜는  "ADDATE"
 
                             `object`.getString("THEME"), // 여행 주제
                             `object`.getInt("LIKES"), // 좋아요수
                             `object`.getString("Plan"), // 플랜 리스트
                             `object`.getString("MEM"), // 멤버
-                            `object`.getString("ADDATE"),
+                            ADDATE,
                             false,
                             `object`.getString("Day")
                         )
+                        val arr = `object`.getJSONArray("extra")
+                        for( i in 0..arr.length()-1){//
+                            val addp = arr.getJSONObject(i)
+                            var d=0
+                            Log.d("error",addp.toString())
+                            when(addp.getString("TYPE")){
+                                "맛집" -> {
+                                    d=39
+                                }
+                                "쇼핑"-> {
+                                    d=12
+                                }
+                                "명소" -> {
+                                    d=14
+                                }
+                                else->{
+                                    d= addp.getInt("TYPE")
+                                }
+
+
+                            }
+                            placearr.add(AddPlaceItem(0,addp.getInt("PLACEID"),addp.getString("Upso_nm"),d,
+                                LatLng(addp.getDouble("Lat"), addp.getDouble("Lng")),0
+                            ))
+                        }
                         break
                     }
 
@@ -581,9 +622,23 @@ class AddPlaceActivity :
 
 
                 ////////////////////////
-
+                var count =0
                 //날짜 받아오기
+                for(selectDate in 0..searchitm.day.split(",").lastIndex-1){
+                    for(i in 0..Integer.parseInt(searchitm.day.split(",")[selectDate])-1){
+                        dayList[selectDate].add(
+                            AddPlaceItem(
+                                selectDate,
+                                placearr[count].placeID,
+                                placearr[count].PlaceNm,
+                                placearr[count].PlaceType,
+                                placearr[count++].latLng,
+                                dayList[selectDate].size + 1
+                            )
+                        )
+                    }
 
+                }
                 
 
 
