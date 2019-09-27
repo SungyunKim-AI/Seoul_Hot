@@ -12,7 +12,8 @@ data class MyPage_Item(
     val plan:String,
     val mem:String,
     val thumbnail: String?,
-    val review:Boolean
+    val review:Boolean,
+    val day:String
 ):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -23,7 +24,8 @@ data class MyPage_Item(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readValue(Boolean::class.java.classLoader) as Boolean
+        parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+        parcel.readString()!!
     ) {
     }
 

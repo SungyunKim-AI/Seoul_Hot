@@ -32,7 +32,6 @@ class MainActivity :
 
     lateinit var backPressCloseHandler: BackPressCloseHandler
 
-
     lateinit var model_shortTerm: ArrayList<Forecast_shortTermItem>
 
     fun createOkHttpClient(): OkHttpClient {
@@ -189,6 +188,7 @@ class MainActivity :
 //        ForecastAPI_ShortTerm()
 
         /////////////////////////////////////////////////////
+        initBackHandler()
         initPermission()
         initBtn()
         // Bottom Navigation
@@ -198,10 +198,23 @@ class MainActivity :
         attachHome()
     }
 
+    //Back버튼 두번 눌러 종료하기
+    fun initBackHandler(){
+        backPressCloseHandler = BackPressCloseHandler(this)
+    }
+    override fun onBackPressed() {
+        backPressCloseHandler.onBackPressed()
+    }
+
     fun initBtn(){
         floating_button.setOnClickListener {
-            val intent = Intent(this, MakePlanActivity::class.java)
-            startActivity(intent)
+            if(loginCheck()){
+                val intent = Intent(this, MakePlanActivity::class.java)
+                startActivity(intent)
+            }else{
+                loginDialog()
+            }
+
         }
     }
 
@@ -360,7 +373,12 @@ class MainActivity :
             }
             R.id.navigation_notifications -> {
 //                textMessage.setText(R.string.title_notifications)
-                attachMyPage()
+                if(loginCheck()){
+                    attachMyPage()
+                }else{
+                    loginDialog()
+                }
+
                 return@OnNavigationItemSelectedListener true
             }
         }
