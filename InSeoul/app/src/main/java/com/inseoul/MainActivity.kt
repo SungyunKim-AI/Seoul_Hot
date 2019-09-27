@@ -1,14 +1,17 @@
 package com.inseoul
 
 import android.Manifest
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.inseoul.forecast.ForecastFragment
@@ -434,6 +437,7 @@ class MainActivity :
 
     }
 
+    lateinit var MyPageFrag: Fragment
     fun attachMyPage(){
         val frag = supportFragmentManager.findFragmentByTag("mypage")
         val tagStr = frag?.tag.toString()
@@ -441,7 +445,7 @@ class MainActivity :
 
         } else{
             val MyPageTransaction = supportFragmentManager.beginTransaction()
-            val MyPageFrag = MyPageFragment()
+           MyPageFrag = MyPageFragment()
             MyPageTransaction.replace(R.id.frame, MyPageFrag)
             val clear = supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             MyPageTransaction.commit()
@@ -450,5 +454,11 @@ class MainActivity :
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.e("tlqkf", "rotlqkf")
+        attachMyPage()
+        MyPageFrag.onActivityResult(requestCode, resultCode, data)
 
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }
