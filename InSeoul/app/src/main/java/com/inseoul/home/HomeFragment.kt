@@ -122,7 +122,7 @@ class HomeFragment : Fragment() {
 
                         var temp = d.ADDATE.split("-")
                         var date = temp[0] + "." + temp[1] + "." + temp[2]
-                        itemList.add(HomeItem(thumbnail, d.TripName, date + "여행", u, d.LIKES, d.H))
+                        itemList.add(HomeItem(thumbnail, d.TripName, date, u, d.LIKES, d.H))
                     }
                 }
                 adapter.notifyDataSetChanged()

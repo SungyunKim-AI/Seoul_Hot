@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,7 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
         final EditText nmText = findViewById(R.id.name);
         pwText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         final EditText emailText = (EditText)findViewById(R.id.email);
-        final Button validateButton = findViewById(R.id.validateBtn);
+        final TextView validateButton = findViewById(R.id.validateBtn);
         validateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,8 +73,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 dialog.show();
                                 idText.setEnabled(false);
                                 validate= true;
-                                idText.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                                validateButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+//                                idText.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+//                                validateButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
                             }
                             else{
