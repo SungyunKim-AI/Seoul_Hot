@@ -237,6 +237,8 @@ class AddPlaceActivity :
                     .setView(R.layout.dialog_edittext)
                     .setPositiveButton("추가") { dialogInterface, i ->
 
+                        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
                         var input = findViewById<EditText>(R.id.addboxdialog)
                         MEM += "&" + input
 
