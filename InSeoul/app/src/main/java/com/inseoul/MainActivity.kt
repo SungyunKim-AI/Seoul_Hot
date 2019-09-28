@@ -450,7 +450,6 @@ class MainActivity :
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == RESULT_OK){
             if(requestCode == REQ_CODE_ADD_PLACE){
-                Log.v("start_tlqkf", current_status)
                 if(current_status == "mypage"){
                     attachMyPage()
                 }
