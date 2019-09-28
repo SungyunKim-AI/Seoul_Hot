@@ -83,8 +83,11 @@ class SearchDetail :
             add_my_list.setImageDrawable(getDrawable(R.drawable.ic_bookmark_black))
             supportActionBar!!.setHomeAsUpIndicator(R.drawable.back_arrow) //뒤로가기 버튼을 본인이 만든 아이콘으로 하기 위해 필요
             no_image.visibility = VISIBLE
+            copyright_.text = "데이터 제공 : Visit Seoul"
         } else {
             detail_title.setTextColor(Color.WHITE)
+            copyright_.text = "데이터 제공 : 한국관광공사"
+
         }
     }
     fun loadDetailImg() {
