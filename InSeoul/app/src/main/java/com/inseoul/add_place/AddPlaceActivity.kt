@@ -494,7 +494,7 @@ class AddPlaceActivity :
                             `object`.getString("Day")
                         )
                         val arr = `object`.getJSONArray("extra")
-                        for (i in 0..arr.length() - 1) {//
+                        for (i in 0..arr.length() - 1) {
                             val addp = arr.getJSONObject(i)
                             var d = 0
                             Log.d("error", addp.toString())
