@@ -229,12 +229,8 @@ class AddPlaceActivity :
 
                 if(flag==2){
                     val intent = Intent()
-                    Log.v("add_place_tlqkf", "tlqkf")
                     intent.putExtra("result", 1)    // TEST CODE
                     setResult(RESULT_OK, intent)
-//                    val f = supportFragmentManager.findFragmentByTag("mypage")
-//                    val MyPageTransaction = supportFragmentManager.beginTransaction()
-//                    MyPageTransaction.detach(f!!).attach(f).commit()
                     finish()
                 }else{
                     finish()
