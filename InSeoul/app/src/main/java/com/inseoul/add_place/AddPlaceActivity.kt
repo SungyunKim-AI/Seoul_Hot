@@ -69,8 +69,8 @@ class AddPlaceActivity :
     private var DPDATE = ""
     private var ADDATE = ""
     private var THEME = ""
-    private var PLANID =0
-    private var MEM=""
+    private var PLANID = 0
+    private var MEM = ""
 
     lateinit var fade_out: Animation
     lateinit var fade_in: Animation
@@ -122,6 +122,7 @@ class AddPlaceActivity :
 
             if (flag == 3) {
                 tempItem = extras.getParcelable("placeData")!!
+                Log.d("alert_temp", tempItem.toString())
             }
 
             RequestPlanItem(PLANID, flag)
@@ -131,67 +132,7 @@ class AddPlaceActivity :
 
         /////////////완료 버튼/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         finishBtn.setOnClickListener {
-
-            val responseListener = Response.Listener<String> { response ->
-                try {
-                    Log.d("d", response)
-                    val jsonResponse = JSONObject(response)
-                    val success = jsonResponse.getBoolean("success")
-                    if (success) {
-
-                        //순재가 할일 2
-
-                        Toast.makeText(this@AddPlaceActivity, "정상적으로 등록 완료 되었습니다.", Toast.LENGTH_SHORT).show()
-                        finish()
-
-                    } else {
-                        Toast.makeText(this@AddPlaceActivity, "등록을 실패 하였습니다", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            PlanName = PlanTitle.text.toString()
-
-            THEME = "NOTHEME"
-            for (i in dayList)
-                for (c in i)
-                    PLAN = PLAN + c.placeID + ","
-            var day=""
-            for(i in 0..dayList.lastIndex-1){
-                Log.d("dd",dayList[i].toString())
-                day+=(dayList[i].lastIndex+1).toString()+","
-            }
-            Log.d("dd", PlanName + DPDATE + ADDATE + THEME + PLAN +day+ SaveSharedPreference.getUserID(this).toString())
-            val registerRequest =
-                AddPlaceRegister(
-                    PlanName,
-                    DPDATE,
-                    ADDATE,
-                    THEME,
-                    PLAN,
-                    day,
-                    MEM,
-                    responseListener
-                )
-            if(flag==2){
-                val r2egisterRequest = UpdatePlanRequest(PlanName,PLANID.toString(),PLAN,day,MEM,responseListener)
-                val queue = Volley.newRequestQueue(this@AddPlaceActivity)
-                queue.add(r2egisterRequest)
-                val intent = Intent()
-                intent.putExtra("result", 1)    // TEST CODE
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-            }
-            else {
-                val queue = Volley.newRequestQueue(this@AddPlaceActivity)
-                queue.add(registerRequest)
-                val intent = Intent()
-                intent.putExtra("result", 1)    // TEST CODE
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-            }
+            savePlan()
         }
 
         fade_out = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out_morebtn_anim)
@@ -217,22 +158,20 @@ class AddPlaceActivity :
             builder.setPositiveButton("확인") { dialog, id ->
                 anim()
 
-                //순재가 할일 1///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    val responseListener = Response.Listener<String> { response ->
-                        Log.d("delkdet", PLANID.toString())
-                    }
-                    val idnumrequest = DeletePlanRequest(PLANID.toString(), responseListener)
-                    val queue = Volley.newRequestQueue(this@AddPlaceActivity)
-                    queue.add(idnumrequest)
+                val responseListener = Response.Listener<String> { response ->
+                    Log.d("delkdet", PLANID.toString())
+                }
+                val idnumrequest = DeletePlanRequest(PLANID.toString(), responseListener)
+                val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+                queue.add(idnumrequest)
 
 
-                if(flag==2){
+                if (flag == 2) {
                     val intent = Intent()
                     intent.putExtra("result", 1)    // TEST CODE
                     setResult(RESULT_OK, intent)
                     finish()
-                }else{
+                } else {
                     finish()
                 }
 
@@ -299,8 +238,8 @@ class AddPlaceActivity :
                     .setPositiveButton("추가") { dialogInterface, i ->
 
                         var input = findViewById<EditText>(R.id.addboxdialog)
-                        MEM+="&"+input
-                        //순재가 할일 3////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        MEM += "&" + input
+
                     }
                     .setNeutralButton("취소") { dialogInterface, i ->
                     }
@@ -346,7 +285,6 @@ class AddPlaceActivity :
                     //Search에서 넘어왔을 때
 
                     val item = data!!.getParcelableExtra<Search_Item>("placeData")
-                    //Log.d("alert_back", item.toString())
 
                     var selectDate = add_place_viewpager.currentItem
 
@@ -464,7 +402,7 @@ class AddPlaceActivity :
         var markerOptions = MarkerOptions()
         markerOptions.position(placePosition!!)
         markerOptions.title(placeNm)
-        markerOptions.snippet(mCount.toString()+"번째 일정")
+        markerOptions.snippet(mCount.toString() + "번째 일정")
 
         if (isSelectedMarker) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
@@ -523,7 +461,7 @@ class AddPlaceActivity :
     fun RequestPlanItem(PlanID: Int, flag: Int) {
 
         val id = SaveSharedPreference.getUserID(this)
-        var placearr : ArrayList<AddPlaceItem>
+        var placearr: ArrayList<AddPlaceItem>
         placearr = ArrayList()
         val responseListener = Response.Listener<String> { response ->
             try {
@@ -536,9 +474,9 @@ class AddPlaceActivity :
                     val `object` = success.getJSONObject(count)
 
                     if (`object`.getInt("#") == PlanID) {
-                        DPDATE= `object`.getString("DPDATE")
-                        ADDATE=`object`.getString("ADDATE")
-                        MEM=`object`.getString("MEM")
+                        DPDATE = `object`.getString("DPDATE")
+                        ADDATE = `object`.getString("ADDATE")
+                        MEM = `object`.getString("MEM")
                         searchitm = MyPage_Item(
                             `object`.getInt("#"), // planID
                             `object`.getString("TripName"), // Plan 이름
@@ -553,29 +491,32 @@ class AddPlaceActivity :
                             `object`.getString("Day")
                         )
                         val arr = `object`.getJSONArray("extra")
-                        for( i in 0..arr.length()-1){//
+                        for (i in 0..arr.length() - 1) {//
                             val addp = arr.getJSONObject(i)
-                            var d=0
-                            Log.d("error",addp.toString())
-                            when(addp.getString("TYPE")){
+                            var d = 0
+                            Log.d("error", addp.toString())
+                            when (addp.getString("TYPE")) {
                                 "맛집" -> {
-                                    d=39
+                                    d = 39
                                 }
-                                "쇼핑"-> {
-                                    d=12
+                                "쇼핑" -> {
+                                    d = 12
                                 }
                                 "명소" -> {
-                                    d=14
+                                    d = 14
                                 }
-                                else->{
-                                    d= addp.getInt("TYPE")
+                                else -> {
+                                    d = addp.getInt("TYPE")
                                 }
 
 
                             }
-                            placearr.add(AddPlaceItem(0,addp.getInt("PLACEID"),addp.getString("Upso_nm"),d,
-                                LatLng(addp.getDouble("Lat"), addp.getDouble("Lng")),0
-                            ))
+                            placearr.add(
+                                AddPlaceItem(
+                                    0, addp.getInt("PLACEID"), addp.getString("Upso_nm"), d,
+                                    LatLng(addp.getDouble("Lng"), addp.getDouble("Lat")), 0
+                                )
+                            )
                         }
                         break
                     }
@@ -613,38 +554,28 @@ class AddPlaceActivity :
             PlanTitle.setText(searchitm.title)
             textview_plandate.text = date
 
-            if (flag == 2) {
-                //from my_page
+            //from my_page
 
-
-                ////////////////////////
-                var count =0
-                //날짜 받아오기
-                for(selectDate in 0..searchitm.day.split(",").lastIndex-1){
-                    for(i in 0..Integer.parseInt(searchitm.day.split(",")[selectDate])-1){
-                        dayList[selectDate].add(
-                            AddPlaceItem(
-                                selectDate,
-                                placearr[count].placeID,
-                                placearr[count].PlaceNm,
-                                placearr[count].PlaceType,
-                                placearr[count++].latLng,
-                                dayList[selectDate].size + 1
-                            )
+            var count = 0
+            //날짜 받아오기
+            for (selectDate in 0..searchitm.day.split(",").lastIndex - 1) {
+                for (i in 0..Integer.parseInt(searchitm.day.split(",")[selectDate]) - 1) {
+                    dayList[selectDate].add(
+                        AddPlaceItem(
+                            selectDate,
+                            placearr[count].placeID,
+                            placearr[count].PlaceNm,
+                            placearr[count].PlaceType,
+                            placearr[count++].latLng,
+                            dayList[selectDate].size + 1
                         )
-                    }
-
+                    )
                 }
-                
+                initMarker()
+            }
 
-
-
-                ////////////////////////
-
-
-            } else if (flag == 3) {
+            if (flag == 3) {
                 //from SearchDetail
-                //Log.d("alert_back", tempItem.toString())
 
                 var selectDate = add_place_viewpager.currentItem
 
@@ -658,6 +589,7 @@ class AddPlaceActivity :
                         dayList[selectDate].size + 1
                     )
                 )
+
             }
             adapter.notifyDataSetChanged()
         }
@@ -665,6 +597,68 @@ class AddPlaceActivity :
         val queue = Volley.newRequestQueue(this@AddPlaceActivity)
         queue.add(idnumrequest)
 
+    }
+
+    /////////////////////Save 함수//////////////////
+    fun savePlan() {
+        //저장 버튼 활성화
+        val responseListener = Response.Listener<String> { response ->
+            try {
+                Log.d("d", response)
+                val jsonResponse = JSONObject(response)
+                val success = jsonResponse.getBoolean("success")
+                if (success) {
+
+                    Toast.makeText(this@AddPlaceActivity, "정상적으로 등록 완료 되었습니다.", Toast.LENGTH_SHORT).show()
+                    finish()
+
+                } else {
+                    Toast.makeText(this@AddPlaceActivity, "등록을 실패 하였습니다", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        PlanName = PlanTitle.text.toString()
+
+        THEME = "NOTHEME"
+        for (i in dayList)
+            for (c in i)
+                PLAN = PLAN + c.placeID + ","
+        var day = ""
+        for (i in 0..dayList.lastIndex - 1) {
+            Log.d("dd", dayList[i].toString())
+            day += (dayList[i].lastIndex + 1).toString() + ","
+        }
+
+        val registerRequest =
+            AddPlaceRegister(
+                PlanName,
+                DPDATE,
+                ADDATE,
+                THEME,
+                PLAN,
+                day,
+                MEM,
+                responseListener
+            )
+        if (flag == 2) {
+            val r2egisterRequest = UpdatePlanRequest(PlanName, PLANID.toString(), PLAN, day, MEM, responseListener)
+            val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(r2egisterRequest)
+            val intent = Intent()
+            intent.putExtra("result", 1)    // TEST CODE
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        } else {
+            val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+            queue.add(registerRequest)
+            val intent = Intent()
+            intent.putExtra("result", 1)    // TEST CODE
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     ////////////////Toolbar//////////////
@@ -737,13 +731,12 @@ class AddPlaceActivity :
     //////////////////////////////////////////////////////
 
     //Back버튼 두번 눌러 종료하기
-    fun initBackHandler(){
+    fun initBackHandler() {
         backPressCloseHandler = BackPressCloseHandler(this)
     }
+
     override fun onBackPressed() {
-        var flag = backPressCloseHandler.onBackPressed_addPlace()
-        if (flag == 2){
-            //저장 버튼 활성화
-        }
+        backPressCloseHandler.onBackPressed_addPlace()
     }
+
 }

@@ -33,7 +33,7 @@ public class BackPressCloseHandler {
         toast.show();
     }
 
-    public int onBackPressed_addPlace() {
+    public void onBackPressed_addPlace() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         builder.setTitle("종료 하시겠습니까?")
@@ -47,21 +47,13 @@ public class BackPressCloseHandler {
                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        flag = 1;
-                    }
-                })
-                .setNeutralButton("저장하기", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        flag = 2;
                     }
                 });
         AlertDialog alertDialog = builder.create();
 
         alertDialog.show();
 
-        return flag;
     }
 
 
