@@ -147,6 +147,7 @@ class AddPlaceActivity :
         editPlanDateBtn.setOnClickListener {
             anim()
             val intent = Intent(this@AddPlaceActivity, EditPlanDate::class.java)
+            intent.putExtra("flag", flag)
             startActivityForResult(intent, 2000)
         }
 
@@ -166,7 +167,7 @@ class AddPlaceActivity :
                 queue.add(idnumrequest)
 
 
-                if (flag == 2) {
+                if (flag == 2 || flag == 3) {
                     val intent = Intent()
                     intent.putExtra("result", 1)    // TEST CODE
                     setResult(RESULT_OK, intent)
@@ -275,6 +276,8 @@ class AddPlaceActivity :
                 2000 -> {
                     //EditPlanDate에서 넘어왔을때
                     var edit_resultStr = data?.getStringExtra("edit_resultStr")
+                    flag = data!!.getIntExtra("flag",1)
+//                    Log.d("alert_back_flag",flag.toString())
 
                     PlanTitle.hint = edit_resultStr.toString() + " 여정"
                     textview_plandate.text = edit_resultStr.toString()
@@ -643,7 +646,7 @@ class AddPlaceActivity :
                 MEM,
                 responseListener
             )
-        if (flag == 2) {
+        if (flag == 2 || flag == 3) {
             val r2egisterRequest = UpdatePlanRequest(PlanName, PLANID.toString(), PLAN, day, MEM, responseListener)
             val queue = Volley.newRequestQueue(this@AddPlaceActivity)
             queue.add(r2egisterRequest)

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -15,6 +16,9 @@ import kotlinx.android.synthetic.main.activity_make_plan.*
 import java.util.*
 
 class EditPlanDate : AppCompatActivity() {
+
+    //flag 값
+    var flag:Int = 1
 
     // 날짜 저장
     lateinit var range:String
@@ -32,6 +36,9 @@ class EditPlanDate : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_plan_date)
+
+        flag = intent.getIntExtra("flag",1)
+//        Log.d("alert_flag",flag.toString())
 
         initToolbar()           //툴바 세팅
         initBtn()               //새로운 일정 버튼 클릭 리스너
@@ -113,6 +120,7 @@ class EditPlanDate : AppCompatActivity() {
 
                 val resultIntent = Intent()
                 resultIntent.putExtra("edit_resultStr",resultStr)
+                resultIntent.putExtra("flag",flag)
                 setResult(Activity.RESULT_OK,resultIntent)
                 finish()
 
