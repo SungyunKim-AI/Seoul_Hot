@@ -118,13 +118,6 @@ class RegisterReviewActivity : AppCompatActivity()  {
         }
     }
     */
-    fun initServer(){
-//        testArray = ArrayList()
-        val count =0
-        for( i in tripList){
-
-        }
-    }
     fun ReviewWriteRequ(PLANIDnum: String,IndexOFPLAN:String , PlaceID: String, IMGNAMEARR:String , Review:String){
         val responseListener = Response.Listener<String> { response ->
             try {
@@ -155,25 +148,26 @@ class RegisterReviewActivity : AppCompatActivity()  {
     val REQ_READ_GALLERY = 1001
     val REQ_WRITE_GALLERY = 1002
 
-
-    val PERMISSION = 10003
-
     fun cameraPermission(){
         val cameraPermission = ContextCompat.checkSelfPermission(this,
             Manifest.permission.CAMERA)
+
         if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.CAMERA
-                )
-            ) else{
-                var strArr = Array<String>(100, { Manifest.permission.CAMERA })
-                ActivityCompat.requestPermissions(
-                    this,
-                    strArr,
-                    REQ_CAMERA
-                )
-            }
+            var strArr = Array<String>(100, { Manifest.permission.CAMERA })
+            ActivityCompat.requestPermissions(
+                this,
+                strArr,
+                REQ_CAMERA
+            )
+
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(
+//                    this,
+//                    Manifest.permission.CAMERA
+//                )
+//            ) else{
+//            }
+        } else {
+            cameraPermissionFlag = 0    // Permission ok
         }
     }
     fun readStoragePermission(){
@@ -181,18 +175,20 @@ class RegisterReviewActivity : AppCompatActivity()  {
             Manifest.permission.READ_EXTERNAL_STORAGE)
 
         if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            ) else{
-                var strArr = Array<String>(100, { Manifest.permission.READ_EXTERNAL_STORAGE })
-                ActivityCompat.requestPermissions(
-                    this,
-                    strArr,
-                    REQ_READ_GALLERY
-                )
-            }
+            var strArr = Array<String>(100, { Manifest.permission.READ_EXTERNAL_STORAGE })
+            ActivityCompat.requestPermissions(
+                this,
+                strArr,
+                REQ_READ_GALLERY
+            )
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(
+//                    this,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE
+//                )
+//            ) else{
+//            }
+        } else {
+            readStoragePermissionFlag = 0    // Permission ok
         }
     }
     fun writeStoragePermission(){
@@ -201,19 +197,25 @@ class RegisterReviewActivity : AppCompatActivity()  {
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
         if (writeStoragePermission != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            ) else{
-                var strArr = Array<String>(100, { Manifest.permission.WRITE_EXTERNAL_STORAGE })
-                ActivityCompat.requestPermissions(
-                    this,
-                    strArr,
-                    REQ_WRITE_GALLERY
-                )
-            }
+
+            var strArr = Array<String>(100, { Manifest.permission.WRITE_EXTERNAL_STORAGE })
+            ActivityCompat.requestPermissions(
+                this,
+                strArr,
+                REQ_WRITE_GALLERY
+            )
+//
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(
+//                    this,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                )
+//            ) else {
+//            }
+
+        } else {
+            readStoragePermissionFlag = 0    // Permission ok
         }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -221,7 +223,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
         when(requestCode){
             REQ_CAMERA-> {
                 if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
+                    cameraPermissionFlag = 0    // Permission ok
                 } else{
 
                 }
@@ -229,15 +231,14 @@ class RegisterReviewActivity : AppCompatActivity()  {
             }
             REQ_READ_GALLERY-> {
                 if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
+                    readStoragePermissionFlag = 0    // Permission ok
                 } else{
-
                 }
                 return
             }
             REQ_WRITE_GALLERY-> {
                 if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
+                    readStoragePermissionFlag = 0    // Permission ok
                 } else{
 
                 }
@@ -245,6 +246,9 @@ class RegisterReviewActivity : AppCompatActivity()  {
             }
         }
     }
+
+    var cameraPermissionFlag = -1
+    var readStoragePermissionFlag = -1
 
     private fun initViewPager() {
 
@@ -256,14 +260,18 @@ class RegisterReviewActivity : AppCompatActivity()  {
             override fun addPhotoOnClick(view: View, position: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 cameraPermission()
-                writeStoragePermission()
-                camera(position)
+                if(cameraPermissionFlag != -1){
+                    camera(position)
+                }
             }
 
             override fun addGalleryOnClick(view: View, positon: Int) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                writeStoragePermission()
                 readStoragePermission()
-                storage(positon)
+                if(readStoragePermissionFlag != -1){
+                    storage(positon)
+                }
             }
 
         }
@@ -358,6 +366,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                         0,
                         0
                     )
+                    adapter.notifyDataSetChanged()
                     Log.d("alert_search", "")
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -369,7 +378,6 @@ class RegisterReviewActivity : AppCompatActivity()  {
 
         }
         Log.d("hsoh0306_2", reviewArray.toString())
-        adapter.notifyDataSetChanged()
 
     }
 
