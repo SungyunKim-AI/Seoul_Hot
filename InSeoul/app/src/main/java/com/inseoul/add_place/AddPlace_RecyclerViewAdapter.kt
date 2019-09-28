@@ -32,24 +32,19 @@ class AddPlace_RecyclerViewAdapter(
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 Collections.swap(items, i, i + 1)
-//                Log.d("alert_itemchange",items.toString())
-
-
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
                 Collections.swap(items, i, i - 1)
-//                Log.d("alert_itemchange",items.toString())
             }
         }
 
         for (i in 0 until items.size) {
             items[i].count = i + 1
         }
-//        Log.d("alert_itemchange_last",items.toString())
 
         notifyItemMoved(fromPosition, toPosition)
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
         listener.onChangeCallback(viewHolder.itemView, items)
         return true
     }
@@ -132,6 +127,8 @@ class AddPlace_RecyclerViewAdapter(
             holder.itemView.syncbtn.visibility = GONE
 
             holder.itemView.editbtn.visibility = VISIBLE
+            listener.onChangeCallback(it, items)
+            notifyDataSetChanged()
         }
 
     }
@@ -175,7 +172,6 @@ class AddPlace_RecyclerViewAdapter(
                             }
                             listener.onChangeCallback(itemView, items)
                             notifyDataSetChanged()
-//            Log.d("alert_item",items.toString())
 
                             true
                         }

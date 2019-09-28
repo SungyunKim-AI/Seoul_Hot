@@ -122,7 +122,6 @@ class AddPlaceActivity :
 
             if (flag == 3) {
                 tempItem = extras.getParcelable("placeData")!!
-                Log.d("alert_temp", tempItem.toString())
             }
 
             RequestPlanItem(PLANID, flag)
@@ -392,7 +391,7 @@ class AddPlaceActivity :
         polyline.pattern = PATTERN_POLYLINE_DOTTED
     }
 
-
+    var placeOrder: Int = 0
     private fun addMarker(
         markerItem: AddPlaceItem,
         isSelectedMarker: Boolean
@@ -405,7 +404,7 @@ class AddPlaceActivity :
         var markerOptions = MarkerOptions()
         markerOptions.position(placePosition!!)
         markerOptions.title(placeNm)
-        markerOptions.snippet(mCount.toString() + "번째 일정")
+        markerOptions.snippet(mCount.toString() + " 번째 일정")
 
         if (isSelectedMarker) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.click_marker))
@@ -424,7 +423,8 @@ class AddPlaceActivity :
         var placeNm = marker.title
         var placeType = null
         var latlng = marker.position
-        var count = marker.snippet.toInt()
+        var count = marker.snippet.split(" ")[0].toInt()
+        Log.d("alert_count",marker.snippet.split(" ")[0])
         var selectDate = dayList[add_place_viewpager.currentItem][count - 1].date
         var temp = AddPlaceItem(selectDate, placeID, placeNm, placeType, latlng, count)
 
