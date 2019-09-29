@@ -79,8 +79,8 @@ class RegisterReviewActivity : AppCompatActivity()  {
         initBackHandler()
         initToolbar()
         initIntent()
-//        initView()
         initBtn()
+//        initView()
 //        initRecyclerView()
 //        readFile()
         initViewPager()
@@ -102,8 +102,9 @@ class RegisterReviewActivity : AppCompatActivity()  {
                     up.HTTpfileUpload(j,j.split("/")[img])
                     Log.d("file Upload", j.split("/")[img])
                 }
-
-                ReviewWriteRequ(planID.toString(),i.toString(),reviewArray[i].num.toString(),imgarr,reviewArray[i].review_content.toString())
+                // 해시태그 저장 경로
+                //  reviewArray[i].hashTag : String
+                ReviewWriteRequ(planID.toString(), i.toString(), reviewArray[i].num.toString(), imgarr,reviewArray[i].review_content.toString())
                 finish()
             }
         }
