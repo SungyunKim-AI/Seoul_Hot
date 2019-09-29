@@ -10,7 +10,7 @@ import java.util.Map;
 public class ReviewWriteRequest extends StringRequest {
     final static private String URL= "http://ksun1234.cafe24.com/RegisterReview.php";
     private Map<String, String> parameters;
-    public ReviewWriteRequest(String userID, String userPW, String userEMAIL, String userName, String Plan,  Response.Listener<String> listener){
+    public ReviewWriteRequest(String userID, String userPW, String userEMAIL, String userName, String Plan,String HashTag,  Response.Listener<String> listener){
 
         super(Request.Method.POST, URL, listener, null);
         parameters=new HashMap<>();
@@ -19,6 +19,7 @@ public class ReviewWriteRequest extends StringRequest {
         parameters.put("PLACEID", userEMAIL);
         parameters.put("IMGNAME", userName);
         parameters.put("REVIEW", Plan);
+        parameters.put("Hash", HashTag);
 
 
 

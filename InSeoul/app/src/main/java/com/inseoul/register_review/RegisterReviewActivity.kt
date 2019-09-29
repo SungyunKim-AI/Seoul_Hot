@@ -103,8 +103,8 @@ class RegisterReviewActivity : AppCompatActivity()  {
                     Log.d("file Upload", j.split("/")[img])
                 }
                 // 해시태그 저장 경로
-                //  reviewArray[i].hashTag : String
-                ReviewWriteRequ(planID.toString(), i.toString(), reviewArray[i].num.toString(), imgarr,reviewArray[i].review_content.toString())
+
+                ReviewWriteRequ(planID.toString(), i.toString(), reviewArray[i].num.toString(), imgarr,reviewArray[i].review_content.toString(),reviewArray[i].hashTag!! )
                 finish()
             }
         }
@@ -123,10 +123,10 @@ class RegisterReviewActivity : AppCompatActivity()  {
         }
     }
     */
-    fun ReviewWriteRequ(PLANIDnum: String,IndexOFPLAN:String , PlaceID: String, IMGNAMEARR:String , Review:String){
+    fun ReviewWriteRequ(PLANIDnum: String,IndexOFPLAN:String , PlaceID: String, IMGNAMEARR:String , Review:String,hashtag:String){
         val responseListener = Response.Listener<String> { response ->
             try {
-                Log.d("d", response)
+                Log.e("anggimotti", response)
                 val jsonResponse = JSONObject(response)
                 val success = jsonResponse.getBoolean("success")
                 if (success) {
@@ -141,8 +141,8 @@ class RegisterReviewActivity : AppCompatActivity()  {
                 e.printStackTrace()
             }
         }
-        val registerRequest = ReviewWriteRequest(PLANIDnum,IndexOFPLAN,PlaceID, IMGNAMEARR,Review,responseListener)
-
+        val registerRequest = ReviewWriteRequest(PLANIDnum,IndexOFPLAN,PlaceID, IMGNAMEARR,Review,hashtag,responseListener)
+        Log.e("anggimotti",hashtag)
         val queue = Volley.newRequestQueue(this@RegisterReviewActivity)
         queue.add(registerRequest)
     }
