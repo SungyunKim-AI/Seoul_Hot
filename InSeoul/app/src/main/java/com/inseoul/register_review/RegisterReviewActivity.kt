@@ -92,20 +92,38 @@ class RegisterReviewActivity : AppCompatActivity()  {
     fun initBtn(){
 
         submit_review.setOnClickListener {//LANIDnum: String,IndexOFPLAN:String , PlaceID: String, IMGNAMEARR:String , Review:String
-            for(i in 0 until reviewArray.size){
-                Log.v("comment_test", reviewArray[i].review_content)
-                var imgarr = ""
-                for(j in imgArray[i]){
-                    var img = j.split("/").lastIndex
-                    imgarr = imgarr + j.split("/")[img] + ","
-                    val up:HTTPUPLOad = HTTPUPLOad()
-                    up.HTTpfileUpload(j,j.split("/")[img])
-                    Log.d("file Upload", j.split("/")[img])
-                }
-                // 해시태그 저장 경로
 
-                ReviewWriteRequ(planID.toString(), i.toString(), reviewArray[i].num.toString(), imgarr,reviewArray[i].review_content.toString(),reviewArray[i].hashTag!! )
-                finish()
+            var imgChecker = true
+            for(i in imgArray){
+                if(i.size == 0){
+                    Toast.makeText(this, "리뷰에 사진을 추가해주세요", Toast.LENGTH_SHORT).show()
+                    imgChecker = false
+                }
+            }
+            Log.v("imgCheck", imgChecker.toString())
+            if(imgChecker){
+                for(i in 0 until reviewArray.size) {
+                    Log.v("comment_test", reviewArray[i].review_content)
+                    var imgarr = ""
+
+                    for (j in imgArray[i]) {
+                        var img = j.split("/").lastIndex
+                        imgarr = imgarr + j.split("/")[img] + ","
+                        val up: HTTPUPLOad = HTTPUPLOad()
+                        up.HTTpfileUpload(j, j.split("/")[img])
+                        Log.d("file Upload", j.split("/")[img])
+                    }
+                    // 해시태그 저장 경로
+                    ReviewWriteRequ(
+                        planID.toString(),
+                        i.toString(),
+                        reviewArray[i].num.toString(),
+                        imgarr,
+                        reviewArray[i].review_content.toString(),
+                        reviewArray[i].hashTag!!
+                    )
+                    finish()
+                }
             }
         }
     }

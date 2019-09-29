@@ -195,13 +195,13 @@ class MyPageFragment : Fragment() {
                 // Styling each tab here
                 when(position){
                     0->{
-                        tab.setText("일정")
+                        tab.setText("일정" + " " + test[0].size.toString())
                     }
                     1->{
-                        tab.setText("지난 일정")
+                        tab.setText("지난 일정" + " " + test[1].size.toString())
                     }
                     2->{
-                        tab.setText("리뷰")
+                        tab.setText("리뷰" + " " + test[2].size.toString())
                     }
                 }
             }
