@@ -85,9 +85,9 @@ class EditPlanDate : AppCompatActivity() {
 
         calendar_view_edit.currentDayIconRes = R.drawable.ic_down_arrow
 
-        calendar_view_edit.selectedDayBackgroundStartColor = Color.parseColor("#B6E3E9")
-        calendar_view_edit.selectedDayBackgroundEndColor = Color.parseColor("#B6E3E9")
-        calendar_view_edit.selectedDayBackgroundColor = Color.parseColor("#D9F1F1")
+        calendar_view.selectedDayBackgroundStartColor = Color.parseColor("#0d357a")
+        calendar_view.selectedDayBackgroundEndColor = Color.parseColor("#0d357a")
+        calendar_view.selectedDayBackgroundColor = Color.parseColor("#245598")
 
     }
 

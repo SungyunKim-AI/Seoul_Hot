@@ -416,7 +416,6 @@ class AddPlaceActivity :
         polyline.pattern = PATTERN_POLYLINE_DOTTED
     }
 
-    var placeOrder: Int = 0
     private fun addMarker(
         markerItem: AddPlaceItem,
         isSelectedMarker: Boolean
