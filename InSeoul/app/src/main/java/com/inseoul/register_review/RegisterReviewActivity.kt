@@ -31,6 +31,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.inseoul.BackPressCloseHandler
 import com.inseoul.R
 import com.inseoul.Server.*
 import com.inseoul.manage_member.SaveSharedPreference
@@ -51,6 +52,7 @@ import java.util.logging.Handler
 class RegisterReviewActivity : AppCompatActivity()  {
 
     lateinit var reviewArray:ArrayList<ReviewItem>
+    lateinit var backPressCloseHandler: BackPressCloseHandler
 
     lateinit var review_title:String
     lateinit var review_date:String
@@ -74,6 +76,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_review)
 
+        initBackHandler()
         initToolbar()
         initIntent()
 //        initView()
@@ -518,11 +521,20 @@ class RegisterReviewActivity : AppCompatActivity()  {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                backPressCloseHandler.onBackPressed_addPlace()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    //Back버튼 두번 눌러 종료하기
+    fun initBackHandler() {
+        backPressCloseHandler = BackPressCloseHandler(this)
+    }
+
+    override fun onBackPressed() {
+        backPressCloseHandler.onBackPressed_addPlace()
     }
 
 }
