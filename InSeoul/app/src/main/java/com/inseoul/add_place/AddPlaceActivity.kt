@@ -261,7 +261,7 @@ class AddPlaceActivity :
             }
         }).attach()
 
-        if (tabLayout_addPlace.tabCount > 5) {
+        if (tabLayout_addPlace.tabCount > 6) {
             tabLayout_addPlace.tabMode = TabLayout.MODE_SCROLLABLE
         }
     }
@@ -278,7 +278,6 @@ class AddPlaceActivity :
                     flag = data!!.getIntExtra("flag",1)
 //                    Log.d("alert_back_flag",flag.toString())
 
-                    PlanTitle.hint = edit_resultStr.toString() + " 여정"
                     textview_plandate.text = edit_resultStr.toString()
 
                     Toast.makeText(this, "일정 변경 완료", Toast.LENGTH_SHORT).show()
