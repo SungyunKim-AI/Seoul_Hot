@@ -120,6 +120,8 @@ class EditPlanDate : AppCompatActivity() {
 
                 val resultIntent = Intent()
                 resultIntent.putExtra("edit_resultStr",resultStr)
+                resultIntent.putExtra("DPDATE",startYear+"-"+startMonth+"-"+startDay)
+                resultIntent.putExtra("ADDATE",endYear+"-"+endMonth+"-"+endDay)
                 resultIntent.putExtra("flag",flag)
                 setResult(Activity.RESULT_OK,resultIntent)
                 finish()
