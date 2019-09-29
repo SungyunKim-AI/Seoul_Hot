@@ -109,26 +109,23 @@ class AddPlaceActivity :
         // from MakePlanActivity
         if (flag == 1) {
             //날짜 차이 계산 하기
-            val start = extras!!.getString("startDate")
-            val end = extras!!.getString("endDate")
+            val start = extras.getString("startDate")
+            val end = extras.getString("endDate")
             initRecylcerview(start!!, end!!)
 
 
-            val date = extras!!.getString("PlanDate", "NULL")
+            val date = extras.getString("PlanDate", "NULL")
+
 //            PlanTitle.hint = date + " 여정"
 
             textview_plandate.text = date
         }else {
             //from MyPageActivity
-            PLANID = extras!!.getString("PlanID")!!.toInt()
+            PLANID = extras.getString("PlanID")!!.toInt()
 
             if (flag == 3) {
                 tempItem = extras.getParcelable("placeData")!!
-            }else if(flag == 4){
-                MEM=SaveSharedPreference.getUserID(this)
-                flag = 2
             }
-
             RequestPlanItem(PLANID, flag)
 
         }
@@ -622,6 +619,8 @@ class AddPlaceActivity :
                     )
                 )
 
+            }else if(flag == 4){
+                MEM=SaveSharedPreference.getUserID(this)
             }
             adapter.notifyDataSetChanged()
         }
