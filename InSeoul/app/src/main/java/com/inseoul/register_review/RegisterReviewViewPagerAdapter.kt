@@ -18,7 +18,9 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import com.hootsuite.nachos.NachoTextView
+import com.hootsuite.nachos.chip.ChipSpanChipCreator
 import com.hootsuite.nachos.terminator.ChipTerminatorHandler
+import com.hootsuite.nachos.tokenizer.SpanChipTokenizer
 import com.inseoul.R
 
 
@@ -31,6 +33,7 @@ class RegisterReviewViewPagerAdapter(
     interface EventListener {
         fun addPhotoOnClick(view: View, position: Int)
         fun addGalleryOnClick(view:View, positon: Int)
+        fun hash(str: String, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegisterReviewViewPagerAdapter.ViewHolder {
@@ -74,6 +77,7 @@ class RegisterReviewViewPagerAdapter(
         holder.trip_comment.addTextChangedListener( object: TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
 //                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                 }
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -100,6 +104,35 @@ class RegisterReviewViewPagerAdapter(
 
         holder.hashTag.addChipTerminator(' ', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR)
         holder.hashTag.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
+
+//        holder.hashTag.chipTextColor = c.resources(R.color.white)
+//        holder.hashTag.chipTokenizer = object : SpanChipTokenizer(c, object : ChipSpanChipCreator(){
+
+//        })
+        holder.hashTag.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                val h = holder.hashTag.allChips
+                var str = ""
+                for(i in 0 until h.size){
+                    str += h[i].text.toString()
+                    if(i != h.size - 1){
+                        str += ","
+                    }
+                }
+                Log.e("dkfsdfsdf", str)
+                itemlist[position].hashTag = str
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        })
 
     }
 
