@@ -156,15 +156,13 @@ class HomeFragment : Fragment() {
 
     fun scrapThis(context: Context,position:Int){
         val intent = Intent(context, AddPlaceActivity::class.java)
-        //순재가 할일
         //planID 받아와서 planData 불러오기
         //planData받아와서 intent로 전달
 
         intent.putExtra("flag_key", 4)
         intent.putExtra("PlanID",rawData[position].H)
-        //intent.putExtra("scrapPlan",itemList[position].)
 
-        //Log.d("alert_plan",)
+        Log.d("alert_plan",rawData[position].H)
 
         startActivity(intent)
     }

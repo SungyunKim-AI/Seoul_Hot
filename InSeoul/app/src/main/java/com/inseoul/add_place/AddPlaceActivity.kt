@@ -123,6 +123,9 @@ class AddPlaceActivity :
 
             if (flag == 3) {
                 tempItem = extras.getParcelable("placeData")!!
+            }else if(flag == 4){
+                MEM=SaveSharedPreference.getUserID(this)
+                flag = 2
             }
 
             RequestPlanItem(PLANID, flag)
@@ -617,13 +620,6 @@ class AddPlaceActivity :
                         dayList[selectDate].size + 1
                     )
                 )
-
-            }else if(flag == 4){
-                //다른 사람 일정 스크랩 해서 내 일정으로 불러 오기
-                MEM=SaveSharedPreference.getUserID(this)
-                //순재가 할일
-                //서버에 새로운 아이디를 생성할 수 있도록 해야됨
-
 
             }
             adapter.notifyDataSetChanged()
