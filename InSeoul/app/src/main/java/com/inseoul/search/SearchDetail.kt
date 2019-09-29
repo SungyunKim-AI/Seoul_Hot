@@ -162,6 +162,8 @@ class SearchDetail :
                 var str = "#" + i  + " "
                 detail_type.append(str)
             }
+            if(i.length<1)continue
+            HashTagList.add(i)
             Log.e("hashTagggggggggggggggg",i)
         }
         loadDetailImg()
