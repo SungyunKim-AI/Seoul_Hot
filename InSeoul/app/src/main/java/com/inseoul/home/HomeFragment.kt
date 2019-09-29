@@ -151,15 +151,14 @@ class HomeFragment : Fragment() {
 
     fun scrapThis(context: Context,position:Int){
         val intent = Intent(context, AddPlaceActivity::class.java)
+        //순재가 할일
         //planID 받아와서 planData 불러오기
         //planData받아와서 intent로 전달
-        //불러 와야 하는것 : DPDATE, ADDATE, PlANDATE
-//        DPDATE = extras.getString("startDate", "2222-22-22")
-//        ADDATE = extras.getString("endDate", "2222-22-22")
-        intent.putExtra("flag_key", 4)
-        intent.putExtra("scrapPlan",itemList[position].)
 
-        Log.d("alert_plan",)
+        intent.putExtra("flag_key", 4)
+        //intent.putExtra("scrapPlan",itemList[position].)
+
+        //Log.d("alert_plan",)
 
         startActivity(intent)
     }
@@ -170,7 +169,7 @@ class HomeFragment : Fragment() {
         recyclerView_addPlace.layoutManager = layoutManager
         val listener = object : HomeAdapter.RecyclerViewAdapterEventListener {
             override fun onClick_scrap(view: View, position: Int) {
-                scrapDialog(context!!)
+                scrapDialog(context!!,position)
             }
 
             override fun onClick(view: View, position: Int) {
