@@ -66,12 +66,13 @@ class Review_ViewPagerAdapter(
 
 
                 var hashTag = ""
-                if(data.upso_hashTag != null){
-                    for(i in 0 until data.upso_hashTag.size){
-                        var temp = "#" + data.upso_hashTag[i] + " "
-                        hashTag += temp
-                    }
-                }
+                // 수정
+//                if(data.hashTag != null){
+//                    for(i in 0 until data.hashTag.size){
+//                        var temp = "#" + data.upso_hashTag[i] + " "
+//                        hashTag += temp
+//                    }
+//                }
 
                 holder.review_hashtag.text = hashTag
                 holder.review_content.text = data.review_content

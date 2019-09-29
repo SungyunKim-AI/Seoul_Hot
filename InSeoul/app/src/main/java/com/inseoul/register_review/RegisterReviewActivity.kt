@@ -277,6 +277,10 @@ class RegisterReviewActivity : AppCompatActivity()  {
                 }
             }
 
+            override fun hash(str: String, position: Int) {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+            }
         }
         adapter = RegisterReviewViewPagerAdapter(this, listener, reviewArray)
         viewpager.adapter = adapter
