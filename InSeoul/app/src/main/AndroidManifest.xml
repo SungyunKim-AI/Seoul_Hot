@@ -71,7 +71,9 @@
         </activity>
         <activity android:name=".search.SearchDetail">
         </activity>
-        <activity android:name=".register_review.RegisterReviewActivity">
+        <activity
+                android:name=".register_review.RegisterReviewActivity"
+                android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
                 android:name=".add_place.AddPlaceActivity"

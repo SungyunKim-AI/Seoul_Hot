@@ -2,6 +2,7 @@ package com.inseoul.manage_member;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.text.Html;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;

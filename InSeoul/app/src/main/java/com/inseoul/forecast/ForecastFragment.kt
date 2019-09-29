@@ -134,16 +134,27 @@ class ForecastFragment : Fragment() {
     lateinit var itemList:ArrayList<Forecast_item>
     fun initData(){
 
-        var t3 = day.toInt() + 3
-        itemList.add(Forecast_item("$month/$t3", model_temp.taMax3, model_temp.taMin3, model_weather.wf3Am, model_weather.wf3Pm))
-        var t4 = day.toInt() + 4
-        itemList.add(Forecast_item("$month/$t4", model_temp.taMax4, model_temp.taMin4, model_weather.wf4Am, model_weather.wf4Pm))
-        var t5 = day.toInt() + 5
-        itemList.add(Forecast_item("$month/$t5", model_temp.taMax5, model_temp.taMin5, model_weather.wf5Am, model_weather.wf5Pm))
-        var t6 = day.toInt() + 6
-        itemList.add(Forecast_item("$month/$t6", model_temp.taMax6, model_temp.taMin6, model_weather.wf6Am, model_weather.wf6Pm))
-        var t7 = day.toInt() + 7
-        itemList.add(Forecast_item("$month/$t7", model_temp.taMax7, model_temp.taMin7, model_weather.wf7Am, model_weather.wf7Pm))
+        val calendar = GregorianCalendar()
+        calendar.add(Calendar.DATE, + 3)
+        var t3 = SimpleDateFormat("MM/dd").format(calendar.getTime())
+
+        itemList.add(Forecast_item(t3, model_temp.taMax3, model_temp.taMin3, model_weather.wf3Am, model_weather.wf3Pm))
+
+        calendar.add(Calendar.DATE, + 1)
+        var t4 = SimpleDateFormat("MM/dd").format(calendar.getTime())
+        itemList.add(Forecast_item(t4, model_temp.taMax4, model_temp.taMin4, model_weather.wf4Am, model_weather.wf4Pm))
+
+        calendar.add(Calendar.DATE, + 1)
+        var t5 = SimpleDateFormat("MM/dd").format(calendar.getTime())
+        itemList.add(Forecast_item(t5, model_temp.taMax5, model_temp.taMin5, model_weather.wf5Am, model_weather.wf5Pm))
+
+        calendar.add(Calendar.DATE, + 1)
+        var t6 = SimpleDateFormat("MM/dd").format(calendar.getTime())
+        itemList.add(Forecast_item(t6, model_temp.taMax6, model_temp.taMin6, model_weather.wf6Am, model_weather.wf6Pm))
+
+        calendar.add(Calendar.DATE, + 1)
+        var t7 = SimpleDateFormat("MM/dd").format(calendar.getTime())
+        itemList.add(Forecast_item(t7, model_temp.taMax7, model_temp.taMin7, model_weather.wf7Am, model_weather.wf7Pm))
 
 
     }

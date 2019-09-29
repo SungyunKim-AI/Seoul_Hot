@@ -11,17 +11,12 @@
         android:background="@color/white"
 >
 
-    <TextView
-        android:textSize="16dp"
-        android:text="서울의 핫플, 숙박, 맛집을 한 번에"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-    />
+
     <ImageView
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:src="@drawable/logo"
+            android:layout_margin="20dp"
     />
 
 
@@ -49,7 +44,7 @@
             android:id="@+id/signInBtn"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_style"
+            android:background="@drawable/ripple_effect_6_rectangular"
             android:textColor="@color/white"
             android:text="시작하기"
             android:layout_marginTop="15dp"
@@ -71,8 +66,8 @@
             android:textColor="@color/layout_back"
             android:layout_marginTop="30dp"
             android:clickable="true"
-            android:background="@drawable/ripple_effect"
-    />
+            android:background="@drawable/ripple_effect_2"
+            android:linksClickable="true"/>
     <TextView
             android:text="@string/start_non"
             android:layout_width="wrap_content"
@@ -80,7 +75,7 @@
             android:layout_height="wrap_content" android:id="@+id/notMember"
             android:layout_marginTop="12dp"
             android:clickable="true"
-            android:background="@drawable/ripple_effect"
-            />
+            android:background="@drawable/ripple_effect_2"
+    />
 
 </LinearLayout>

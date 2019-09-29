@@ -65,7 +65,7 @@ class SearchDetail :
         initView()
         initMap()
         initPlanList()
-
+        detail()
 
         Handler().postDelayed(
             {
@@ -90,6 +90,18 @@ class SearchDetail :
 
         }
     }
+
+    fun detail(){
+        val url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/" +
+                "detailCommon?" +
+                "ServiceKey=V3TPLc8KikVyK235xNyOorabnl1eDnekQJSTWtpl4eQXyE3MWxAUjlZXJo6PIxrmLZGlixdOVWTSs8PmCfb4nQ%3D%3D" +
+                "&contentId=" + data.id.toString() +
+                "&MobileOS=AND&MobileApp=InSeuol&_type=json"
+        Log.e("detail_url", url)
+
+    }
+
+
     fun loadDetailImg() {
         val MobileOS = "AND"
         val MobileApp = "InSeuol"
