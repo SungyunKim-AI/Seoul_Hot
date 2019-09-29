@@ -448,7 +448,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                     val imgName = absolutelyPath(clipData.getItemAt(0).uri!!)
                     imgArray[viewpager.currentItem].add(imgName)
 
-                    reviewArray[index].imageList!!.add(clipData.getItemAt(0).uri.path)
+                    reviewArray[index].imageList!!.add(imgName)
                 } else if(clipData.itemCount > 1 && clipData.itemCount < 10){
                     for(i in 0 until clipData.itemCount){
                         val inputStream = contentResolver.openInputStream(clipData.getItemAt(i).uri)
@@ -457,7 +457,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                         val imgName = absolutelyPath(clipData.getItemAt(i).uri!!)
                         imgArray[viewpager.currentItem].add(imgName)
 
-                        reviewArray[index].imageList!!.add(clipData.getItemAt(i).uri.path)
+                        reviewArray[index].imageList!!.add(imgName)
                     }
                 }
             }
@@ -479,6 +479,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
         c.moveToFirst()
 
         var result = c.getString(index)
+        Log.v("superTlqkf", result)
         return result
     }
 

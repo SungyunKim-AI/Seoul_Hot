@@ -15,6 +15,7 @@ import com.inseoul.data_model.ReviewDataModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_review.*
+import kotlinx.android.synthetic.main.item_home.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -43,7 +44,7 @@ class ReviewActivity : AppCompatActivity() {
             {
                 initViewPager()
             },
-            500
+            1500
         )
     }
 
@@ -123,7 +124,7 @@ class ReviewActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
-                Log.e("http_ok", it.response.toString())
+                Log.e("http_ok_2", it.response.toString())
                 for(i in 0 until it.response.size) {
                     val d = it.response[i]
                     rawData.add(d)
@@ -137,18 +138,26 @@ class ReviewActivity : AppCompatActivity() {
     }
 
     fun initData(){
-        Log.v("http_ok", "server complete")
+        Log.v("server complete", rawData.toString())
         var TripName = intent.extras!!.getString("TripName", "")
 
         var DPDATE = intent.extras!!.getString("DPDATE", "").split("-")
         var ADDATE = intent.extras!!.getString("ADDATE", "").split("-")
-        var writer = intent.extras!!.getString("Writers")!!.split("&&") as ArrayList<String>?
+
+        var mem = intent.extras!!.getString("Writers")
         var u = ""
-        for(i in 0 until writer!!.size - 1){
-            u += writer[i]
-            if(i != writer.size - 2){
-                u += ", "
+        var firstWriter = ""
+        if(mem!!.contains("&")){
+            val writer = mem.split("&") as ArrayList<String>?
+            if(writer!!.size == 2){
+                u = writer!![0]
+            } else {
+                u = (writer!![0] + " 외 " + (writer!!.size - 1).toString()) + "명"
             }
+            firstWriter = writer[0]
+        } else {
+            u = mem
+            firstWriter = mem
         }
 
         var range = ""
@@ -167,7 +176,7 @@ class ReviewActivity : AppCompatActivity() {
         var reviewInfo = reviewInfo(TripName, range, u, coverImg!!)
 
         var count = rawData.size
-        var cover = ReviewItem(reviewInfo, null, 0, 0, null, writer!!, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
+        var cover = ReviewItem(reviewInfo, null, 0, 0, null, null, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
 //        var summary = ReviewItem(reviewInfo, null, 2, 0, null, null, -1, "", null, img, rawData[0].REVIEW, 37.543492, 127.077388, "인생", "인생넘버", 0, 0)
 
         itemList.add(cover)
@@ -193,6 +202,7 @@ class ReviewActivity : AppCompatActivity() {
             )
             itemList.add(temp)
         }
+        Log.v("aaaaaa", itemList.toString())
 //        itemList.add(summary)
 
         itemList[0].type = 0

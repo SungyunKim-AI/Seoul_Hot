@@ -54,7 +54,7 @@ class SearchDetail :
     lateinit var adapter: SearchDetailViewpagerAdapter
 
     var flag = false
-
+    var HashTagList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,7 +156,10 @@ class SearchDetail :
         data = intent.getParcelableExtra<Search_Item>("data")
         flag = intent.getBooleanExtra("flag",false)
         if(flag)  add_my_list.visibility = GONE
-
+        for( i in data.addr2!!.split(",")){
+            HashTagList.add(i)
+            Log.e("hashTagggggggggggggggg",i)
+        }
         loadDetailImg()
     }
 

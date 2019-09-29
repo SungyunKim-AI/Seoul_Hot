@@ -37,9 +37,9 @@ class RegisterReviewRecyclerViewAdapter(
 //        holder.img.setImageDrawable(itemlist[position])
         var img = itemlist[position]
 //            holder.image.setImageResource(R.drawable.sample2)
-        val url = "http://ksun1234.cafe24.com/" + img
-//        Log.d("thumbnail url", url)
-        Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.img)
+//        val url = "http://ksun1234.cafe24.com/" + img
+        Log.d("powerTlqkf", img)
+        Glide.with(c).load(img).thumbnail(0.1f).placeholder(R.drawable.logo).into(holder.img)
 
         holder.cancel.setOnClickListener {
 

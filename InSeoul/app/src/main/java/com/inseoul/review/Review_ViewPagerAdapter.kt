@@ -100,7 +100,7 @@ class Review_ViewPagerAdapter(
                 var img = data.info!!.coverImg
 //                holder.image.setImageResource(R.drawable.sample2)
                 val url = "http://ksun1234.cafe24.com/" + img
-                Log.d("thumbnail url", url)
+                Log.d("dkdkdkdkkdkddkkdkdkd", url)
                 Glide.with(c).load(url).thumbnail(0.1f).placeholder(R.drawable.no_image).into(holder.coverImg)
 //                holder.coverImg.setImageDrawable(data.info!!.coverImg)
 

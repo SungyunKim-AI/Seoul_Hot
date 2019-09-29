@@ -215,7 +215,7 @@ class SearchActivity : AppCompatActivity() {
                         `object`.getDouble("Lat"),
                         `object`.getDouble("Lng"),
                         `object`.getString("Spot_new"),
-                        null,
+                        `object`.getString("HashTag"),
                         `object`.getString("PH"),
                         1,
                         `object`.getString("IMGURL")

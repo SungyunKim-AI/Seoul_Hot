@@ -108,18 +108,23 @@ class HomeFragment : Fragment() {
             .subscribe({
 
                 Log.e("http_ok", it.response.toString())
+                Log.e("dddd", it.response.size.toString())
                 for (i in 0 until it.response.size) {
                     val d = it.response[i]
                     if (d.ReviewBool == 1) {
                         rawData.add(d)
 
                         Log.d("main_review", d.toString())
-                        val writer = d.MEM.split("&") as ArrayList<String>?
                         var u = ""
-                        if (writer!!.size == 2) {
-                            u = writer!![0]
+                        if(d.MEM.contains("&")){
+                            val writer = d.MEM.split("&") as ArrayList<String>?
+                            if(writer!!.size == 2){
+                                u = writer!![0]
+                            } else {
+                                u = (writer!![0] + " 외 " + (writer!!.size - 1).toString()) + "명"
+                            }
                         } else {
-                            u = (writer!![0] + " 외 " + (writer!!.size - 1).toString()) + "명"
+                            u = d.MEM
                         }
                         val thumbnail = d.Review!!
 
