@@ -159,7 +159,7 @@ class MyPageFragment : Fragment() {
                 val intent = Intent(context, AddPlaceActivity::class.java)
                 intent.putExtra("flag_key",flag_key)
                 intent.putExtra("PlanID",PlanID)
-                Log.v("mypage_tlqkf", activity.toString())
+                Log.v("mypage_tlqkf", PlanID.toString())
                 activity!!.startActivityForResult(intent,REQ_CODE)
 
             }
@@ -177,7 +177,7 @@ class MyPageFragment : Fragment() {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
                 val intent = Intent(context, ReviewActivity::class.java)
-//                Log.v("reviewID_", PlanID.toString())
+                Log.v("reviewID_", PlanID.toString())
                 intent.putExtra("review", PlanID.toString())
                 intent.putExtra("TripName", TripName)
                 intent.putExtra("DPDATE", DPDATE)

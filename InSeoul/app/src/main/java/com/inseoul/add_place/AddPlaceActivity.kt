@@ -121,7 +121,7 @@ class AddPlaceActivity :
             textview_plandate.text = date
         }else {
             //from MyPageActivity
-            PLANID = extras.getString("PlanID")!!.toInt()
+            PLANID = extras.getInt("PlanID")!!.toInt()
 
             if (flag == 3) {
                 tempItem = extras.getParcelable("placeData")!!
