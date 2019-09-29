@@ -104,6 +104,7 @@ class RegisterReviewActivity : AppCompatActivity()  {
                 }
 
                 ReviewWriteRequ(planID.toString(),i.toString(),reviewArray[i].num.toString(),imgarr,reviewArray[i].review_content.toString())
+                finish()
             }
         }
     }
