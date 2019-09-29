@@ -157,7 +157,11 @@ class SearchDetail :
         flag = intent.getBooleanExtra("flag",false)
         if(flag)  add_my_list.visibility = GONE
         for( i in data.addr2!!.split(",")){
-            HashTagList.add(i)
+//            HashTagList.add(i)
+            if(i != ""){
+                var str = "#" + i  + " "
+                detail_type.append(str)
+            }
             Log.e("hashTagggggggggggggggg",i)
         }
         loadDetailImg()
@@ -176,16 +180,16 @@ class SearchDetail :
 
         when(data.type){
             39 -> {
-                detail_type.text = "#맛집"
+                detail_type.append("#맛집 ")
             }
             12-> {
-                detail_type.text = "#명소"
+                detail_type.append("#명소 ")
             }
             14, 15, 28, 38 -> {
-                detail_type.text = "#문화"
+                detail_type.append("#문화 ")
             }
             32 -> {
-                detail_type.text = "#숙소"
+                detail_type.append("#숙소 ")
             }
 
         }

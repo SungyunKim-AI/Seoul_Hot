@@ -249,6 +249,25 @@ class SearchActivity : AppCompatActivity() {
                 adapter.itemlist[3] = hotel
 
                 adapter.notifyDataSetChanged()
+                TabLayoutMediator(search_tabLayout, search_viewpager, object : TabLayoutMediator.OnConfigureTabCallback {
+                    override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+                        // Styling each tab here
+                        when (position) {
+                            0 -> {
+                                tab.setText("관광" + " " + tour.size.toString())
+                            }
+                            1 -> {
+                                tab.setText("문화/쇼핑" + " " + culture.size.toString())
+                            }
+                            2 -> {
+                                tab.setText("맛집" + " " + food.size.toString())
+                            }
+                            3 -> {
+                                tab.setText("숙박" + " " + hotel.size.toString())
+                            }
+                        }
+                    }
+                }).attach()
                 if (success.length() == 0) {
 
                 } else {
