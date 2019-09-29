@@ -36,6 +36,7 @@ class HomeAdapter(
 
     interface RecyclerViewAdapterEventListener {
         fun onClick(view: View, position: Int)
+        fun onClick_scrap(view: View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -137,8 +138,13 @@ class HomeAdapter(
 
         Log.v("In RecyclerView", "Bind Item")
         holder.thumbnail.setOnClickListener {
-            listener!!.onClick(it, position)
+            listener.onClick(it, position)
         }
+
+        holder.scrap.setOnClickListener {
+            listener.onClick_scrap(it,position)
+        }
+
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -148,6 +154,7 @@ class HomeAdapter(
         var likes: TextView
         var writer: TextView
         var heart: ToggleButton
+        var scrap: ImageView
 
         init {
             item_title = itemView.findViewById(R.id.item_title)
@@ -156,6 +163,7 @@ class HomeAdapter(
             likes = itemView.findViewById(R.id.likes)
             writer = itemView.findViewById(R.id.writer)
             heart = itemView.findViewById(R.id.heart)
+            scrap = itemView.findViewById(R.id.scrapBtn)
         }
     }
 

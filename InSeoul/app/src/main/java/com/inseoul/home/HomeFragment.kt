@@ -1,6 +1,8 @@
 package com.inseoul.home
 
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inseoul.R
+import com.inseoul.add_place.AddPlaceActivity
 import com.inseoul.api_manager.RetrofitService
 import com.inseoul.data_model.TimeLineModel
 import com.inseoul.manage_member.SaveSharedPreference
@@ -113,7 +116,7 @@ class HomeFragment : Fragment() {
                         Log.d("main_review", d.toString())
                         val writer = d.MEM.split("&") as ArrayList<String>?
                         var u = ""
-                        if(writer!!.size == 2){
+                        if (writer!!.size == 2) {
                             u = writer!![0]
                         } else {
                             u = (writer!![0] + " 외 " + (writer!!.size - 1).toString()) + "명"
@@ -132,12 +135,45 @@ class HomeFragment : Fragment() {
 
     }
 
+    fun scrapDialog(context: Context, position:Int){
+
+        val builder = AlertDialog.Builder(context)
+
+        builder.setTitle("일정을 스크랩 합니다.")
+            .setMessage("이 일정을 스크랩 하여 새로운 일정을 생성 합니다.")
+            .setPositiveButton("확인") { dialog, id ->
+                scrapThis(context,position)
+            }
+            .setNegativeButton("취소") { dialog, id ->
+
+            }.show()
+    }
+
+    fun scrapThis(context: Context,position:Int){
+        val intent = Intent(context, AddPlaceActivity::class.java)
+        //planID 받아와서 planData 불러오기
+        //planData받아와서 intent로 전달
+        //불러 와야 하는것 : DPDATE, ADDATE, PlANDATE
+//        DPDATE = extras.getString("startDate", "2222-22-22")
+//        ADDATE = extras.getString("endDate", "2222-22-22")
+        intent.putExtra("flag_key", 4)
+        intent.putExtra("scrapPlan",itemList[position].)
+
+        Log.d("alert_plan",)
+
+        startActivity(intent)
+    }
+
+
     fun initRecyclerView() {
         layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView_addPlace.layoutManager = layoutManager
         val listener = object : HomeAdapter.RecyclerViewAdapterEventListener {
+            override fun onClick_scrap(view: View, position: Int) {
+                scrapDialog(context!!)
+            }
+
             override fun onClick(view: View, position: Int) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 val intent = Intent(context, ReviewActivity::class.java)
 
                 // Review전달
