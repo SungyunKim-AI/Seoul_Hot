@@ -69,6 +69,16 @@
                     android:layout_height="wrap_content"
             />
 
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_bookmark_black"
+                    android:id="@+id/scrapBtn"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="7dp"
+                    android:lyaout_marginLeft="7dp"/>
+
         </LinearLayout>
 
     </RelativeLayout>

@@ -103,8 +103,8 @@ class AddPlaceActivity :
 
         val extras = intent.extras
         flag = extras!!.getInt("flag_key", -1)
-        DPDATE = extras!!.getString("startDate", "2222-22-22")
-        ADDATE = extras!!.getString("endDate", "2222-22-22")
+        DPDATE = extras.getString("startDate", "2222-22-22")
+        ADDATE = extras.getString("endDate", "2222-22-22")
 
         // from MakePlanActivity
         if (flag == 1) {
@@ -117,7 +117,7 @@ class AddPlaceActivity :
 //            PlanTitle.hint = date + " 여정"
 
             textview_plandate.text = date
-        } else {
+        }else {
             //from MyPageActivity
             PLANID = extras!!.getInt("PlanID")
 
@@ -247,11 +247,11 @@ class AddPlaceActivity :
                                 val jsonResponse = JSONObject(response)
                                 val success = jsonResponse.getBoolean("success")
                                 if (success) {
-                                    Log.d("sdfsdfs",dialogText.text.toString())
-                                    Toast.makeText(this@AddPlaceActivity ,"이런 친구를 찾지 못했어요!",Toast.LENGTH_LONG).show()
+                                    Log.d("sdfsdfs", dialogText.text.toString())
+                                    Toast.makeText(this@AddPlaceActivity, "이런 친구를 찾지 못했어요!", Toast.LENGTH_LONG).show()
 
                                 } else {
-                                    Toast.makeText(this@AddPlaceActivity ,"친구 등록 성공!",Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this@AddPlaceActivity, "친구 등록 성공!", Toast.LENGTH_LONG).show()
                                     MEM += "&" + dialogText.text.toString()
                                 }
                             } catch (e: Exception) {
@@ -298,7 +298,7 @@ class AddPlaceActivity :
                 2000 -> {
                     //EditPlanDate에서 넘어왔을때
                     var edit_resultStr = data?.getStringExtra("edit_resultStr")
-                    flag = data!!.getIntExtra("flag",1)
+                    flag = data!!.getIntExtra("flag", 1)
 //                    Log.d("alert_back_flag",flag.toString())
 
                     textview_plandate.text = edit_resultStr.toString()
@@ -448,7 +448,7 @@ class AddPlaceActivity :
         var placeType = null
         var latlng = marker.position
         var count = marker.snippet.split(" ")[0].toInt()
-        Log.d("alert_count",marker.snippet.split(" ")[0])
+        Log.d("alert_count", marker.snippet.split(" ")[0])
         var selectDate = dayList[add_place_viewpager.currentItem][count - 1].date
         var temp = AddPlaceItem(selectDate, placeID, placeNm, placeType, latlng, count)
 
@@ -581,8 +581,6 @@ class AddPlaceActivity :
             PlanTitle.setText(searchitm.title)
             textview_plandate.text = date
 
-            //from my_page
-
             var count = 0
             //날짜 받아오기
             for (selectDate in 0..searchitm.day.split(",").lastIndex - 1) {
@@ -616,6 +614,13 @@ class AddPlaceActivity :
                         dayList[selectDate].size + 1
                     )
                 )
+
+            }else if(flag == 4){
+                //다른 사람 일정 스크랩 해서 내 일정으로 불러 오기
+
+                //순재가 할일
+                //서버에 새로운 아이디를 생성할 수 있도록 해야됨
+
 
             }
             adapter.notifyDataSetChanged()
@@ -672,11 +677,17 @@ class AddPlaceActivity :
                 MEM,
                 responseListener
             )
-        if (flag == 2 ) {
-            val r2egisterRequest = UpdatePlanRequest(PlanName,DPDATE,
-                ADDATE, PLANID.toString(), PLAN, day, MEM, responseListener)
-            Log.d("dd",UpdatePlanRequest(PlanName,DPDATE,
-                ADDATE, PLANID.toString(), PLAN, day, MEM, responseListener).toString())
+        if (flag == 2) {
+            val r2egisterRequest = UpdatePlanRequest(
+                PlanName, DPDATE,
+                ADDATE, PLANID.toString(), PLAN, day, MEM, responseListener
+            )
+            Log.d(
+                "dd", UpdatePlanRequest(
+                    PlanName, DPDATE,
+                    ADDATE, PLANID.toString(), PLAN, day, MEM, responseListener
+                ).toString()
+            )
             val queue = Volley.newRequestQueue(this@AddPlaceActivity)
             queue.add(r2egisterRequest)
             val intent = Intent()
