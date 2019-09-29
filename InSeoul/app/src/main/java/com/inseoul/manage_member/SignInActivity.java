@@ -92,7 +92,7 @@ public class SignInActivity extends AppCompatActivity implements TextView.OnEdit
                 try{
                     System.out.println("response: " + response);
                     //JSONObject jsonResponse = new JSONObject(response);
-                    JSONObject jsonResponse = new JSONObject(response.split("\\ ")[1]);
+                    JSONObject jsonResponse = new JSONObject(response);
                     JSONObject success= jsonResponse.getJSONObject("response");
                     System.out.println("success: " + success);
                     if(success.getBoolean("success"))
