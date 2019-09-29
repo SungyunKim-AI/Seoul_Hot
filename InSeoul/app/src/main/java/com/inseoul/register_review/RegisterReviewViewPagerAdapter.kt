@@ -2,6 +2,7 @@ package com.inseoul.register_review
 
 import android.content.Context
 import android.text.Editable
+import android.text.Spanned
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,8 +11,16 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.inseoul.R
 import com.inseoul.review.ReviewItem
+import androidx.appcompat.widget.AppCompatEditText
+import android.text.style.ImageSpan
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.chip.ChipGroup
+import com.hootsuite.nachos.NachoTextView
+import com.hootsuite.nachos.terminator.ChipTerminatorHandler
+import com.inseoul.R
+
 
 class RegisterReviewViewPagerAdapter(
     val c: Context,
@@ -27,7 +36,7 @@ class RegisterReviewViewPagerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegisterReviewViewPagerAdapter.ViewHolder {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.activity_register_review_page, parent, false)
+            .inflate(com.inseoul.R.layout.activity_register_review_page, parent, false)
         return ViewHolder(v)
     }
 
@@ -78,6 +87,20 @@ class RegisterReviewViewPagerAdapter(
                 }
             }
         )
+//
+//        var chip = Chip(c)
+//        chip.text = "#"
+//        chip.setOnCloseIconClickListener {
+//            holder.hashTag.removeView(chip as View)
+//        }
+
+        var last_index = 0;
+        var text_length = 0;
+        var lastChar: CharSequence = ""
+
+        holder.hashTag.addChipTerminator(' ', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR)
+        holder.hashTag.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
+
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -90,12 +113,18 @@ class RegisterReviewViewPagerAdapter(
         var addPhoto: ImageButton
         var addGallery: ImageButton
         var imgList:RecyclerView
+        var hashTag: NachoTextView
         init{
-            place = itemView.findViewById(R.id.place)
-            trip_comment = itemView.findViewById(R.id.trip_comment)
-            addPhoto = itemView.findViewById(R.id.addPhoto)
-            addGallery = itemView.findViewById(R.id.addGallery)
-            imgList = itemView.findViewById(R.id.recyclerView_addPlace)
+            place = itemView.findViewById(com.inseoul.R.id.place)
+            trip_comment = itemView.findViewById(com.inseoul.R.id.trip_comment)
+            addPhoto = itemView.findViewById(com.inseoul.R.id.addPhoto)
+            addGallery = itemView.findViewById(com.inseoul.R.id.addGallery)
+            imgList = itemView.findViewById(com.inseoul.R.id.recyclerView_addPlace)
+            hashTag = itemView.findViewById(com.inseoul.R.id.hashtag)
         }
     }
+
+
+
+
 }
