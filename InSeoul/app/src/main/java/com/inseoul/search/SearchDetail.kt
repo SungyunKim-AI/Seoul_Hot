@@ -157,6 +157,7 @@ class SearchDetail :
         flag = intent.getBooleanExtra("flag",false)
         if(flag)  add_my_list.visibility = GONE
         for( i in data.addr2!!.split(",")){
+            if(i.length<1)continue
             HashTagList.add(i)
             Log.e("hashTagggggggggggggggg",i)
         }
