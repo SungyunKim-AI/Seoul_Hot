@@ -304,6 +304,8 @@ class AddPlaceActivity :
                     textview_plandate.text = edit_resultStr.toString()
                     DPDATE = data.getStringExtra("DPDATE")
                     ADDATE = data.getStringExtra("ADDATE")
+
+                    initRecylcerview(DPDATE, ADDATE)
                     Toast.makeText(this, "일정 변경 완료", Toast.LENGTH_SHORT).show()
                 }
                 3000 -> {
