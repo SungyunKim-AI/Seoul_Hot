@@ -161,6 +161,7 @@ class HomeFragment : Fragment() {
         //planData받아와서 intent로 전달
 
         intent.putExtra("flag_key", 4)
+        intent.putExtra("PlanID",rawData[position].H)
         //intent.putExtra("scrapPlan",itemList[position].)
 
         //Log.d("alert_plan",)
