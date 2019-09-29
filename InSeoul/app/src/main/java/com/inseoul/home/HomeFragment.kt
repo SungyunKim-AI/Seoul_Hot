@@ -111,12 +111,12 @@ class HomeFragment : Fragment() {
                         rawData.add(d)
 
                         Log.d("main_review", d.toString())
-                        val writer = d.MEM.split("&&") as ArrayList<String>?
+                        val writer = d.MEM.split("&") as ArrayList<String>?
                         var u = ""
                         if(writer!!.size == 2){
                             u = writer!![0]
                         } else {
-                            u = (writer!![0] + " 외 " + (writer!!.size - 2).toString()) + "명"
+                            u = (writer!![0] + " 외 " + (writer!!.size - 1).toString()) + "명"
                         }
                         val thumbnail = d.Review!!
 
