@@ -119,7 +119,7 @@ class AddPlaceActivity :
             textview_plandate.text = date
         }else {
             //from MyPageActivity
-            PLANID = extras!!.getInt("PlanID")
+            PLANID = extras!!.getString("PlanID")!!.toInt()
 
             if (flag == 3) {
                 tempItem = extras.getParcelable("placeData")!!
@@ -487,7 +487,10 @@ class AddPlaceActivity :
     /////////////////////////////////SERVER BY SUNJAE//////////////////////////////////
     fun RequestPlanItem(PlanID: Int, flag: Int) {
 
-        val id = SaveSharedPreference.getUserID(this)
+        var id = SaveSharedPreference.getUserID(this)
+        if(flag==4) {
+            id=""
+        }
         var placearr: ArrayList<AddPlaceItem>
         placearr = ArrayList()
         val responseListener = Response.Listener<String> { response ->
@@ -617,7 +620,7 @@ class AddPlaceActivity :
 
             }else if(flag == 4){
                 //다른 사람 일정 스크랩 해서 내 일정으로 불러 오기
-
+                MEM=SaveSharedPreference.getUserID(this)
                 //순재가 할일
                 //서버에 새로운 아이디를 생성할 수 있도록 해야됨
 
