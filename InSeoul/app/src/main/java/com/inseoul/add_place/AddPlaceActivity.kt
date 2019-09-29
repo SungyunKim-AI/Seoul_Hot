@@ -42,6 +42,7 @@ import com.inseoul.Server.ShowPlanRegister
 import com.inseoul.Server.UpdatePlanRequest
 import com.inseoul.home.HomeFragment
 import com.inseoul.manage_member.SaveSharedPreference
+import com.inseoul.manage_member.ValidateRequest
 import com.inseoul.my_page.MyPageFragment
 import com.inseoul.my_page.MyPage_Item
 import kotlinx.android.synthetic.main.activity_add_place_2.*
@@ -231,14 +232,36 @@ class AddPlaceActivity :
             override fun on_friendBtn_Click(view: View, position: Int) {
 
                 var friend_dialog = AlertDialog.Builder(this@AddPlaceActivity)
+                val dialogView = layoutInflater.inflate(R.layout.dialog_edittext, null)
+                val dialogText = dialogView.findViewById<EditText>(R.id.addboxdialog)
+
                 friend_dialog.setTitle("친구와 함께 일정 만들기")
                     .setMessage("친구의 아이디를 입력하세요")
                     .setIcon(R.drawable.ic_group_add_black_24dp)
-                    .setView(R.layout.dialog_edittext)
+                    .setView(dialogView)
                     .setPositiveButton("추가") { dialogInterface, i ->
 
-                        var input = findViewById<EditText>(R.id.addboxdialog)
-                        MEM += "&" + input
+
+                        val responseListener = Response.Listener<String> { response ->
+                            try {
+                                val jsonResponse = JSONObject(response)
+                                val success = jsonResponse.getBoolean("success")
+                                if (success) {
+                                    Log.d("sdfsdfs",dialogText.text.toString())
+                                    Toast.makeText(this@AddPlaceActivity ,"이런 친구를 찾지 못했어요!",Toast.LENGTH_LONG).show()
+
+                                } else {
+                                    Toast.makeText(this@AddPlaceActivity ,"친구 등록 성공!",Toast.LENGTH_LONG).show()
+                                    MEM += "&" + dialogText.text.toString()
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+
+                        val validateRequest = ValidateRequest(dialogText.text.toString(), responseListener)
+                        val queue = Volley.newRequestQueue(this@AddPlaceActivity)
+                        queue.add(validateRequest)
 
                     }
                     .setNeutralButton("취소") { dialogInterface, i ->
@@ -279,7 +302,8 @@ class AddPlaceActivity :
 //                    Log.d("alert_back_flag",flag.toString())
 
                     textview_plandate.text = edit_resultStr.toString()
-
+                    DPDATE = data.getStringExtra("DPDATE")
+                    ADDATE = data.getStringExtra("ADDATE")
                     Toast.makeText(this, "일정 변경 완료", Toast.LENGTH_SHORT).show()
                 }
                 3000 -> {
@@ -604,6 +628,8 @@ class AddPlaceActivity :
     /////////////////////Save 함수//////////////////
     fun savePlan() {
         //저장 버튼 활성화
+        val extras = intent.extras
+
         val responseListener = Response.Listener<String> { response ->
             try {
                 Log.d("d", response)
@@ -645,8 +671,11 @@ class AddPlaceActivity :
                 MEM,
                 responseListener
             )
-        if (flag == 2 || flag == 3) {
-            val r2egisterRequest = UpdatePlanRequest(PlanName, PLANID.toString(), PLAN, day, MEM, responseListener)
+        if (flag == 2 ) {
+            val r2egisterRequest = UpdatePlanRequest(PlanName,DPDATE,
+                ADDATE, PLANID.toString(), PLAN, day, MEM, responseListener)
+            Log.d("dd",UpdatePlanRequest(PlanName,DPDATE,
+                ADDATE, PLANID.toString(), PLAN, day, MEM, responseListener).toString())
             val queue = Volley.newRequestQueue(this@AddPlaceActivity)
             queue.add(r2egisterRequest)
             val intent = Intent()
