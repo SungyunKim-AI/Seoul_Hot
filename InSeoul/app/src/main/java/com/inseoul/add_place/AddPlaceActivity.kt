@@ -113,6 +113,7 @@ class AddPlaceActivity :
             val end = extras!!.getString("endDate")
             initRecylcerview(start!!, end!!)
 
+
             val date = extras!!.getString("PlanDate", "NULL")
 //            PlanTitle.hint = date + " 여정"
 
