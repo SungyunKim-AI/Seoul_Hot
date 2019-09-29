@@ -44,7 +44,7 @@ class ReviewActivity : AppCompatActivity() {
             {
                 initViewPager()
             },
-            1500
+            500
         )
     }
 
