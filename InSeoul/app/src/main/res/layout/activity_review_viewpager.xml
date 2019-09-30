@@ -8,7 +8,7 @@
 
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="280dp"
             android:id="@+id/relative_layout"
     >
         <androidx.viewpager2.widget.ViewPager2
@@ -119,6 +119,7 @@
                 android:id="@+id/review_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:scrollbars="vertical"
                 android:textSize="18dp"
         />
 

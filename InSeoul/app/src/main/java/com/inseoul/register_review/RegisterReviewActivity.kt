@@ -114,13 +114,17 @@ class RegisterReviewActivity : AppCompatActivity()  {
                         Log.d("file Upload", j.split("/")[img])
                     }
                     // 해시태그 저장 경로
+                    var hash = ""
+                    if(reviewArray[i].hashTag != null){
+                        var hash = reviewArray[i].hashTag
+                    }
                     ReviewWriteRequ(
                         planID.toString(),
                         i.toString(),
                         reviewArray[i].num.toString(),
                         imgarr,
                         reviewArray[i].review_content.toString(),
-                        reviewArray[i].hashTag!!
+                        hash
                     )
                     finish()
                 }

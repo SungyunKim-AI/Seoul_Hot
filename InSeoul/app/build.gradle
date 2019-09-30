@@ -48,8 +48,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-simplexml:2.1.0'
-
     // View Pager
     implementation 'androidx.viewpager2:viewpager2:1.0.0-beta02'
 
@@ -61,8 +59,6 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     implementation 'com.makeramen:roundedimageview:2.3.0'
-
-    implementation 'com.google.android.material:material:1.1.0-alpha09'
 
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
